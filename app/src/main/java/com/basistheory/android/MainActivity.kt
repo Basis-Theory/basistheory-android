@@ -2,8 +2,11 @@ package com.basistheory.android
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import com.basistheory.android.R
+import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,6 +31,21 @@ class MainActivity : AppCompatActivity() {
     fun submit(view: View) {
         val secureTextElement = findViewById<TextElement>(R.id.secureTextElement)
 
-        println(secureTextElement.getValue())
+        println("we're tokenizin'")
+        try {
+            val myExecutor = Executors.newSingleThreadExecutor()
+
+            myExecutor.execute {
+                val tokenizeResponse = BasisTheoryElements.tokenize(object {
+                    val type = "token"
+                    val data = secureTextElement.getValue()?.toString()
+                })
+                println(tokenizeResponse)
+            }
+        } catch(e: Throwable) {
+            println("Oops!!!")
+            println(e)
+        }
+
     }
 }

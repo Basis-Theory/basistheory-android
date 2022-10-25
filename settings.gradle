@@ -10,7 +10,13 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        mavenLocal()
     }
 }
+//sourceControl {
+//    gitRepository("https://github.com/Basis-Theory/basistheory-java.git") {
+//        producesModule("com.basistheory:basistheory-java")
+//    }
+//}
 rootProject.name = "TextElement"
 include ':app'

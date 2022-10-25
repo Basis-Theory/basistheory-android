@@ -1,11 +1,13 @@
 package com.basistheory.android
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import com.basistheory.android.R
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import com.basistheory.Token
+import com.google.gson.GsonBuilder
 import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
@@ -30,8 +32,8 @@ class MainActivity : AppCompatActivity() {
 
     fun submit(view: View) {
         val secureTextElement = findViewById<TextElement>(R.id.secureTextElement)
+        val tokenizeResult = findViewById<TextView>(R.id.tokenizeResult)
 
-        println("we're tokenizin'")
         try {
             val myExecutor = Executors.newSingleThreadExecutor()
 
@@ -40,12 +42,16 @@ class MainActivity : AppCompatActivity() {
                     val type = "token"
                     val data = secureTextElement.getValue()?.toString()
                 })
-                println(tokenizeResponse)
+
+                val gson = GsonBuilder().setPrettyPrinting().create()
+
+                Handler(Looper.getMainLooper()).post {
+                    tokenizeResult.text = gson.toJson(tokenizeResponse)
+                }
             }
         } catch(e: Throwable) {
-            println("Oops!!!")
             println(e)
+            throw e
         }
-
     }
 }

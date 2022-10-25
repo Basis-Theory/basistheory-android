@@ -18,5 +18,5 @@ dependencyResolutionManagement {
 //        producesModule("com.basistheory:basistheory-java")
 //    }
 //}
-rootProject.name = "TextElement"
+rootProject.name = "Mobile Elements"
 include ':app'

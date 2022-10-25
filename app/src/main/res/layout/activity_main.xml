@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:bt="http://schemas.android.com/apk/com.basistheory.android"
+    xmlns:bt="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,7 +15,7 @@
             android:id="@+id/secureTextElement"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            bt:textColor="@color/teal_200"
+            bt:textColor="@color/purple_200"
             bt:foo="bar"
             android:inputType="textPersonName" />
 
@@ -29,8 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="submit"
-            android:text="Button"
-            bt:layout_constraintTop_toBottomOf="@+id/secureTextElement" />
+            android:text="Button" />
 
     </LinearLayout>
 

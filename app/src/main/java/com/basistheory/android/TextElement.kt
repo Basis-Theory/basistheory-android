@@ -14,10 +14,14 @@ class TextElement : FrameLayout {
     private var defStyleAttr: Int = androidx.appcompat.R.attr.editTextStyle
     private var input: AppCompatEditText = AppCompatEditText(context, attrs, defStyleAttr)
 
-    constructor(context: Context) : super(context)
+    constructor(context: Context) : super(context) {
+        setStyles()
+    }
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         this.attrs = attrs
+
+        setStyles()
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -27,6 +31,8 @@ class TextElement : FrameLayout {
     ) {
         this.attrs = attrs
         this.defStyleAttr = defStyleAttr
+
+        setStyles()
     }
 
     init {
@@ -34,16 +40,6 @@ class TextElement : FrameLayout {
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT
         )
-
-        context.theme.obtainStyledAttributes(
-            attrs,
-            R.styleable.TextElement,
-            0,
-            0
-        ).apply {
-            val value = getString(R.styleable.TextElement_foo)
-            input.setTextColor(getInteger(R.styleable.TextElement_textColor, Color.BLACK))
-        }
 
         super.addView(input)
 
@@ -56,6 +52,19 @@ class TextElement : FrameLayout {
 //                // todo: publish change event
 //            }
 //        })
+    }
+
+    private fun setStyles() {
+        val a = context.obtainStyledAttributes(
+            attrs, R.styleable.TextElement, defStyleAttr, 0
+        )
+
+        try {
+            val value = a.getColor(R.styleable.TextElement_textColor, Color.GREEN)
+            input.setTextColor(value)
+        } finally {
+            a.recycle()
+        }
     }
 
     fun getTextColors(): ColorStateList = input.textColors

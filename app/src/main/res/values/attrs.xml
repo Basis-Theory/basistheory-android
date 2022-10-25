@@ -2,6 +2,6 @@
 <resources>
     <declare-styleable name="TextElement">
         <attr name="foo" format="string" />
-        <attr name="textColor" format="color" />
+        <attr name="textColor" format="reference|color" />
     </declare-styleable>
 </resources>

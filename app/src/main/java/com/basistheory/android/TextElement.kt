@@ -55,15 +55,12 @@ class TextElement : FrameLayout {
     }
 
     private fun setStyles() {
-        val a = context.obtainStyledAttributes(
-            attrs, R.styleable.TextElement, defStyleAttr, 0
-        )
-
-        try {
-            val value = a.getColor(R.styleable.TextElement_textColor, Color.GREEN)
-            input.setTextColor(value)
-        } finally {
-            a.recycle()
+        context.theme.obtainStyledAttributes(attrs, R.styleable.TextElement, defStyleAttr, 0).apply {
+            try {
+                input.setTextColor(getColor(R.styleable.TextElement_textColor, Color.GREEN))
+            } finally {
+                recycle()
+            }
         }
     }
 

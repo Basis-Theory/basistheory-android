@@ -16,13 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             bt:textColor="@color/purple_200"
-            bt:foo="bar"
             android:inputType="textPersonName" />
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/teal_200" />
 
         <Button
             android:id="@+id/submitButton"

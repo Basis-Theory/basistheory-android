@@ -50,7 +50,10 @@ class MainActivity : AppCompatActivity() {
             myExecutor.execute {
                 val tokenizeResponse = BasisTheoryElements.tokenize(object {
                     val type = "token"
-                    val data = secureTextElement.getValue()?.toString()
+                    val data = object {
+                        val plaintext = "non-sensitive"
+                        val tokenized = secureTextElement
+                    }
                 })
 
                 val gson = GsonBuilder().setPrettyPrinting().create()

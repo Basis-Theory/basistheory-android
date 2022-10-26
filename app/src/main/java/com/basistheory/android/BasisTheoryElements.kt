@@ -22,38 +22,11 @@ class BasisTheoryElements {
             }
         }
 
-//        fun tokenize(request: Map<String, Any>): Any {
-//            val tokenizeApi = TokenizeApi(apiClient)
-//            val mutatedRequest = replaceElementRefs(body)
-////            val tokenizeRequest = replaceElementRefs(body, body::class.java)
-//            val mapRequest = mapOf("type" to "token", "data" to "foo")
-//            return tokenizeApi.tokenize(mapRequest)
-//        }
-
         fun tokenize(body: Any): Any {
             val tokenizeApi = TokenizeApi(apiClient)
             val requestMap = replaceElementRefs(toMap(body))
             return tokenizeApi.tokenize(requestMap)
         }
-
-//        fun <T>replaceElementRefs(body: Any, clazz: Class<T>): Any {
-//            for (field in clazz.declaredFields) {
-//                if (!field.type.isPrimitive && field.type != String::class.java) {
-//                    if (field.type == TextElement::class.java) {
-//                        // replace property with element value
-//                        field.isAccessible = true
-//                        var element = field.get(body) as TextElement
-//                        field.set(body, element.getValue()?.toString())
-//                    } else {
-//                        field.isAccessible = true
-//                        val value = field.get(body)
-//                        replaceElementRefs(value, field.type)
-//                    }
-//                }
-//            }
-//
-//            return body
-//        }
 
         fun replaceElementRefs(map: MutableMap<String, Any?>): MutableMap<String, Any?> {
             for ((key, value) in map) {
@@ -65,6 +38,7 @@ class BasisTheoryElements {
                         map[key] = element.getValue()?.toString() as Any
                     } else {
                         val children = toMap(value)
+                        map[key] = children
                         replaceElementRefs(children)
                     }
                 }

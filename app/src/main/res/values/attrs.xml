@@ -2,5 +2,8 @@
 <resources>
     <declare-styleable name="TextElement">
         <attr name="textColor" format="reference|color" />
+        <attr name="text" format="string" />
+        <attr name="hint" format="string" />
+        <attr name="removeUnderline" format="boolean" />
     </declare-styleable>
 </resources>

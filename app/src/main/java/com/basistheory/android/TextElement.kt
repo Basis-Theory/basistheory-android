@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
-import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatEditText
@@ -42,11 +41,7 @@ class TextElement : FrameLayout {
         initialize()
     }
 
-    fun getTextColors(): ColorStateList = input.textColors
-
-    fun setTextColor(color: Int) = input.setTextColor(color)
-
-    fun setTextColor(colors: ColorStateList) = input.setTextColor(colors)
+    fun setText(newValue: String) = input.setText(newValue)
 
     // this being internal prevents third party applications from accessing the raw input values
     internal fun getValue(): Editable? = input.text
@@ -68,7 +63,12 @@ class TextElement : FrameLayout {
         context.theme.obtainStyledAttributes(attrs, R.styleable.TextElement, defStyleAttr, 0)
             .apply {
                 try {
-                    input.setTextColor(getColor(R.styleable.TextElement_textColor, Color.GREEN))
+                    input.setTextColor(getColor(R.styleable.TextElement_textColor, Color.BLACK))
+                    input.setText(getString(R.styleable.TextElement_text))
+                    input.setHint(getString(R.styleable.TextElement_hint))
+                    if (getBoolean(R.styleable.TextElement_removeUnderline, false)) {
+                        input.background = null
+                    }
                 } finally {
                     recycle()
                 }

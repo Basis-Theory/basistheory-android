@@ -4,7 +4,6 @@ import com.basistheory.ApiClient
 import com.basistheory.Configuration
 import com.basistheory.TokenizeApi
 import com.basistheory.auth.ApiKeyAuth
-import com.google.gson.Gson
 import io.github.cdimascio.dotenv.dotenv
 
 class BasisTheoryElements {
@@ -14,16 +13,16 @@ class BasisTheoryElements {
             filename = "env"
         }
 
-        private val apiClient: ApiClient = Configuration.getDefaultApiClient().also { client ->
+        private fun getApiClient(apiKey: String? = null): ApiClient = Configuration.getDefaultApiClient().also { client ->
             client.basePath = dotenv["BASIS_THEORY_API_URL"] ?: "https://api.basistheory.com"
 
             (client.getAuthentication("ApiKey") as ApiKeyAuth).also { auth ->
-                auth.apiKey = dotenv["BASIS_THEORY_API_KEY"]
+                auth.apiKey = apiKey ?: dotenv["BASIS_THEORY_API_KEY"]
             }
         }
 
-        fun tokenize(body: Any): Any {
-            val tokenizeApi = TokenizeApi(apiClient)
+        fun tokenize(body: Any, apiKey: String? = null): Any {
+            val tokenizeApi = TokenizeApi(getApiClient(apiKey))
             val requestMap = replaceElementRefs(toMap(body))
             return tokenizeApi.tokenize(requestMap)
         }

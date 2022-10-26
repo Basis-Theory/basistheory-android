@@ -13,19 +13,53 @@
         android:layout_margin="20dp">
 
         <com.basistheory.android.TextElement
-            android:id="@+id/secureTextElement"
+            android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            bt:textColor="@color/purple_200" />
+            android:foregroundTint="#B52A2A"
+            android:background="@drawable/rounded_edit_text"
+            android:padding="5dp"
+            bt:textColor="@color/purple_200"
+            bt:hint="Name"
+            bt:removeUnderline="true"
+            />
 
-        <Button
-            android:id="@+id/submitButton"
+        <com.basistheory.android.TextElement
+            android:id="@+id/phoneNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:foregroundTint="#B52A2A"
+            android:background="@drawable/rounded_edit_text"
+            android:layout_marginTop="20dp"
+            android:padding="5dp"
+            bt:textColor="@color/purple_200"
+            bt:hint="Phone Number"
+            bt:removeUnderline="true"
+            />
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:onClick="submit"
-            android:text="Tokenize" />
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/submitButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:onClick="submit"
+                android:text="Tokenize" />
+
+            <Button
+                android:id="@+id/setText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:onClick="setText"
+                android:text="Set Text" />
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tokenizeResult"

@@ -3,12 +3,9 @@ package com.basistheory.android
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.basistheory.Token
 import com.google.gson.GsonBuilder
 import java.util.concurrent.Executors
 
@@ -20,7 +17,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        secureTextElement = findViewById(R.id.secureTextElement)
+        secureTextElement = findViewById(R.id.name)
         tokenizeResult = findViewById(R.id.tokenizeResult)
 
         subscribeToEvents()
@@ -40,8 +37,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun setText(view: View) {
+        val nameTextElement = findViewById<TextElement>(R.id.name)
+        val phoneNumberTextElement = findViewById<TextElement>(R.id.phoneNumber)
+
+        nameTextElement.setText("Tom Cruise")
+        phoneNumberTextElement.setText("555-123-4567")
+    }
+
     fun submit(view: View) {
-        val secureTextElement = findViewById<TextElement>(R.id.secureTextElement)
+        val nameTextElement = findViewById<TextElement>(R.id.name)
+        val phoneNumberTextElement = findViewById<TextElement>(R.id.phoneNumber)
         val tokenizeResult = findViewById<TextView>(R.id.tokenizeResult)
 
         try {
@@ -51,8 +57,9 @@ class MainActivity : AppCompatActivity() {
                 val tokenizeResponse = BasisTheoryElements.tokenize(object {
                     val type = "token"
                     val data = object {
-                        val plaintext = "non-sensitive"
-                        val tokenized = secureTextElement
+                        val myProp = "My Value"
+                        val name = nameTextElement
+                        val phoneNumber = phoneNumberTextElement
                     }
                 })
 

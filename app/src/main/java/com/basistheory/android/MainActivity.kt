@@ -3,6 +3,8 @@ package com.basistheory.android
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -11,23 +13,31 @@ import com.google.gson.GsonBuilder
 import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var secureTextElement: TextElement
+    private lateinit var tokenizeResult: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        secureTextElement.addTextChangedListener(object: TextWatcher {
-//            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-//                println(p0)
-//            }
-//
-//            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-//                println(p0)
-//            }
-//
-//            override fun afterTextChanged(p0: Editable?) {
-//                println(p0)
-//            }
-//        })
+        secureTextElement = findViewById(R.id.secureTextElement)
+        tokenizeResult = findViewById(R.id.tokenizeResult)
+
+        subscribeToEvents()
+    }
+
+    private fun subscribeToEvents() {
+        secureTextElement.addChangeEventListener {
+            println("Change event received: $it")
+        }
+
+        secureTextElement.addFocusEventListener {
+            println("Element gained focus")
+        }
+
+        secureTextElement.addBlurEventListener {
+            println("Element lost focus")
+        }
     }
 
     fun submit(view: View) {

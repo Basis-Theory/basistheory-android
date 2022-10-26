@@ -9,33 +9,31 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_margin="20dp">
+        android:layout_margin="20dp"
+        android:orientation="vertical">
 
         <com.basistheory.android.TextElement
             android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:foregroundTint="#B52A2A"
             android:background="@drawable/rounded_edit_text"
+            android:foregroundTint="#B52A2A"
             android:padding="5dp"
-            bt:textColor="@color/purple_200"
             bt:hint="Name"
             bt:removeUnderline="true"
-            />
+            bt:textColor="@color/purple_200" />
 
         <com.basistheory.android.TextElement
             android:id="@+id/phoneNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:foregroundTint="#B52A2A"
-            android:background="@drawable/rounded_edit_text"
             android:layout_marginTop="20dp"
+            android:background="@drawable/rounded_edit_text"
+            android:foregroundTint="#B52A2A"
             android:padding="5dp"
-            bt:textColor="@color/purple_200"
             bt:hint="Phone Number"
             bt:removeUnderline="true"
-            />
+            bt:textColor="@color/purple_200" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -54,8 +52,8 @@
                 android:id="@+id/setText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
                 android:onClick="setText"
                 android:text="Set Text" />
 
@@ -63,10 +61,10 @@
 
         <TextView
             android:id="@+id/tokenizeResult"
-            android:fontFamily="monospace"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp" />
+            android:layout_marginTop="20dp"
+            android:fontFamily="monospace" />
 
     </LinearLayout>
 

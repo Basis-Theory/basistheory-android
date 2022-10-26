@@ -37,7 +37,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun setText(view: View) {
+    fun setText(button: View) {
+        assert(button.id == R.id.setText)
+
         val nameTextElement = findViewById<TextElement>(R.id.name)
         val phoneNumberTextElement = findViewById<TextElement>(R.id.phoneNumber)
 
@@ -45,7 +47,9 @@ class MainActivity : AppCompatActivity() {
         phoneNumberTextElement.setText("555-123-4567")
     }
 
-    fun submit(view: View) {
+    fun submit(button: View) {
+        assert(button.id == R.id.submitButton)
+
         val nameTextElement = findViewById<TextElement>(R.id.name)
         val phoneNumberTextElement = findViewById<TextElement>(R.id.phoneNumber)
         val tokenizeResult = findViewById<TextView>(R.id.tokenizeResult)
@@ -69,7 +73,7 @@ class MainActivity : AppCompatActivity() {
                     tokenizeResult.text = gson.toJson(tokenizeResponse)
                 }
             }
-        } catch(e: Throwable) {
+        } catch (e: Throwable) {
             println(e)
             throw e
         }

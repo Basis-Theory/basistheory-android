@@ -10,13 +10,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        mavenLocal()
+        maven { url 'https://jitpack.io' }
     }
 }
-//sourceControl {
-//    gitRepository("https://github.com/Basis-Theory/basistheory-java.git") {
-//        producesModule("com.basistheory:basistheory-java")
-//    }
-//}
 rootProject.name = "Mobile Elements"
 include ':app'

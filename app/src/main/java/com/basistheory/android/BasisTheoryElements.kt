@@ -13,6 +13,12 @@ class BasisTheoryElements {
             filename = "env"
         }
 
+        fun tokenize(body: Any, apiKey: String? = null): Any {
+            val tokenizeApi = TokenizeApi(getApiClient(apiKey))
+            val requestMap = replaceElementRefs(toMap(body))
+            return tokenizeApi.tokenize(requestMap)
+        }
+
         private fun getApiClient(apiKey: String? = null): ApiClient = Configuration.getDefaultApiClient().also { client ->
             client.basePath = dotenv["BASIS_THEORY_API_URL"] ?: "https://api.basistheory.com"
 
@@ -21,13 +27,7 @@ class BasisTheoryElements {
             }
         }
 
-        fun tokenize(body: Any, apiKey: String? = null): Any {
-            val tokenizeApi = TokenizeApi(getApiClient(apiKey))
-            val requestMap = replaceElementRefs(toMap(body))
-            return tokenizeApi.tokenize(requestMap)
-        }
-
-        fun replaceElementRefs(map: MutableMap<String, Any?>): MutableMap<String, Any?> {
+        private fun replaceElementRefs(map: MutableMap<String, Any?>): MutableMap<String, Any?> {
             for ((key, value) in map) {
                 if (value == null) continue
                 val fieldType = value::class.java
@@ -46,7 +46,7 @@ class BasisTheoryElements {
             return map
         }
 
-        fun toMap(value: Any): MutableMap<String, Any?> =
+        private fun toMap(value: Any): MutableMap<String, Any?> =
             value::class.java.declaredFields.associateBy(
                 { it.name },
                 {

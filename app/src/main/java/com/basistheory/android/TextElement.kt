@@ -1,11 +1,11 @@
 package com.basistheory.android
 
 import android.content.Context
-import android.content.res.ColorStateList
 import android.graphics.Color
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
+import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatEditText
@@ -18,6 +18,7 @@ class TextElement : FrameLayout {
     private var attrs: AttributeSet? = null
     private var defStyleAttr: Int = androidx.appcompat.R.attr.editTextStyle
     private var input: AppCompatEditText = AppCompatEditText(context, attrs, defStyleAttr)
+    private var defaultBackground = input.background // todo: find a better way to reference this
     private val eventListeners = ElementEventListeners()
 
     constructor(context: Context) : super(context) {
@@ -41,7 +42,22 @@ class TextElement : FrameLayout {
         initialize()
     }
 
-    fun setText(newValue: String) = input.setText(newValue)
+    var text: String? = ""
+        set(value) = input.setText(value)
+
+    var textColor: Int
+        get() = input.currentTextColor
+        set(value) = input.setTextColor(value)
+
+    var hint: CharSequence?
+        get() = input.hint
+        set(value) {
+            input.hint = value
+        }
+
+    var removeUnderline: Boolean
+        get() = input.background == null
+        set(value) { input.background = if (value) null else defaultBackground }
 
     // this being internal prevents third party applications from accessing the raw input values
     internal fun getValue(): Editable? = input.text
@@ -63,12 +79,10 @@ class TextElement : FrameLayout {
         context.theme.obtainStyledAttributes(attrs, R.styleable.TextElement, defStyleAttr, 0)
             .apply {
                 try {
-                    input.setTextColor(getColor(R.styleable.TextElement_textColor, Color.BLACK))
-                    input.setText(getString(R.styleable.TextElement_text))
-                    input.setHint(getString(R.styleable.TextElement_hint))
-                    if (getBoolean(R.styleable.TextElement_removeUnderline, false)) {
-                        input.background = null
-                    }
+                    textColor = getColor(R.styleable.TextElement_textColor, Color.BLACK)
+                    text = getString(R.styleable.TextElement_text)
+                    hint = getString(R.styleable.TextElement_hint)
+                    removeUnderline = getBoolean(R.styleable.TextElement_removeUnderline, false)
                 } finally {
                     recycle()
                 }

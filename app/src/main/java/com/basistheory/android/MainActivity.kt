@@ -10,29 +10,31 @@ import com.google.gson.GsonBuilder
 import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var secureTextElement: TextElement
+    private lateinit var nameElement: TextElement
+    private lateinit var phoneNumberElement: TextElement
     private lateinit var tokenizeResult: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        secureTextElement = findViewById(R.id.name)
+        nameElement = findViewById(R.id.name)
+        phoneNumberElement = findViewById(R.id.phoneNumber)
         tokenizeResult = findViewById(R.id.tokenizeResult)
 
         subscribeToEvents()
     }
 
     private fun subscribeToEvents() {
-        secureTextElement.addChangeEventListener {
+        nameElement.addChangeEventListener {
             println("Change event received: $it")
         }
 
-        secureTextElement.addFocusEventListener {
+        nameElement.addFocusEventListener {
             println("Element gained focus")
         }
 
-        secureTextElement.addBlurEventListener {
+        nameElement.addBlurEventListener {
             println("Element lost focus")
         }
     }
@@ -40,19 +42,12 @@ class MainActivity : AppCompatActivity() {
     fun setText(button: View) {
         assert(button.id == R.id.setText)
 
-        val nameTextElement = findViewById<TextElement>(R.id.name)
-        val phoneNumberTextElement = findViewById<TextElement>(R.id.phoneNumber)
-
-        nameTextElement.setText("Tom Cruise")
-        phoneNumberTextElement.setText("555-123-4567")
+        nameElement.text = "Tom Cruise"
+        phoneNumberElement.text = "555-123-4567"
     }
 
     fun submit(button: View) {
         assert(button.id == R.id.submitButton)
-
-        val nameTextElement = findViewById<TextElement>(R.id.name)
-        val phoneNumberTextElement = findViewById<TextElement>(R.id.phoneNumber)
-        val tokenizeResult = findViewById<TextView>(R.id.tokenizeResult)
 
         try {
             val myExecutor = Executors.newSingleThreadExecutor()
@@ -62,8 +57,8 @@ class MainActivity : AppCompatActivity() {
                     val type = "token"
                     val data = object {
                         val myProp = "My Value"
-                        val name = nameTextElement
-                        val phoneNumber = phoneNumberTextElement
+                        val name = nameElement
+                        val phoneNumber = phoneNumberElement
                     }
                 })
 

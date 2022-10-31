@@ -1,4 +1,4 @@
-package com.basistheory.android.events
+package com.basistheory.android
 
 data class ChangeEvent(
     val complete: Boolean,

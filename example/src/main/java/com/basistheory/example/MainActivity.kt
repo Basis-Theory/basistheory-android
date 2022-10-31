@@ -1,4 +1,4 @@
-package com.basistheory.android
+package com.basistheory.example
 
 import android.os.Bundle
 import android.os.Handler
@@ -6,13 +6,21 @@ import android.os.Looper
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.basistheory.android.BasisTheoryElements
+import com.basistheory.android.TextElement
 import com.google.gson.GsonBuilder
 import java.util.concurrent.Executors
+import io.github.cdimascio.dotenv.dotenv
 
 class MainActivity : AppCompatActivity() {
     private lateinit var nameElement: TextElement
     private lateinit var phoneNumberElement: TextElement
     private lateinit var tokenizeResult: TextView
+
+    private val dotenv = dotenv {
+        directory = "/assets"
+        filename = "env"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +59,7 @@ class MainActivity : AppCompatActivity() {
 
         try {
             val myExecutor = Executors.newSingleThreadExecutor()
+            val apiKey = dotenv["BASIS_THEORY_API_KEY"]
 
             myExecutor.execute {
                 val tokenizeResponse = BasisTheoryElements.tokenize(object {
@@ -60,7 +69,7 @@ class MainActivity : AppCompatActivity() {
                         val name = nameElement
                         val phoneNumber = phoneNumberElement
                     }
-                })
+                }, apiKey)
 
                 val gson = GsonBuilder().setPrettyPrinting().create()
 

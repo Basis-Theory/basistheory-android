@@ -14,7 +14,7 @@
         android:theme="@style/Theme.TextElement"
         tools:targetApi="31">
         <activity
-            android:name="com.basistheory.android.MainActivity"
+            android:name="com.basistheory.example.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

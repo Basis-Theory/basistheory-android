@@ -4,28 +4,24 @@ import com.basistheory.ApiClient
 import com.basistheory.Configuration
 import com.basistheory.TokenizeApi
 import com.basistheory.auth.ApiKeyAuth
-import io.github.cdimascio.dotenv.dotenv
 
 class BasisTheoryElements {
     companion object {
-        private val dotenv = dotenv {
-            directory = "/assets"
-            filename = "env"
-        }
 
-        fun tokenize(body: Any, apiKey: String? = null): Any {
+        fun tokenize(body: Any, apiKey: String): Any {
             val tokenizeApi = TokenizeApi(getApiClient(apiKey))
             val requestMap = replaceElementRefs(toMap(body))
             return tokenizeApi.tokenize(requestMap)
         }
 
-        private fun getApiClient(apiKey: String? = null): ApiClient = Configuration.getDefaultApiClient().also { client ->
-            client.basePath = dotenv["BASIS_THEORY_API_URL"] ?: "https://api.basistheory.com"
+        private fun getApiClient(apiKey: String): ApiClient =
+            Configuration.getDefaultApiClient().also { client ->
+                client.basePath = "https://api-dev.basistheory.com"
 
-            (client.getAuthentication("ApiKey") as ApiKeyAuth).also { auth ->
-                auth.apiKey = apiKey ?: dotenv["BASIS_THEORY_API_KEY"]
+                (client.getAuthentication("ApiKey") as ApiKeyAuth).also { auth ->
+                    auth.apiKey = apiKey
+                }
             }
-        }
 
         private fun replaceElementRefs(map: MutableMap<String, Any?>): MutableMap<String, Any?> {
             for ((key, value) in map) {

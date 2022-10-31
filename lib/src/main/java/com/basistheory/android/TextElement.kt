@@ -9,10 +9,6 @@ import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatEditText
-import com.basistheory.android.events.BlurEvent
-import com.basistheory.android.events.ChangeEvent
-import com.basistheory.android.events.ElementEventListeners
-import com.basistheory.android.events.FocusEvent
 
 class TextElement : FrameLayout {
     private var attrs: AttributeSet? = null

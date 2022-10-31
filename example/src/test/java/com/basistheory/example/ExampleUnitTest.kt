@@ -1,4 +1,4 @@
-package com.basistheory.android
+package com.basistheory.example
 
 import org.junit.Test
 

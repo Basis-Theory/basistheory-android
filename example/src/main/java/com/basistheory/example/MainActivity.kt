@@ -11,6 +11,9 @@ import com.basistheory.android.TextElement
 import com.google.gson.GsonBuilder
 import java.util.concurrent.Executors
 import io.github.cdimascio.dotenv.dotenv
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class MainActivity : AppCompatActivity() {
     private lateinit var nameElement: TextElement
@@ -57,29 +60,24 @@ class MainActivity : AppCompatActivity() {
     fun submit(button: View) {
         assert(button.id == R.id.submitButton)
 
-        try {
-            val myExecutor = Executors.newSingleThreadExecutor()
-            val apiKey = dotenv["BASIS_THEORY_API_KEY"]
+        val bt = BasisTheoryElements.builder()
+            .apiUrl(dotenv["BASIS_THEORY_API_URL"])
+            .apiKey(dotenv["BASIS_THEORY_API_KEY"])
+            .build()
 
-            myExecutor.execute {
-                val tokenizeResponse = BasisTheoryElements.tokenize(object {
-                    val type = "token"
-                    val data = object {
-                        val myProp = "My Value"
-                        val name = nameElement
-                        val phoneNumber = phoneNumberElement
-                    }
-                }, apiKey)
-
-                val gson = GsonBuilder().setPrettyPrinting().create()
-
-                Handler(Looper.getMainLooper()).post {
-                    tokenizeResult.text = gson.toJson(tokenizeResponse)
+        runBlocking {
+            val tokenizeResponse = bt.tokenize(object {
+                val type = "token"
+                val data = object {
+                    val myProp = "My Value"
+                    val name = nameElement
+                    val phoneNumber = phoneNumberElement
                 }
-            }
-        } catch (e: Throwable) {
-            println(e)
-            throw e
+            })
+
+            val gson = GsonBuilder().setPrettyPrinting().create()
+
+            tokenizeResult.text = gson.toJson(tokenizeResponse)
         }
     }
 }

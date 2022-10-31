@@ -2,11 +2,15 @@ package com.basistheory.android
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Point
+import android.graphics.Rect
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputConnection
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatEditText
 
@@ -68,6 +72,10 @@ class TextElement : FrameLayout {
 
     fun addBlurEventListener(listener: (BlurEvent) -> Unit) {
         eventListeners.blur.add(listener)
+    }
+
+    override fun onCreateInputConnection(outAttrs: EditorInfo): InputConnection? {
+        return input.onCreateInputConnection(outAttrs)
     }
 
 

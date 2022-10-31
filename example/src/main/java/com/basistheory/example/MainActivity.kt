@@ -1,19 +1,17 @@
 package com.basistheory.example
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.basistheory.android.BasisTheoryElements
 import com.basistheory.android.TextElement
+import com.basistheory.example.utils.toIsoString
 import com.google.gson.GsonBuilder
-import java.util.concurrent.Executors
 import io.github.cdimascio.dotenv.dotenv
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 
 class MainActivity : AppCompatActivity() {
     private lateinit var nameElement: TextElement
@@ -51,14 +49,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setText(button: View) {
-        assert(button.id == R.id.setText)
+        assert(button.id == R.id.setTextButton)
 
-        nameElement.text = "Tom Cruise"
-        phoneNumberElement.text = "555-123-4567"
+        nameElement.text = "Manually Set Name"
+        phoneNumberElement.text = "Manually Set Phone"
     }
 
     fun submit(button: View) {
-        assert(button.id == R.id.submitButton)
+        assert(button.id == R.id.tokenizeButton)
 
         val bt = BasisTheoryElements.builder()
             .apiUrl(dotenv["BASIS_THEORY_API_URL"])
@@ -73,6 +71,7 @@ class MainActivity : AppCompatActivity() {
                     val name = nameElement
                     val phoneNumber = phoneNumberElement
                 }
+                val expires_at = Instant.now().plus(5, ChronoUnit.MINUTES).toIsoString()
             })
 
             val gson = GsonBuilder().setPrettyPrinting().create()

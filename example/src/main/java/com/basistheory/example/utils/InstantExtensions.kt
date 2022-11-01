@@ -1,7 +1,5 @@
 package com.basistheory.example.utils
 
-import java.time.Instant
-import java.time.format.DateTimeFormatter
+import org.threeten.bp.Instant
 
-fun Instant.toIsoString(): String =
-    DateTimeFormatter.ISO_INSTANT.format(this)
+

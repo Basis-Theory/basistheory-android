@@ -6,12 +6,11 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.basistheory.android.BasisTheoryElements
 import com.basistheory.android.TextElement
-import com.basistheory.example.utils.toIsoString
 import com.google.gson.GsonBuilder
 import io.github.cdimascio.dotenv.dotenv
 import kotlinx.coroutines.runBlocking
-import java.time.Instant
-import java.time.temporal.ChronoUnit
+import org.threeten.bp.Instant
+import org.threeten.bp.temporal.ChronoUnit
 
 class MainActivity : AppCompatActivity() {
     private lateinit var nameElement: TextElement
@@ -63,6 +62,12 @@ class MainActivity : AppCompatActivity() {
             .apiKey(dotenv["BASIS_THEORY_API_KEY"])
             .build()
 
+        /**
+         * Note: java.time.Instant is only supported on API level 26+.
+         * threetenbp is a backport of java.time for java 6/7 and Android API < 26
+         */
+        var expirationTimestamp = Instant.now().plus(5, ChronoUnit.MINUTES).toString()
+
         runBlocking {
             val tokenizeResponse = bt.tokenize(object {
                 val type = "token"
@@ -71,7 +76,7 @@ class MainActivity : AppCompatActivity() {
                     val name = nameElement
                     val phoneNumber = phoneNumberElement
                 }
-                val expires_at = Instant.now().plus(5, ChronoUnit.MINUTES).toIsoString()
+                val expires_at = expirationTimestamp
             })
 
             val gson = GsonBuilder().setPrettyPrinting().create()

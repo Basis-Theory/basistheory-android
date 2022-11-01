@@ -27,6 +27,6 @@ jobs:
         with:
           api-level: ${{ matrix.api-level }}
           target: default
-          arch: arm64-v8
+          arch: arm64-v8a
           profile: Pixel 6
           script: ./gradlew connectedCheck

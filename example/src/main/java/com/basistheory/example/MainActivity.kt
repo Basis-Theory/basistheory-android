@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.basistheory.android.BasisTheoryElements
 import com.basistheory.android.TextElement
 import com.google.gson.GsonBuilder
-import io.github.cdimascio.dotenv.dotenv
 import kotlinx.coroutines.runBlocking
 import org.threeten.bp.Instant
 import org.threeten.bp.temporal.ChronoUnit
@@ -16,11 +15,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var nameElement: TextElement
     private lateinit var phoneNumberElement: TextElement
     private lateinit var tokenizeResult: TextView
-
-    private val dotenv = dotenv {
-        directory = "/assets"
-        filename = "env"
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,8 +52,8 @@ class MainActivity : AppCompatActivity() {
         assert(button.id == R.id.tokenizeButton)
 
         val bt = BasisTheoryElements.builder()
-            .apiUrl(dotenv["BASIS_THEORY_API_URL"])
-            .apiKey(dotenv["BASIS_THEORY_API_KEY"])
+            .apiUrl(BuildConfig.BASIS_THEORY_API_URL)
+            .apiKey(BuildConfig.BASIS_THEORY_API_KEY)
             .build()
 
         /**

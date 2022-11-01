@@ -14,6 +14,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Write local.properties file
+        run: |
+          echo BASIS_THEORY_API_URL=\"https://api-dev.basistheory.com\" > ./local.properties
+          echo BASIS_THEORY_API_KEY=\"${{ secrets.BASIS_THEORY_API_KEY }}\" >> ./local.properties
+
       - name: Setup JDK version
         uses: actions/setup-java@v3
         with:

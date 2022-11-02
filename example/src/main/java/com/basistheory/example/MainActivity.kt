@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.basistheory.android.BasisTheoryElements
-import com.basistheory.android.TextElement
+import com.basistheory.android.service.BasisTheoryElements
+import com.basistheory.android.view.TextElement
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.runBlocking
 import org.threeten.bp.Instant
@@ -44,8 +44,8 @@ class MainActivity : AppCompatActivity() {
     fun setText(button: View) {
         assert(button.id == R.id.setTextButton)
 
-        nameElement.text = "Manually Set Name"
-        phoneNumberElement.text = "Manually Set Phone"
+        nameElement.setText("Manually Set Name")
+        phoneNumberElement.setText("Manually Set Phone")
     }
 
     fun submit(button: View) {

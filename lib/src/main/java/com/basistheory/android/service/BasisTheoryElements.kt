@@ -1,11 +1,10 @@
-package com.basistheory.android
+package com.basistheory.android.service
 
-import com.basistheory.ApiClient
 import com.basistheory.Configuration
 import com.basistheory.TokenizeApi
+import com.basistheory.android.view.TextElement
 import com.basistheory.auth.ApiKeyAuth
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class BasisTheoryElements(
@@ -37,7 +36,7 @@ class BasisTheoryElements(
             if (!fieldType.isPrimitive && fieldType != String::class.java) {
                 if (fieldType == TextElement::class.java) {
                     val element = value as TextElement
-                    map[key] = element.getValue()?.toString() as Any
+                    map[key] = element.getText()?.toString() as Any
                 } else {
                     val children = toMap(value)
                     map[key] = children
@@ -58,33 +57,7 @@ class BasisTheoryElements(
             }).toMutableMap()
 
     companion object {
+        @JvmStatic
         fun builder(): BasisTheoryElementsBuilder = BasisTheoryElementsBuilder()
-    }
-}
-
-class BasisTheoryElementsBuilder {
-    private var _apiKey: String? = null
-    private var _apiUrl: String = "https://api.basistheory.com"
-    private var _ioDispatcher: CoroutineDispatcher = Dispatchers.IO
-
-    fun apiKey(value: String): BasisTheoryElementsBuilder {
-        _apiKey = value
-        return this
-    }
-
-    fun apiUrl(value: String): BasisTheoryElementsBuilder {
-        _apiUrl = value
-        return this
-    }
-
-    fun ioDispatcher(value: CoroutineDispatcher): BasisTheoryElementsBuilder {
-        _ioDispatcher = value
-        return this
-    }
-
-    fun build(): BasisTheoryElements {
-        requireNotNull(_apiKey)
-
-        return BasisTheoryElements(_apiUrl, _apiKey!!, _ioDispatcher)
     }
 }

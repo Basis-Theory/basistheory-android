@@ -28,6 +28,11 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
@@ -38,6 +43,8 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
     implementation 'com.github.basis-theory:basistheory-java:fix-dependency-resolution-SNAPSHOT'
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+//    testImplementation 'androidx.test.ext:junit:1.1.3'
+//    testImplementation 'androidx.test:core-ktx:1.4.0'
+    testImplementation 'org.robolectric:robolectric:4.8'
+    testImplementation 'io.strikt:strikt-core:0.34.0'
 }

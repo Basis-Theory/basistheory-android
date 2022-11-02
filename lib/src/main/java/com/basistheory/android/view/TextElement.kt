@@ -1,8 +1,7 @@
-package com.basistheory.android
+package com.basistheory.android.view
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.Point
 import android.graphics.Rect
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,6 +12,11 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatEditText
+import com.basistheory.android.*
+import com.basistheory.android.event.BlurEvent
+import com.basistheory.android.event.ChangeEvent
+import com.basistheory.android.event.ElementEventListeners
+import com.basistheory.android.event.FocusEvent
 
 class TextElement : FrameLayout {
     private var attrs: AttributeSet? = null
@@ -42,8 +46,11 @@ class TextElement : FrameLayout {
         initialize()
     }
 
-    var text: String? = ""
-        set(value) = input.setText(value)
+    // this MUST be internal to prevent host apps from accessing the raw input values
+    internal fun getText(): Editable? = input.text
+
+    fun setText(value: String?) =
+        input.setText(value)
 
     var textColor: Int
         get() = input.currentTextColor
@@ -58,9 +65,6 @@ class TextElement : FrameLayout {
     var removeUnderline: Boolean
         get() = input.background == null
         set(value) { input.background = if (value) null else defaultBackground }
-
-    // this being internal prevents third party applications from accessing the raw input values
-    internal fun getValue(): Editable? = input.text
 
     fun addChangeEventListener(listener: (ChangeEvent) -> Unit) {
         eventListeners.change.add(listener)
@@ -84,9 +88,9 @@ class TextElement : FrameLayout {
             .apply {
                 try {
                     textColor = getColor(R.styleable.TextElement_textColor, Color.BLACK)
-                    text = getString(R.styleable.TextElement_text)
                     hint = getString(R.styleable.TextElement_hint)
                     removeUnderline = getBoolean(R.styleable.TextElement_removeUnderline, false)
+                    setText(getString(R.styleable.TextElement_text))
                 } finally {
                     recycle()
                 }

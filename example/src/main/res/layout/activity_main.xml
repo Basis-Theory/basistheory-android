@@ -6,64 +6,70 @@
     android:layout_height="match_parent"
     tools:context="com.basistheory.example.MainActivity">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="20dp"
-        android:orientation="vertical">
-
-        <com.basistheory.android.TextElement
-            android:id="@+id/name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rounded_edit_text"
-            android:padding="5dp"
-            bt:hint="Name"
-            bt:removeUnderline="true"
-            bt:textColor="@color/purple_200" />
-
-        <com.basistheory.android.TextElement
-            android:id="@+id/phoneNumber"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/rounded_edit_text"
-            android:padding="5dp"
-            bt:hint="Phone Number"
-            bt:removeUnderline="true"
-            bt:textColor="@color/purple_200" />
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="20dp"
+            android:orientation="vertical">
 
-            <Button
-                android:id="@+id/tokenizeButton"
-                android:layout_width="wrap_content"
+            <com.basistheory.android.view.TextElement
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_edit_text"
+                android:padding="5dp"
+                bt:hint="Name"
+                bt:removeUnderline="true"
+                bt:textColor="@color/purple_200" />
+
+            <com.basistheory.android.view.TextElement
+                android:id="@+id/phoneNumber"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:onClick="submit"
-                android:text="Tokenize" />
+                android:background="@drawable/rounded_edit_text"
+                android:padding="5dp"
+                bt:hint="Phone Number"
+                bt:removeUnderline="true"
+                bt:textColor="@color/purple_200" />
 
-            <Button
-                android:id="@+id/setTextButton"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/tokenizeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:onClick="submit"
+                    android:text="Tokenize" />
+
+                <Button
+                    android:id="@+id/setTextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="20dp"
+                    android:onClick="setText"
+                    android:text="Set Text" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tokenizeResult"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:onClick="setText"
-                android:text="Set Text" />
+                android:fontFamily="monospace" />
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tokenizeResult"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:fontFamily="monospace" />
-
-    </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

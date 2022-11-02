@@ -17,7 +17,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 
 @RunWith(AndroidJUnit4::class)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING) // TODO: WAT??
+@FixMethodOrder(MethodSorters.NAME_ASCENDING) // TODO: why does order of these tests matter?
 class TextElementTests {
 
     @get:Rule

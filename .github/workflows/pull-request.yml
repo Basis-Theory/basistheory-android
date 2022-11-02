@@ -16,7 +16,7 @@ jobs:
         uses: ./.github/actions/setup-build-tools
         with:
           basis-theory-api-url: https://api-dev.basistheory.com
-          basis-theory-api-key: {{ secrets.BASIS_THEORY_API_KEY }}
+          basis-theory-api-key: ${{ secrets.BASIS_THEORY_API_KEY }}
 
       - name: Build modules
         run: ./gradlew build -x test
@@ -38,7 +38,7 @@ jobs:
         uses: ./.github/actions/setup-build-tools
         with:
           basis-theory-api-url: https://api-dev.basistheory.com
-          basis-theory-api-key: {{ secrets.BASIS_THEORY_API_KEY }}
+          basis-theory-api-key: ${{ secrets.BASIS_THEORY_API_KEY }}
 
       - name: Setup AVD cache
         uses: actions/cache@v3

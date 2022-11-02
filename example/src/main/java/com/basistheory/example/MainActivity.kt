@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
          * Note: java.time.Instant is only supported on API level 26+.
          * threetenbp is a backport of java.time for java 6/7 and Android API < 26
          */
-        var expirationTimestamp = Instant.now().plus(5, ChronoUnit.MINUTES).toString()
+        val expirationTimestamp = Instant.now().plus(5, ChronoUnit.MINUTES).toString()
 
         runBlocking {
             val tokenizeResponse = bt.tokenize(object {

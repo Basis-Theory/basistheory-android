@@ -1,44 +1,39 @@
 package com.basistheory.android.service
 
-import com.basistheory.Configuration
-import com.basistheory.TokenizeApi
+import com.basistheory.android.util.isPrimitiveType
+import com.basistheory.android.util.toMap
 import com.basistheory.android.view.TextElement
-import com.basistheory.auth.ApiKeyAuth
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class BasisTheoryElements(
-    private val apiUrl: String,
-    private val apiKey: String,
-    private val ioDispatcher: CoroutineDispatcher
+class BasisTheoryElements internal constructor(
+    private val apiClientProvider: ApiClientProvider,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
-    private val apiClient =
-        Configuration.getDefaultApiClient().also { client ->
-            client.basePath = apiUrl
 
-            (client.getAuthentication("ApiKey") as ApiKeyAuth).also { auth ->
-                auth.apiKey = apiKey
-            }
-        }
+    @JvmOverloads
+    suspend fun tokenize(body: Any, apiKeyOverride: String? = null): Any =
+        withContext(ioDispatcher) {
+            val tokenizeApiClient = apiClientProvider.getTokenizeApi(apiKeyOverride)
+            val request =
+                if (body::class.java.isPrimitiveType()) body
+                else if (body is TextElement) body.getText()?.toString() as Any
+                else replaceElementRefs(body.toMap())
 
-    suspend fun tokenize(body: Any): Any {
-        return withContext(ioDispatcher) {
-            val tokenizeApi = TokenizeApi(apiClient)
-            val requestMap = replaceElementRefs(toMap(body))
-            tokenizeApi.tokenize(requestMap)
+            tokenizeApiClient.tokenize(request)
         }
-    }
 
     private fun replaceElementRefs(map: MutableMap<String, Any?>): MutableMap<String, Any?> {
         for ((key, value) in map) {
             if (value == null) continue
             val fieldType = value::class.java
-            if (!fieldType.isPrimitive && fieldType != String::class.java) {
+            if (!fieldType.isPrimitiveType()) {
                 if (fieldType == TextElement::class.java) {
                     val element = value as TextElement
                     map[key] = element.getText()?.toString() as Any
                 } else {
-                    val children = toMap(value)
+                    val children = value.toMap()
                     map[key] = children
                     replaceElementRefs(children)
                 }
@@ -47,14 +42,6 @@ class BasisTheoryElements(
 
         return map
     }
-
-    private fun toMap(value: Any): MutableMap<String, Any?> =
-        value::class.java.declaredFields.associateBy(
-            { it.name },
-            {
-                it.isAccessible = true
-                it.get(value)
-            }).toMutableMap()
 
     companion object {
         @JvmStatic

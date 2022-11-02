@@ -23,9 +23,9 @@ class BasisTheoryElementsBuilder {
         return this
     }
 
-    fun build(): BasisTheoryElements {
-        requireNotNull(_apiKey)
-
-        return BasisTheoryElements(_apiUrl, _apiKey!!, _ioDispatcher)
-    }
+    fun build(): BasisTheoryElements =
+        BasisTheoryElements(
+            ApiClientProvider(_apiUrl, _apiKey),
+            _ioDispatcher
+        )
 }

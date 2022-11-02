@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup build tools
-        uses: .github/actions/setup-build-tools
+        uses: ./.github/actions/setup-build-tools
         with:
           basis-theory-api-url: https://api-dev.basistheory.com
           basis-theory-api-key: {{ secrets.BASIS_THEORY_API_KEY }}
@@ -35,7 +35,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup build tools
-        uses: .github/actions/setup-build-tools
+        uses: ./.github/actions/setup-build-tools
         with:
           basis-theory-api-url: https://api-dev.basistheory.com
           basis-theory-api-key: {{ secrets.BASIS_THEORY_API_KEY }}

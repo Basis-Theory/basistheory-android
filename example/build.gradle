@@ -59,8 +59,12 @@ dependencies {
 }
 
 String getLocalProperty(String name) {
-    def propFile = rootProject.file("./local.properties")
-    def properties = new Properties()
-    properties.load(new FileInputStream(propFile))
-    return properties[name]
+    try {
+        def propFile = rootProject.file("./local.properties")
+        def properties = new Properties()
+        properties.load(new FileInputStream(propFile))
+        return properties[name]
+    } catch (ignored) {
+        throw new Exception("Property $name is required in ./local.properties file")
+    }
 }

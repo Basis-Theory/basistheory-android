@@ -1,0 +1,22 @@
+name: 'Setup Prerequisites'
+description: 'Checks out source, configures the JDK, and prepares for Gradle tasks'
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Write local.properties file
+      run: |
+        echo BASIS_THEORY_API_URL=\"https://api-dev.basistheory.com\" > ./local.properties
+        echo BASIS_THEORY_API_KEY=\"${{ secrets.BASIS_THEORY_API_KEY }}\" >> ./local.properties
+
+    - name: Setup JDK version
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'adopt'
+        cache: 'gradle'
+
+    - name: Setup Gradle cache
+      uses: gradle/gradle-build-action@v2

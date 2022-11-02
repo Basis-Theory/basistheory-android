@@ -2,11 +2,18 @@ name: 'Setup build tools'
 description: 'Configures build variables, installs specific JDK version, and prepares for Gradle tasks'
 runs:
   using: "composite"
+  inputs:
+    basis-theory-api-url:
+      description: 'The Basis Theory API URL used within the example app'
+      required: true
+    basis-theory-api-key:
+      description: 'The Basis Theory API key used within the example app'
+      required: true
   steps:
     - name: Write local.properties file
       run: |
-        echo BASIS_THEORY_API_URL=\"https://api-dev.basistheory.com\" > ./local.properties
-        echo BASIS_THEORY_API_KEY=\"${{ secrets.BASIS_THEORY_API_KEY }}\" >> ./local.properties
+        echo BASIS_THEORY_API_URL=\"${{ inputs.basis-theory-api-url }}\" > ./local.properties
+        echo BASIS_THEORY_API_KEY=\"${{ inputs.basis-theory-api-key }}\" >> ./local.properties
 
     - name: Setup JDK version
       uses: actions/setup-java@v3

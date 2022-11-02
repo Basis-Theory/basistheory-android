@@ -1,11 +1,8 @@
-name: 'Setup Prerequisites'
-description: 'Checks out source, configures the JDK, and prepares for Gradle tasks'
+name: 'Setup build tools'
+description: 'Configures build variables, installs specific JDK version, and prepares for Gradle tasks'
 runs:
   using: "composite"
   steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-
     - name: Write local.properties file
       run: |
         echo BASIS_THEORY_API_URL=\"https://api-dev.basistheory.com\" > ./local.properties

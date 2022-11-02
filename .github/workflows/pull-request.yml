@@ -12,11 +12,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup build tools
-        uses: ./.github/actions/setup-build-tools
+      - name: Write local.properties file
+        run: |
+          echo BASIS_THEORY_API_URL=\"https://api-dev.basistheory.com\" > ./local.properties
+          echo BASIS_THEORY_API_KEY=\"${{ secrets.BASIS_THEORY_API_KEY }}\" >> ./local.properties
+
+      - name: Setup JDK version
+        uses: actions/setup-java@v3
         with:
-          basis-theory-api-url: https://api-dev.basistheory.com
-          basis-theory-api-key: ${{ secrets.BASIS_THEORY_API_KEY }}
+          java-version: '17'
+          distribution: 'adopt'
+          cache: 'gradle'
+
+      - name: Setup Gradle cache
+        uses: gradle/gradle-build-action@v2
 
       - name: Build modules
         run: ./gradlew build -x test
@@ -30,15 +39,25 @@ jobs:
     strategy:
       matrix:
         api-level: [29]
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup build tools
-        uses: ./.github/actions/setup-build-tools
+      - name: Write local.properties file
+        run: |
+          echo BASIS_THEORY_API_URL=\"https://api-dev.basistheory.com\" > ./local.properties
+          echo BASIS_THEORY_API_KEY=\"${{ secrets.BASIS_THEORY_API_KEY }}\" >> ./local.properties
+
+      - name: Setup JDK version
+        uses: actions/setup-java@v3
         with:
-          basis-theory-api-url: https://api-dev.basistheory.com
-          basis-theory-api-key: ${{ secrets.BASIS_THEORY_API_KEY }}
+          java-version: '17'
+          distribution: 'adopt'
+          cache: 'gradle'
+
+      - name: Setup Gradle cache
+        uses: gradle/gradle-build-action@v2
 
       - name: Setup AVD cache
         uses: actions/cache@v3

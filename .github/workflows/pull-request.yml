@@ -21,11 +21,11 @@ jobs:
       - name: Setup Gradle cache
         uses: gradle/gradle-build-action@v2
 
-      - name: Build modules
-        run: ./gradlew build -x test
+      - name: Build SDK
+        run: ./gradlew :lib:build -x :lib:test
 
       - name: Run unit tests
-        run: ./gradlew test
+        run: ./gradlew :lib:test
 
   acceptance:
     runs-on: macos-latest

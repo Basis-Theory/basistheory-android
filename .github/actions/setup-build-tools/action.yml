@@ -1,14 +1,16 @@
 name: 'Setup build tools'
 description: 'Configures build variables, installs specific JDK version, and prepares for Gradle tasks'
+
+inputs:
+  basis-theory-api-url:
+    description: 'The Basis Theory API URL used within the example app'
+    required: true
+  basis-theory-api-key:
+    description: 'The Basis Theory API key used within the example app'
+    required: true
+
 runs:
   using: "composite"
-  inputs:
-    basis-theory-api-url:
-      description: 'The Basis Theory API URL used within the example app'
-      required: true
-    basis-theory-api-key:
-      description: 'The Basis Theory API key used within the example app'
-      required: true
   steps:
     - name: Write local.properties file
       run: |

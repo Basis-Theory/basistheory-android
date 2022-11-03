@@ -1,13 +1,11 @@
 package com.basistheory.android.util
 
+import com.basistheory.android.view.TextElement
 import com.github.javafaker.Faker
 import org.junit.Test
 import strikt.api.expectCatching
 import strikt.api.expectThat
-import strikt.assertions.get
-import strikt.assertions.isA
-import strikt.assertions.isEqualTo
-import strikt.assertions.isFailure
+import strikt.assertions.*
 import java.time.Instant
 
 class ReflectionUtilsTests {
@@ -60,6 +58,49 @@ class ReflectionUtilsTests {
             get("name").isEqualTo(user.name)
             get("address").isEqualTo(user.address)
             get("birthday").isEqualTo(user.birthday)
+        }
+    }
+
+    @Test
+    fun `isPrimitiveType returns true for kotlin primitives`() {
+        val primitives = listOf(
+            String::class.java,
+            Int::class.java,
+            Double::class.java,
+            Boolean::class.java
+        )
+
+        primitives.forEach {
+            expectThat(it.isPrimitiveType()).isTrue()
+        }
+    }
+
+    @Test
+    fun `isPrimitiveType returns true for java primitives`() {
+        val primitives = listOf(
+            java.lang.String::class.java,
+            Integer::class.java,
+            java.lang.Double::class.java,
+            java.lang.Boolean::class.java
+        )
+
+        primitives.forEach {
+            expectThat(it.isPrimitiveType()).isTrue()
+        }
+    }
+
+    @Test
+    fun `isPrimitiveType returns false for non primitives`() {
+        val primitiveTypes = listOf(
+            Any::class.java,
+            java.lang.Object::class.java,
+            TextElement::class.java,
+            listOf<String>()::class.java,
+            mapOf<String, String>()::class.java
+        )
+
+        primitiveTypes.forEach {
+            expectThat(it.isPrimitiveType()).isFalse()
         }
     }
 }

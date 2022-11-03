@@ -23,7 +23,7 @@
                 android:background="@drawable/rounded_edit_text"
                 android:padding="5dp"
                 bt:hint="Name"
-                bt:removeUnderline="true"
+                bt:removeDefaultStyles="true"
                 bt:textColor="@color/purple_200" />
 
             <com.basistheory.android.view.TextElement
@@ -34,7 +34,7 @@
                 android:background="@drawable/rounded_edit_text"
                 android:padding="5dp"
                 bt:hint="Phone Number"
-                bt:removeUnderline="true"
+                bt:removeDefaultStyles="true"
                 bt:textColor="@color/purple_200" />
 
             <LinearLayout

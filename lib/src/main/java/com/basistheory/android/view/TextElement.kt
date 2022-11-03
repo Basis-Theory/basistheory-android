@@ -62,7 +62,7 @@ class TextElement : FrameLayout {
             input.hint = value
         }
 
-    var removeUnderline: Boolean
+    var removeDefaultStyles: Boolean
         get() = input.background == null
         set(value) { input.background = if (value) null else defaultBackground }
 
@@ -89,7 +89,7 @@ class TextElement : FrameLayout {
                 try {
                     textColor = getColor(R.styleable.TextElement_textColor, Color.BLACK)
                     hint = getString(R.styleable.TextElement_hint)
-                    removeUnderline = getBoolean(R.styleable.TextElement_removeUnderline, false)
+                    removeDefaultStyles = getBoolean(R.styleable.TextElement_removeDefaultStyles, false)
                     setText(getString(R.styleable.TextElement_text))
                 } finally {
                     recycle()

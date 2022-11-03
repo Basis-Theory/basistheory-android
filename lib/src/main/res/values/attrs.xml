@@ -4,6 +4,6 @@
         <attr name="textColor" format="reference|color" />
         <attr name="text" format="string" />
         <attr name="hint" format="string" />
-        <attr name="removeUnderline" format="boolean" />
+        <attr name="removeDefaultStyles" format="boolean" />
     </declare-styleable>
 </resources>

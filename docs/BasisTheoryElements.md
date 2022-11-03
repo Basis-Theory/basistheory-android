@@ -1,6 +1,6 @@
 # BasisTheoryElements
 
-This class contains functions to reference Elements within the Basis Theory API.
+This class contains functions to pass Element references when calling the Basis Theory API.
 
 ## Instantiation
 

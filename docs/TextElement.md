@@ -14,12 +14,12 @@ are supported.
 
 The following additional attributes are also supported:
 
-| Fields              | Type                     | Description                                                                                                                                                                                                                                      |
-|---------------------|--------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| text                | `string`                 | Sets the text value for the element. Note that a getter is not exposed on the TextElement to retrieve the underlying text value.                                                                                                                 |
-| textColor           | `reference`&vert;`color` | The text color. <br/>May be a reference to another resource, in the form "@[+][package:]type/name" or a theme attribute in the form "?[package:]type/name". <br/>May be a color value, in the form of "#rgb", "#argb", "#rrggbb", or "#aarrggbb" |
-| hint                | `string`                 | Placeholder text to display within the element.                                                                                                                                                                                                  |
-| removeDefaultStyles | `boolean`                | Removes the default Android styling on the underlying EditText.                                                                                                                                                                                  |
+| Fields              | Type                     | Description                                                                                                                                                                                                                                                |
+|---------------------|--------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| text                | `string`                 | Sets the text value for the element. Note that a getter is not exposed on the TextElement to retrieve the underlying text value.                                                                                                                           |
+| textColor           | `reference`&vert;`color` | The text color. <br/><br/>May be a reference to another resource, in the form "@[+][package:]type/name" or a theme attribute in the form "?[package:]type/name". <br/><br/>May be a color value, in the form of "#rgb", "#argb", "#rrggbb", or "#aarrggbb" |
+| hint                | `string`                 | Placeholder text to display within the element.                                                                                                                                                                                                            |
+| removeDefaultStyles | `boolean`                | Removes the default Android styling on the underlying EditText.                                                                                                                                                                                            |
 
 ## Basic Usage
 

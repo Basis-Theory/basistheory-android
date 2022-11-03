@@ -1,6 +1,6 @@
 # BasisTheoryElements
 
-This is a static class containing services available to be used with elements.
+This class contains functions to reference Elements within the Basis Theory API.
 
 ## Instantiation
 

@@ -10,11 +10,11 @@ Raised whenever the element's value is changed.
 
 ### Schema
 
-| Property | Description                                                                                 |
-|----------|---------------------------------------------------------------------------------------------|
-| complete | If the element value is well-formed and is ready to be submitted.                           |
-| empty    | Whether the element is empty.                                                               |
-| errors   | This an array of error objects that are emitted for any set validations. (Error object TBD) |
+| Property | Description                                                              |
+|----------|--------------------------------------------------------------------------|
+| complete | If the element value is well-formed and is ready to be submitted.        |
+| empty    | Whether the element is empty.                                            |
+| errors   | This an array of error objects that are emitted for any set validations. |
 
 ### Usage
 

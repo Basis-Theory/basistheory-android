@@ -1,22 +1,25 @@
 # TextElement
 
-The `basistheory-android` package contains the `TextElement` view, which wraps a native `EditText`.
+The `basistheory-android` SDK contains the `TextElement` view to collect text data within your app.
 This component allows you to fully customize the look and feel to match your brand, but it does 
 not allow direct access the underlying values entered by a user, keeping your mobile application 
 out of compliance scope.
 
 ## Supported XML Attributes
 
-In addition to the standard layout-related XML attributes supported by the native 
-[FrameLayout](https://developer.android.com/reference/android/widget/FrameLayout#xml-attributes) view, 
-the following attributes are supported:
+The `TextElement` extends the native [FrameLayout](https://developer.android.com/reference/android/widget/FrameLayout) 
+view, so all standard layout-related XML attributes supported by 
+[FrameLayout](https://developer.android.com/reference/android/widget/FrameLayout#xml-attributes) 
+are supported. 
 
-| Fields              | Type                   | Description                                                                                                                                                                                                                                 |
-|---------------------|------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| text                | `string`               | Sets the text value for the element. Note that a getter is not exposed on the TextElement to retrieve the underlying text value.                                                                                                            |
-| textColor           | `reference&vert;color` | The text color. \n May be a reference to another resource, in the form "@[+][package:]type/name" or a theme attribute in the form "?[package:]type/name". \nMay be a color value, in the form of "#rgb", "#argb", "#rrggbb", or "#aarrggbb" |
-| hint                | `string`               | Placeholder text to display within the element.                                                                                                                                                                                             |
-| removeDefaultStyles | `boolean`              | Removes the default Android styling on the underlying EditText.                                                                                                                                                                             |
+The following additional attributes are also supported:
+
+| Fields              | Type                     | Description                                                                                                                                                                                                                                      |
+|---------------------|--------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| text                | `string`                 | Sets the text value for the element. Note that a getter is not exposed on the TextElement to retrieve the underlying text value.                                                                                                                 |
+| textColor           | `reference`&vert;`color` | The text color. <br/>May be a reference to another resource, in the form "@[+][package:]type/name" or a theme attribute in the form "?[package:]type/name". <br/>May be a color value, in the form of "#rgb", "#argb", "#rrggbb", or "#aarrggbb" |
+| hint                | `string`                 | Placeholder text to display within the element.                                                                                                                                                                                                  |
+| removeDefaultStyles | `boolean`                | Removes the default Android styling on the underlying EditText.                                                                                                                                                                                  |
 
 ## Basic Usage
 

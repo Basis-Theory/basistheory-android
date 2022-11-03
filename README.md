@@ -1,15 +1,15 @@
 # Basis Theory Android SDK
 
 The [Basis Theory](https://basistheory.com) Android SDK makes it easy to securely collect sensitive 
-data within your Android applications, while keeping your mobile app out of compliance scope. 
+data within your Android applications while keeping your mobile app out of compliance scope. 
 [Elements](https://docs.basistheory.com/elements) are secure inputs that enable you to collect
-sensitive data within your app and have the raw data automatically tokenized and secured within
-Basis Theory’s certified vault.
+sensitive data within your app and securely store this data within Basis Theory’s certified 
+token vault.
 
-Sensitive data entered by your end users into Elements will be indirectly referenced within API
-calls, without needing to directly marshall or access the raw sensitive data. Your application code
-will only receive access to the created tokens, which can safely be sent to your backend systems 
-and persisted for later use.
+Sensitive data entered by your end users into Elements can be indirectly referenced within API
+calls, enabling you to tokenize this data without needing to directly marshall or access the raw
+sensitive data. Your application code will only receive access to the created tokens, which can 
+safely be sent to your backend systems and persisted for later use.
 
 Get started with our [integration guides](https://developers.basistheory.com/) or browse the 
 [SDK docs](https://docs.basistheory.com/elements).

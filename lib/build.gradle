@@ -1,0 +1,57 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace 'com.basistheory.android'
+    compileSdk 32
+
+    defaultConfig {
+        minSdk 21
+        targetSdk 32
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+            all {
+                testLogging {
+                    events "passed", "skipped", "failed"
+                    exceptionFormat "full"
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'com.github.basis-theory:basistheory-java:fix-dependency-resolution-SNAPSHOT'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.robolectric:robolectric:4.8'
+    testImplementation 'io.strikt:strikt-core:0.34.0'
+    testImplementation 'com.github.javafaker:javafaker:1.0.2'
+    testImplementation 'io.mockk:mockk:1.13.2'
+}

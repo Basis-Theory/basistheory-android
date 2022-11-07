@@ -51,7 +51,7 @@ dependencies {
     implementation 'com.github.basis-theory:basistheory-java:fix-dependency-resolution-SNAPSHOT'
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.robolectric:robolectric:4.8'
-    testImplementation 'io.strikt:strikt-core:0.34.0'
+    testImplementation 'io.strikt:strikt-core:0.34.1'
     testImplementation 'com.github.javafaker:javafaker:1.0.2'
     testImplementation 'io.mockk:mockk:1.13.2'
 }

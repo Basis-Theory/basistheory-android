@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'maven-publish'
 }
 
 android {
@@ -10,6 +11,7 @@ android {
     defaultConfig {
         minSdk 21
         targetSdk 32
+        versionName = '0.1.0' // required to publishToMavenLocal
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -36,6 +38,24 @@ android {
                     events "passed", "skipped", "failed"
                     exceptionFormat "full"
                 }
+            }
+        }
+    }
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+}
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId 'com.basistheory'
+                artifactId 'basistheory-android'
+                version = android.defaultConfig.versionName
             }
         }
     }

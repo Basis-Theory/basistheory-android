@@ -50,8 +50,8 @@ val nameElement = findViewById(R.id.name)
 val phoneNumberElement = findViewById(R.id.phoneNumber)
 
 val bt = BasisTheoryElements.builder()
-    .apiUrl(BuildConfig.BASIS_THEORY_API_URL)
-    .apiKey(BuildConfig.BASIS_THEORY_API_KEY)
+    .apiUrl(BuildConfig.basisTheoryApiUrl)
+    .apiKey(BuildConfig.basisTheoryApiKey)
     .build()
 
 runBlocking {

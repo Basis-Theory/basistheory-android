@@ -19,13 +19,25 @@ export PATH=~/Library/Android/sdk/platform-tools:$PATH
 
 ### Set Build Configuration
 
-Copy the `./local.properties.example` file to `./local.properties` and replace the values:
+The following properties are required at build time
+- `com.basistheory.android.example.apiUrl`: Either the dev (default) or production Basis Theory API URL
+- `com.basistheory.android.example.apiKey`: A Basis Theory API key with `token:create` permission on at least the `/general/` container
 
-- `BASIS_THEORY_API_URL`: Either the dev or production Basis Theory API URL
-- `BASIS_THEORY_API_KEY`: A Basis Theory API key with `token:create` permission on at least the `/general/` container
+These properties can be set in many ways, in order of priority (see [this reference](https://tomgregory.com/gradle-project-properties-best-practices/#Why_do_we_need_project_properties_in_a_Gradle_build)):
+1. Within the `./local.properties` file (this is specific to our setup)
+2. Gradle command line args provided with `-P`
+3. Java system properties using `-D`
+4. Environment variables specified with the `ORG_GRADLE_PROJECT_` prefix
+5. User specific `gradle.properties` file at `~/.gradle/gradle.properties`
+6. Module level `gradle.properties` files in the root of a submodule
+7. Root level `./gradle.properties` file in the root of a repository
 
-This will inject these configuration settings at build time into the example app. These settings 
-be available through the `BuildConfig` class within the app code.
+It is recommended that you define these properties within the `./local.properties` file for 
+local development by copying the `./local.properties.example` file to `./local.properties` and
+setting the desired values.
+
+These properties will be injected at build time into the example app and wil be accessible through 
+the `BuildConfig` class within the `example` module.
 
 ### Build the SDK and Install Dependencies
 

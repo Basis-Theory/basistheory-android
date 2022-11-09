@@ -1,3 +1,10 @@
+# Local overrides to Gradle settings.
+
+# sdk.dir is required if you do not export the ANDROID_HOME environment variable
 sdk.dir=/Users/[replace]/Library/Android/sdk
-BASIS_THEORY_API_URL="[replace]"
-BASIS_THEORY_API_KEY="[replace]"
+
+# the following properties are compiled into the BuildConfig source file
+# [optional] defaults to https://api-dev.basistheory.com in ./example/gradle.properties
+# com.basistheory.android.example.apiUrl=[replace]
+# [required] A Basis Theory API key with `token:create` permission on at least the `/general/` container
+com.basistheory.android.example.apiKey=[replace]

@@ -1,4 +1,4 @@
-package com.basistheory.example
+package com.basistheory.android.example
 
 import android.os.Bundle
 import android.view.View
@@ -52,8 +52,8 @@ class MainActivity : AppCompatActivity() {
         assert(button.id == R.id.tokenizeButton)
 
         val bt = BasisTheoryElements.builder()
-            .apiUrl(BuildConfig.BASIS_THEORY_API_URL)
-            .apiKey(BuildConfig.BASIS_THEORY_API_KEY)
+            .apiUrl(BuildConfig.basisTheoryApiUrl)
+            .apiKey(BuildConfig.basisTheoryApiKey)
             .build()
 
         /**

@@ -4,3 +4,7 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    ignore:
+      # strikt 0.34.1 introduced breaking changes to .isNotNull()
+      - dependency-name: "io.strikt:strikt-core"
+        versions: ["0.34.1"]

@@ -1,4 +1,4 @@
-package com.basistheory.example
+package com.basistheory.android.example
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click

@@ -1,4 +1,4 @@
-package com.basistheory.example
+package com.basistheory.android.example
 
 import android.os.Bundle
 import android.view.View

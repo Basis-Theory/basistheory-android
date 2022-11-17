@@ -30,10 +30,11 @@ jobs:
           git config --local user.name "github-actions[bot]"
 
           sed -i "s/\(versionName = \)'[^']*'/\1'${{ steps.tag-version.outputs.new_tag }}'/g" lib/build.gradle
+          sed -i "s/\(lib:\)[^']*'/\1${{ steps.tag-version.outputs.new_tag }}'/g" README.md
 
           echo "${{ steps.tag-version.outputs.changelog }}" | cat - CHANGELOG.md > temp && mv temp CHANGELOG.md
 
-          git add CHANGELOG.md lib/build.gradle
+          git add CHANGELOG.md README.md lib/build.gradle
           git commit -m "chore(release): updating version and changelog ${{ steps.tag-version.outputs.new_tag }} [skip ci]" || echo "Nothing to update"
 
       - name: Push changes

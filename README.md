@@ -31,7 +31,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-      implementation 'com.github.basis-theory:basistheory-android:master-SNAPSHOT'
+      implementation 'com.github.basis-theory.basistheory-android:lib:0.1.0'
   }
 ```
 

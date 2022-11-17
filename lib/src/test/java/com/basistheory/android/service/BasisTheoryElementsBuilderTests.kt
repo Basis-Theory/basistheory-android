@@ -3,20 +3,16 @@ package com.basistheory.android.service
 import kotlinx.coroutines.Dispatchers
 import org.junit.Test
 import strikt.api.expectThat
-import strikt.assertions.isNotEqualTo
+import strikt.assertions.isA
 
-/**
- * Note: strikt has an open issue where isNotNull does not resolve properly
- * https://github.com/robfletcher/strikt/issues/260
- */
 class BasisTheoryElementsBuilderTests {
 
     @Test
-    fun `can build default instance`() {
+    fun `can build default instance without using any setters`() {
         val bt = BasisTheoryElements.builder()
             .build()
 
-        expectThat(bt).isNotEqualTo(null)
+        expectThat(bt).isA<BasisTheoryElements>()
     }
 
     @Test
@@ -27,7 +23,6 @@ class BasisTheoryElementsBuilderTests {
             .ioDispatcher(Dispatchers.Unconfined)
             .build()
 
-        expectThat(bt).isNotEqualTo(null)
+        expectThat(bt).isA<BasisTheoryElements>()
     }
-
 }

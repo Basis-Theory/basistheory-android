@@ -36,7 +36,7 @@ It is recommended that you define these properties within the `./local.propertie
 local development by copying the `./local.properties.example` file to `./local.properties` and
 setting the desired values.
 
-These properties will be injected at build time into the example app and wil be accessible through 
+These properties will be injected at build time into the example app and will be accessible through 
 the `BuildConfig` class within the `example` module.
 
 ### Build the SDK and Install Dependencies

@@ -14,8 +14,8 @@ android {
         versionCode 1
         versionName "1.0"
 
-        buildConfigField 'String', 'basisTheoryApiUrl', tryFindProperty('com.basistheory.android.example.apiUrl')
-        buildConfigField 'String', 'basisTheoryApiKey', tryFindProperty('com.basistheory.android.example.apiKey')
+        buildConfigField 'String', 'BASIS_THEORY_API_URL', tryFindProperty('com.basistheory.android.example.apiUrl')
+        buildConfigField 'String', 'BASIS_THEORY_API_KEY', tryFindProperty('com.basistheory.android.example.apiKey')
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

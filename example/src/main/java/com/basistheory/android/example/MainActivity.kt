@@ -52,8 +52,8 @@ class MainActivity : AppCompatActivity() {
         assert(button.id == R.id.tokenizeButton)
 
         val bt = BasisTheoryElements.builder()
-            .apiUrl(BuildConfig.basisTheoryApiUrl)
-            .apiKey(BuildConfig.basisTheoryApiKey)
+            .apiUrl(BuildConfig.BASIS_THEORY_API_URL)
+            .apiKey(BuildConfig.BASIS_THEORY_API_KEY)
             .build()
 
         /**

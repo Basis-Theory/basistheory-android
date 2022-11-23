@@ -2,7 +2,6 @@ package com.basistheory.android.view
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.Rect
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
@@ -17,6 +16,7 @@ import com.basistheory.android.event.BlurEvent
 import com.basistheory.android.event.ChangeEvent
 import com.basistheory.android.event.ElementEventListeners
 import com.basistheory.android.event.FocusEvent
+import com.basistheory.android.view.transform.ElementTransform
 
 class TextElement : FrameLayout {
     private var attrs: AttributeSet? = null
@@ -47,10 +47,14 @@ class TextElement : FrameLayout {
     }
 
     // this MUST be internal to prevent host apps from accessing the raw input values
-    internal fun getText(): Editable? = input.text
+    internal fun getText(): String? =
+        transform.apply(input.text?.toString())
 
     fun setText(value: String?) =
         input.setText(value)
+
+    var transform: ElementTransform =
+        ElementTransform()
 
     var textColor: Int
         get() = input.currentTextColor

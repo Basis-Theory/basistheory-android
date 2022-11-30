@@ -6,5 +6,10 @@
         <attr name="hint" format="string" />
         <attr name="removeDefaultStyles" format="boolean" />
         <attr name="mask" format="string" />
+        <attr name="keyboardType" format="enum">
+            <enum name="text" value="1" />
+            <enum name="number" value="2" />
+            <enum name="datetime" value="4" />
+        </attr>
     </declare-styleable>
 </resources>

@@ -2,6 +2,7 @@ package com.basistheory.android.view.mask
 
 
 import org.junit.Test
+import strikt.api.expect
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
 
@@ -83,6 +84,26 @@ class MaskTests {
         val mask = Mask(maskPattern)
 
         expectThat(mask.apply("e2e2e", Action.INSERT).maskedValue).isEqualTo("e-2-e-2-e")
+    }
+
+    @Test
+    fun `setting invalid characters ignores all invalid characters until the next valid char`() {
+        val digitRegex = Regex("""\d""")
+        val charRegex = Regex("""[A-Za-z]""")
+        val maskPattern = listOf(
+            charRegex,
+            "-",
+            digitRegex,
+            "-",
+            charRegex
+        )
+        val mask = Mask(maskPattern)
+
+        expect {
+            that(mask.apply("eee23dd", Action.INSERT).maskedValue).isEqualTo("e-2-d")
+            that(mask.apply("eee23234", Action.INSERT).maskedValue).isEqualTo("e-2-")
+            that(mask.apply("easdfasdf", Action.INSERT).maskedValue).isEqualTo("e-")
+        }
     }
 
     @Test

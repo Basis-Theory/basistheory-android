@@ -3,7 +3,6 @@ package com.basistheory.android.view
 import android.content.Context
 import android.graphics.Color
 import android.text.Editable
-import android.text.InputType.TYPE_CLASS_NUMBER
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View.OnFocusChangeListener
@@ -12,12 +11,12 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatEditText
-import com.basistheory.android.*
+import com.basistheory.android.R
 import com.basistheory.android.event.BlurEvent
 import com.basistheory.android.event.ChangeEvent
 import com.basistheory.android.event.ElementEventListeners
 import com.basistheory.android.event.FocusEvent
-import com.basistheory.android.view.mask.*
+import com.basistheory.android.view.mask.MaskWatcher
 import com.basistheory.android.view.transform.ElementTransform
 
 class TextElement : FrameLayout {
@@ -69,15 +68,15 @@ class TextElement : FrameLayout {
             input.hint = value
         }
 
-    val isMaskComplete: Boolean?
-        get() = maskWatcher?.isDone
-
-    val isMaskTouched: Boolean?
-        get() = maskWatcher?.isDirty
+    var keyboardType: KeyboardType
+        get() = KeyboardType.fromInt(input.inputType)
+        set(value) {
+            input.inputType = value.inputType
+        }
 
     var mask: List<Any>? = null
         set(value) {
-            addMask(value)
+            if (value.isNullOrEmpty()) removeMask() else addMask(value)
         }
 
     var removeDefaultStyles: Boolean
@@ -109,6 +108,7 @@ class TextElement : FrameLayout {
                     removeDefaultStyles =
                         getBoolean(R.styleable.TextElement_removeDefaultStyles, false)
                     mask = getString(R.styleable.TextElement_mask)?.split("")
+                    keyboardType = KeyboardType.fromInt(getInt(R.styleable.TextElement_keyboardType, KeyboardType.TEXT.inputType))
                     setText(getString(R.styleable.TextElement_text))
                 } finally {
                     recycle()
@@ -125,16 +125,14 @@ class TextElement : FrameLayout {
         subscribeToInputEvents()
     }
 
-    private fun addMask(mask: List<Any>?) {
-        if (!mask.isNullOrEmpty()) {
-            maskWatcher = MaskWatcher(mask)
+    private fun addMask(mask: List<Any>) {
+        maskWatcher = MaskWatcher(mask)
+        input.addTextChangedListener(maskWatcher)
+    }
 
-            if (maskWatcher != null) {
-                input.inputType = TYPE_CLASS_NUMBER // temporarily hardcoding when there's a mask
-                input.addTextChangedListener(maskWatcher);
-            }
-        }
-
+    private fun removeMask() {
+        input.removeTextChangedListener(maskWatcher)
+        maskWatcher = null
     }
 
     private fun subscribeToInputEvents() {

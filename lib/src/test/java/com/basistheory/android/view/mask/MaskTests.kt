@@ -1,0 +1,95 @@
+package com.basistheory.android.view.mask
+
+
+import org.junit.Test
+import strikt.api.expectThat
+import strikt.assertions.isEqualTo
+
+class MaskTests {
+    @Test
+    fun `masks are applied correctly`() {
+        val digitRegex = Regex("""\d""")
+        val maskPattern = listOf(
+            "+",
+            "1",
+            "(",
+            digitRegex,
+            digitRegex,
+            digitRegex,
+            ")",
+            " ",
+            digitRegex,
+            digitRegex,
+            digitRegex,
+            "-",
+            digitRegex,
+            digitRegex,
+            digitRegex,
+            digitRegex
+        )
+        val mask = Mask(maskPattern)
+
+        val maskResult = mask.apply(
+            "2345678900",
+            Action.INSERT
+        )
+
+        expectThat(
+            maskResult.maskedValue
+        ).isEqualTo("+1(234) 567-8900")
+        expectThat(
+            maskResult.unMaskedValue
+        ).isEqualTo("2345678900")
+        expectThat(
+            maskResult.isDone
+        ).isEqualTo(true)
+    }
+
+
+    @Test
+    fun `mask is marked as done only when completed`() {
+        val digitRegex = Regex("""\d""")
+        val maskPattern = listOf(
+            digitRegex,
+            digitRegex
+        )
+        val mask = Mask(maskPattern)
+
+        val maskResult = mask.apply(
+            "2",
+            Action.INSERT
+        )
+
+        expectThat(
+            maskResult.isDone
+        ).isEqualTo(false)
+    }
+
+    @Test
+    fun `mask with regular expressions is applied correctly`() {
+        val digitRegex = Regex("""\d""")
+        val charRegex = Regex("""[A-Za-z]""")
+        val maskPattern = listOf(
+            charRegex,
+            "-",
+            digitRegex,
+            "-",
+            charRegex,
+            "-",
+            digitRegex,
+            "-",
+            charRegex,
+        )
+        val mask = Mask(maskPattern)
+
+        expectThat(mask.apply("e2e2e", Action.INSERT).maskedValue).isEqualTo("e-2-e-2-e")
+    }
+
+    @Test
+    fun `mask with string placeholders is applied correctly`() {
+        val maskPattern = listOf("#", "#", "#", "-", "#", "#", "-", "#", "#", "#", "#")
+        val mask = Mask(maskPattern)
+
+        expectThat(mask.apply("123456789", Action.INSERT).maskedValue).isEqualTo("123-45-6789")
+    }
+}

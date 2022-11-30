@@ -14,6 +14,7 @@ import org.threeten.bp.temporal.ChronoUnit
 class MainActivity : AppCompatActivity() {
     private lateinit var nameElement: TextElement
     private lateinit var phoneNumberElement: TextElement
+    private lateinit var socialSecurityNumberElement: TextElement
     private lateinit var tokenizeResult: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,7 +22,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         nameElement = findViewById(R.id.name)
+
         phoneNumberElement = findViewById(R.id.phoneNumber)
+        val digitRegex = Regex("""\d""")
+        val maskPattern = listOf("+", "1", "(", digitRegex,digitRegex,digitRegex, ")", " ", digitRegex, digitRegex, digitRegex, "-", digitRegex, digitRegex , digitRegex, digitRegex )
+        phoneNumberElement.mask = maskPattern
+
+        socialSecurityNumberElement = findViewById(R.id.socialSecurityNumber)
+
         tokenizeResult = findViewById(R.id.tokenizeResult)
 
         subscribeToEvents()
@@ -45,7 +53,8 @@ class MainActivity : AppCompatActivity() {
         assert(button.id == R.id.setTextButton)
 
         nameElement.setText("Manually Set Name")
-        phoneNumberElement.setText("Manually Set Phone")
+        phoneNumberElement.setText("2345678900")
+        socialSecurityNumberElement.setText("234567890")
     }
 
     fun submit(button: View) {
@@ -69,6 +78,7 @@ class MainActivity : AppCompatActivity() {
                     val myProp = "My Value"
                     val name = nameElement
                     val phoneNumber = phoneNumberElement
+                    val socialSecurityNumber = socialSecurityNumberElement
                 }
                 val expires_at = expirationTimestamp
             })

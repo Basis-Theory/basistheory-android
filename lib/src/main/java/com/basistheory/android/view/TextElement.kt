@@ -3,6 +3,7 @@ package com.basistheory.android.view
 import android.content.Context
 import android.graphics.Color
 import android.text.Editable
+import android.text.InputType.TYPE_CLASS_NUMBER
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View.OnFocusChangeListener
@@ -16,6 +17,7 @@ import com.basistheory.android.event.BlurEvent
 import com.basistheory.android.event.ChangeEvent
 import com.basistheory.android.event.ElementEventListeners
 import com.basistheory.android.event.FocusEvent
+import com.basistheory.android.view.mask.*
 import com.basistheory.android.view.transform.ElementTransform
 
 class TextElement : FrameLayout {
@@ -24,6 +26,7 @@ class TextElement : FrameLayout {
     private var input: AppCompatEditText = AppCompatEditText(context, attrs, defStyleAttr)
     private var defaultBackground = input.background // todo: find a better way to reference this
     private val eventListeners = ElementEventListeners()
+    private var maskWatcher: MaskWatcher? = null
 
     constructor(context: Context) : super(context) {
         initialize()
@@ -66,6 +69,17 @@ class TextElement : FrameLayout {
             input.hint = value
         }
 
+    val isMaskComplete: Boolean?
+        get() = maskWatcher?.isDone
+
+    val isMaskTouched: Boolean?
+        get() = maskWatcher?.isDirty
+
+    var mask: List<Any>? = null
+        set(value) {
+            addMask(value)
+        }
+
     var removeDefaultStyles: Boolean
         get() = input.background == null
         set(value) { input.background = if (value) null else defaultBackground }
@@ -86,14 +100,15 @@ class TextElement : FrameLayout {
         return input.onCreateInputConnection(outAttrs)
     }
 
-
     private fun initialize() {
         context.theme.obtainStyledAttributes(attrs, R.styleable.TextElement, defStyleAttr, 0)
             .apply {
                 try {
                     textColor = getColor(R.styleable.TextElement_textColor, Color.BLACK)
                     hint = getString(R.styleable.TextElement_hint)
-                    removeDefaultStyles = getBoolean(R.styleable.TextElement_removeDefaultStyles, false)
+                    removeDefaultStyles =
+                        getBoolean(R.styleable.TextElement_removeDefaultStyles, false)
+                    mask = getString(R.styleable.TextElement_mask)?.split("")
                     setText(getString(R.styleable.TextElement_text))
                 } finally {
                     recycle()
@@ -110,7 +125,21 @@ class TextElement : FrameLayout {
         subscribeToInputEvents()
     }
 
+    private fun addMask(mask: List<Any>?) {
+        if (!mask.isNullOrEmpty()) {
+            maskWatcher = MaskWatcher(mask)
+
+            if (maskWatcher != null) {
+                input.inputType = TYPE_CLASS_NUMBER // temporarily hardcoding when there's a mask
+                input.addTextChangedListener(maskWatcher);
+            }
+        }
+
+    }
+
     private fun subscribeToInputEvents() {
+        mask?.let { addMask(it) }
+
         input.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(value: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 

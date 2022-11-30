@@ -27,19 +27,29 @@ class TextElementTests {
     fun canSetText() {
         onView(withId(R.id.setTextButton)).perform(click())
         onView(withText("Manually Set Name")).check(matches(isDisplayed()))
-        onView(withText("Manually Set Phone")).check(matches(isDisplayed()))
+        onView(withText("+1(234) 567-8900")).check(matches(isDisplayed()))
+        onView(withText("234-56-7890")).check(matches(isDisplayed()))
     }
 
     @Test
     fun canTokenize() {
         val name = Faker().name().fullName()
-        val phoneNumber = Faker().phoneNumber().phoneNumber()
+        val phoneNumber = "2345678900" // "+1(234) 567-8900"
+        val ssn = "123456789"// "123-45-6789"
 
         onView(withId(R.id.name)).perform(typeText(name))
         onView(withId(R.id.phoneNumber)).perform(typeText(phoneNumber))
+        onView(withId(R.id.socialSecurityNumber)).perform(typeText(ssn))
         onView(withText(name)).check(matches(isDisplayed()))
         onView(withId(R.id.tokenizeButton)).perform(click())
-        onView(allOf(withId(R.id.tokenizeResult), withSubstring(name), withSubstring(phoneNumber)))
+        onView(
+            allOf(
+                withId(R.id.tokenizeResult),
+                withSubstring(name),
+                withSubstring("+1(234) 567-8900"),
+                withSubstring("123-45-6789")
+            )
+        )
             .check(matches(isDisplayed()))
     }
 }

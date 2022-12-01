@@ -6,6 +6,7 @@ import org.junit.Test
 import strikt.api.expect
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
+import strikt.assertions.isTrue
 
 class MaskTests {
     @Test
@@ -36,15 +37,11 @@ class MaskTests {
             Action.INSERT
         )
 
-        expectThat(
-            maskResult.maskedValue
-        ).isEqualTo("+1(234) 567-8900")
-        expectThat(
-            maskResult.unMaskedValue
-        ).isEqualTo("2345678900")
-        expectThat(
-            maskResult.isDone
-        ).isEqualTo(true)
+        expectThat(maskResult) {
+            get { maskedValue }.isEqualTo("+1(234) 567-8900")
+            get { unMaskedValue }.isEqualTo("2345678900")
+            get { isComplete }.isTrue()
+        }
     }
 
 

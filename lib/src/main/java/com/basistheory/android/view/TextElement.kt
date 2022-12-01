@@ -107,7 +107,7 @@ class TextElement : FrameLayout {
                     hint = getString(R.styleable.TextElement_hint)
                     removeDefaultStyles =
                         getBoolean(R.styleable.TextElement_removeDefaultStyles, false)
-                    mask = getString(R.styleable.TextElement_mask)?.split("")
+                    mask = getString(R.styleable.TextElement_mask)?.split("")?.filter { !it.isNullOrEmpty() }
                     keyboardType = KeyboardType.fromInt(getInt(R.styleable.TextElement_keyboardType, KeyboardType.TEXT.inputType))
                     setText(getString(R.styleable.TextElement_text))
                 } finally {

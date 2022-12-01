@@ -5,8 +5,7 @@ import android.text.Editable
 internal data class MaskResult(
     val maskedValue: String,
     val unMaskedValue: String,
-    val isDone: Boolean,
-    val isDirty: Boolean
+    val isComplete: Boolean
 ) {
     internal fun apply(text: Editable) {
         val filters = text.filters

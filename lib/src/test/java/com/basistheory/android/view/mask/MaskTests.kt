@@ -63,7 +63,7 @@ class MaskTests {
         )
 
         expectThat(
-            maskResult.isDone
+            maskResult.isComplete
         ).isEqualTo(false)
     }
 

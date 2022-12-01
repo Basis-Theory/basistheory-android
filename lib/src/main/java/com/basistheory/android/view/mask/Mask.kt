@@ -41,8 +41,7 @@ internal class Mask(
 
         var maskedText = maskedValue.joinToString("")
         var unMaskedText = unMaskedValue.joinToString("")
-        val isDirty = unMaskedText.isNotEmpty()
-        val isDone = maskedText.length == maskPattern.length && !maskedText.contains(placeholder)
+        val isComplete = maskedText.length == maskPattern.length && !maskedText.contains(placeholder)
 
         if (maskPattern.startsWith(maskedText)) {
             maskedText = ""
@@ -50,7 +49,7 @@ internal class Mask(
         }
 
         return MaskResult(
-            maskedText, unMaskedText, isDone, isDirty
+            maskedText, unMaskedText, isComplete
         )
     }
 

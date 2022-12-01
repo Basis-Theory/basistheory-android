@@ -15,11 +15,8 @@ internal class MaskWatcher(mask: List<Any>) : TextWatcher {
     val unMaskedValue: String
         get() = result?.unMaskedValue.orEmpty()
 
-    val isDone: Boolean
-        get() = result?.isDone ?: false
-
-    val isDirty: Boolean
-        get() = result?.isDirty ?: false
+    val isComplete: Boolean
+        get() = result?.isComplete ?: false
 
     override fun afterTextChanged(editable: Editable?) {
         if (selfChange || editable.isNullOrEmpty()) return

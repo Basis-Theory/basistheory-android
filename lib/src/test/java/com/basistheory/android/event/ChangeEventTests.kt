@@ -10,7 +10,6 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.android.controller.ActivityController
 import strikt.api.expectThat
 import strikt.assertions.hasSize
-import strikt.assertions.isEmpty
 import strikt.assertions.isFalse
 import strikt.assertions.isTrue
 
@@ -54,9 +53,9 @@ class ChangeEventTests {
         textElement.setText(null)
 
         expectThat(changeEvents).hasSize(3).and {
-            get { elementAt(0).empty }.isFalse()
-            get { elementAt(1).empty }.isTrue()
-            get { elementAt(2).empty }.isTrue()
+            get { elementAt(0).isEmpty }.isFalse()
+            get { elementAt(1).isEmpty }.isTrue()
+            get { elementAt(2).isEmpty }.isTrue()
         }
     }
 

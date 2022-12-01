@@ -1,7 +1,7 @@
 package com.basistheory.android.view
 
 import android.app.Activity
-import com.basistheory.android.view.transform.RegexReplaceElementTransform
+import com.basistheory.android.view.transform.regexReplaceElementTransform
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -22,7 +22,7 @@ class TextElementTests {
 
     @Test
     fun `can set value to null`() {
-        textElement.transform = RegexReplaceElementTransform(Regex("[\\s]"))
+        textElement.transform = regexReplaceElementTransform(Regex("[\\s]"))
 
         textElement.setText(null)
         expectThat(textElement.getText()).isEqualTo("") // note: EditText transforms nulls to ""
@@ -33,7 +33,7 @@ class TextElementTests {
 
     @Test
     fun `can apply transform`() {
-        textElement.transform = RegexReplaceElementTransform(Regex("[()\\-\\s]"))
+        textElement.transform = regexReplaceElementTransform(Regex("[()\\-\\s]"))
         textElement.setText("(123) 456-7890")
 
         expectThat(textElement.getText()).isEqualTo("1234567890")
@@ -41,15 +41,15 @@ class TextElementTests {
 
     @Test
     fun `transform can be updated and text is transformed just in time`() {
-        textElement.transform = RegexReplaceElementTransform(Regex("[^\\d]"))
+        textElement.transform = regexReplaceElementTransform(Regex("[^\\d]"))
         textElement.setText("(1")
         expectThat(textElement.getText()).isEqualTo("1")
 
-        textElement.transform = RegexReplaceElementTransform(Regex("[()\\s2]"))
+        textElement.transform = regexReplaceElementTransform(Regex("[()\\s2]"))
         textElement.setText("(123) 4")
         expectThat(textElement.getText()).isEqualTo("134")
 
-        textElement.transform = RegexReplaceElementTransform(Regex("[()]"))
+        textElement.transform = regexReplaceElementTransform(Regex("[()]"))
         textElement.setText("(123) 456-7890")
         expectThat(textElement.getText()).isEqualTo("123 456-7890")
     }

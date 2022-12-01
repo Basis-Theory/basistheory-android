@@ -1,10 +1,12 @@
 package com.basistheory.android.example
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.basistheory.android.service.BasisTheoryElements
+import com.basistheory.android.view.CardNumberElement
 import com.basistheory.android.view.KeyboardType
 import com.basistheory.android.view.TextElement
 import com.google.gson.GsonBuilder
@@ -13,6 +15,7 @@ import org.threeten.bp.Instant
 import org.threeten.bp.temporal.ChronoUnit
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var cardNumberElement: CardNumberElement
     private lateinit var nameElement: TextElement
     private lateinit var phoneNumberElement: TextElement
     private lateinit var socialSecurityNumberElement: TextElement
@@ -23,6 +26,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        cardNumberElement = findViewById(R.id.cardNumber)
         nameElement = findViewById(R.id.name)
         phoneNumberElement = findViewById(R.id.phoneNumber)
         socialSecurityNumberElement = findViewById(R.id.socialSecurityNumber)
@@ -36,6 +40,13 @@ class MainActivity : AppCompatActivity() {
         phoneNumberElement.mask = listOf("+", "1", "(", digitRegex,digitRegex,digitRegex, ")", " ", digitRegex, digitRegex, digitRegex, "-", digitRegex, digitRegex , digitRegex, digitRegex )
 
         orderNumberElement.mask = listOf(charRegex, charRegex, charRegex, "-", digitRegex, digitRegex, digitRegex)
+
+        cardNumberElement.addChangeEventListener {
+            if (it.isValid)
+                cardNumberElement.textColor = Color.BLACK
+            else
+                cardNumberElement.textColor = Color.RED
+        }
     }
 
     fun setText(button: View) {

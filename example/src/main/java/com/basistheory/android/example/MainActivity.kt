@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.basistheory.android.service.BasisTheoryElements
+import com.basistheory.android.view.KeyboardType
 import com.basistheory.android.view.TextElement
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.runBlocking
@@ -14,6 +15,8 @@ import org.threeten.bp.temporal.ChronoUnit
 class MainActivity : AppCompatActivity() {
     private lateinit var nameElement: TextElement
     private lateinit var phoneNumberElement: TextElement
+    private lateinit var socialSecurityNumberElement: TextElement
+    private lateinit var orderNumberElement: TextElement
     private lateinit var tokenizeResult: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,30 +25,26 @@ class MainActivity : AppCompatActivity() {
 
         nameElement = findViewById(R.id.name)
         phoneNumberElement = findViewById(R.id.phoneNumber)
+        socialSecurityNumberElement = findViewById(R.id.socialSecurityNumber)
+        orderNumberElement = findViewById(R.id.orderNumber)
         tokenizeResult = findViewById(R.id.tokenizeResult)
 
-        subscribeToEvents()
-    }
+        val digitRegex = Regex("""\d""")
+        val charRegex = Regex("""[A-Za-z]""")
 
-    private fun subscribeToEvents() {
-        nameElement.addChangeEventListener {
-            println("Change event received: $it")
-        }
+        phoneNumberElement.keyboardType = KeyboardType.NUMBER // illustrates that it can be set programmatically
+        phoneNumberElement.mask = listOf("+", "1", "(", digitRegex,digitRegex,digitRegex, ")", " ", digitRegex, digitRegex, digitRegex, "-", digitRegex, digitRegex , digitRegex, digitRegex )
 
-        nameElement.addFocusEventListener {
-            println("Element gained focus")
-        }
-
-        nameElement.addBlurEventListener {
-            println("Element lost focus")
-        }
+        orderNumberElement.mask = listOf(charRegex, charRegex, charRegex, "-", digitRegex, digitRegex, digitRegex)
     }
 
     fun setText(button: View) {
         assert(button.id == R.id.setTextButton)
 
         nameElement.setText("Manually Set Name")
-        phoneNumberElement.setText("Manually Set Phone")
+        phoneNumberElement.setText("2345678900")
+        socialSecurityNumberElement.setText("234567890")
+        orderNumberElement.setText("ABC123")
     }
 
     fun submit(button: View) {
@@ -69,6 +68,8 @@ class MainActivity : AppCompatActivity() {
                     val myProp = "My Value"
                     val name = nameElement
                     val phoneNumber = phoneNumberElement
+                    val socialSecurityNumber = socialSecurityNumberElement
+                    val orderNumber = orderNumberElement
                 }
                 val expires_at = expirationTimestamp
             })

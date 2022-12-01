@@ -53,4 +53,12 @@ class TextElementTests {
         textElement.setText("(123) 456-7890")
         expectThat(textElement.getText()).isEqualTo("123 456-7890")
     }
+
+    @Test
+    fun `can apply mask`() {
+        val digitRegex = Regex("""\d""")
+        textElement.mask = listOf("+", "1", "(", digitRegex,digitRegex,digitRegex, ")", " ", digitRegex, digitRegex, digitRegex, "-", digitRegex, digitRegex , digitRegex, digitRegex )
+        textElement.setText("2345678900")
+        expectThat(textElement.getText()).isEqualTo("+1(234) 567-8900")
+    }
 }

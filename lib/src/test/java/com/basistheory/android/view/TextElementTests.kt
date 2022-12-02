@@ -21,7 +21,7 @@ class TextElementTests {
     }
 
     @Test
-    fun `can set value to null`() {
+    fun `can clear the value`() {
         textElement.transform = regexReplaceElementTransform(Regex("[\\s]"))
 
         textElement.setText(null)

@@ -3,6 +3,7 @@ package com.basistheory.android.example
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.basistheory.android.service.BasisTheoryElements
@@ -21,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var socialSecurityNumberElement: TextElement
     private lateinit var orderNumberElement: TextElement
     private lateinit var tokenizeResult: TextView
+    private lateinit var tokenizeButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,26 +34,49 @@ class MainActivity : AppCompatActivity() {
         socialSecurityNumberElement = findViewById(R.id.socialSecurityNumber)
         orderNumberElement = findViewById(R.id.orderNumber)
         tokenizeResult = findViewById(R.id.tokenizeResult)
+        tokenizeButton = findViewById(R.id.tokenizeButton)
 
         val digitRegex = Regex("""\d""")
         val charRegex = Regex("""[A-Za-z]""")
 
-        phoneNumberElement.keyboardType = KeyboardType.NUMBER // illustrates that it can be set programmatically
-        phoneNumberElement.mask = listOf("+", "1", "(", digitRegex,digitRegex,digitRegex, ")", " ", digitRegex, digitRegex, digitRegex, "-", digitRegex, digitRegex , digitRegex, digitRegex )
+        phoneNumberElement.keyboardType = KeyboardType.NUMBER
+        phoneNumberElement.mask = listOf(
+            "+",
+            "1",
+            "(",
+            digitRegex,
+            digitRegex,
+            digitRegex,
+            ")",
+            " ",
+            digitRegex,
+            digitRegex,
+            digitRegex,
+            "-",
+            digitRegex,
+            digitRegex,
+            digitRegex,
+            digitRegex
+        )
 
-        orderNumberElement.mask = listOf(charRegex, charRegex, charRegex, "-", digitRegex, digitRegex, digitRegex)
+        orderNumberElement.mask =
+            listOf(charRegex, charRegex, charRegex, "-", digitRegex, digitRegex, digitRegex)
 
         cardNumberElement.addChangeEventListener {
-            if (it.isValid)
-                cardNumberElement.textColor = Color.BLACK
-            else
+            if (!it.isValid && it.isComplete) {
                 cardNumberElement.textColor = Color.RED
+                tokenizeButton.isEnabled = false
+            } else {
+                cardNumberElement.textColor = Color.BLACK
+                tokenizeButton.isEnabled = true
+            }
         }
     }
 
     fun setText(button: View) {
         assert(button.id == R.id.setTextButton)
 
+        cardNumberElement.setText("4242424242424242")
         nameElement.setText("Manually Set Name")
         phoneNumberElement.setText("2345678900")
         socialSecurityNumberElement.setText("234567890")

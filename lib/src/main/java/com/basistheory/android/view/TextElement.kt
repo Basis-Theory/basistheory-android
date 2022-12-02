@@ -154,14 +154,18 @@ open class TextElement : FrameLayout {
             override fun onTextChanged(value: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun afterTextChanged(editable: Editable?) {
-                val event = ChangeEvent(
-                    true, // TODO - compute this from the mask
-                    editable?.isEmpty() ?: false,
-                    validator(getText()) // TODO - how do we prevent the element from switching between valid/invalid while typing? do we even need to prevent this?
-                )
+                // when a mask is applied, there are 2 change events raised:
+                // one with the raw user input, and a second after the mask has been applied
+                if (maskWatcher == null || maskWatcher?.isMaskApplied == true) {
+                    val event = ChangeEvent(
+                        maskWatcher?.isComplete ?: false,
+                        editable?.isEmpty() ?: false,
+                        validator(getText())
+                    )
 
-                eventListeners.change.forEach {
-                    it(event)
+                    eventListeners.change.forEach {
+                        it(event)
+                    }
                 }
             }
         })

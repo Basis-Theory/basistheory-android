@@ -5,9 +5,11 @@ import android.text.TextWatcher
 
 internal class MaskWatcher(mask: List<Any>) : TextWatcher {
     private val mask: Mask = Mask(mask)
-
-    private var selfChange: Boolean = false
     private var result: MaskResult? = null
+    private var isApplyingMask: Boolean = false
+
+    val isMaskApplied: Boolean
+        get() = isApplyingMask
 
     val maskedValue: String
         get() = result?.maskedValue.orEmpty()
@@ -19,18 +21,18 @@ internal class MaskWatcher(mask: List<Any>) : TextWatcher {
         get() = result?.isComplete ?: false
 
     override fun afterTextChanged(editable: Editable?) {
-        if (selfChange || editable.isNullOrEmpty()) return
+        if (isApplyingMask || editable.isNullOrEmpty()) return
 
-        selfChange = true
+        isApplyingMask = true
         result?.apply(editable)
-        selfChange = false
+        isApplyingMask = false
     }
 
     override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {
     }
 
     override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-        if (selfChange || charSequence.isNullOrEmpty()) return
+        if (isApplyingMask || charSequence.isNullOrEmpty()) return
 
         val action = if (before > 0 && count == 0) Action.DELETE else Action.INSERT
 

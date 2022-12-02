@@ -17,9 +17,8 @@ import com.basistheory.android.event.ChangeEvent
 import com.basistheory.android.event.ElementEventListeners
 import com.basistheory.android.event.FocusEvent
 import com.basistheory.android.view.mask.MaskWatcher
-import com.basistheory.android.view.transform.ElementTransform
 
-class TextElement : FrameLayout {
+open class TextElement : FrameLayout {
     private var attrs: AttributeSet? = null
     private var defStyleAttr: Int = androidx.appcompat.R.attr.editTextStyle
     private var input: AppCompatEditText = AppCompatEditText(context, attrs, defStyleAttr)
@@ -50,13 +49,16 @@ class TextElement : FrameLayout {
 
     // this MUST be internal to prevent host apps from accessing the raw input values
     internal fun getText(): String? =
-        transform.apply(input.text?.toString())
+        transform(input.text?.toString())
 
     fun setText(value: String?) =
         input.setText(value)
 
-    var transform: ElementTransform =
-        ElementTransform()
+    internal var validator: (value: String?) -> Boolean =
+        { _ -> true }
+
+    internal var transform: (value: String?) -> String? =
+        { value -> value }
 
     var textColor: Int
         get() = input.currentTextColor
@@ -81,7 +83,9 @@ class TextElement : FrameLayout {
 
     var removeDefaultStyles: Boolean
         get() = input.background == null
-        set(value) { input.background = if (value) null else defaultBackground }
+        set(value) {
+            input.background = if (value) null else defaultBackground
+        }
 
     fun addChangeEventListener(listener: (ChangeEvent) -> Unit) {
         eventListeners.change.add(listener)
@@ -107,8 +111,14 @@ class TextElement : FrameLayout {
                     hint = getString(R.styleable.TextElement_hint)
                     removeDefaultStyles =
                         getBoolean(R.styleable.TextElement_removeDefaultStyles, false)
-                    mask = getString(R.styleable.TextElement_mask)?.split("")?.filter { !it.isNullOrEmpty() }
-                    keyboardType = KeyboardType.fromInt(getInt(R.styleable.TextElement_keyboardType, KeyboardType.TEXT.inputType))
+                    mask = getString(R.styleable.TextElement_mask)?.split("")
+                        ?.filter { !it.isNullOrEmpty() }
+                    keyboardType = KeyboardType.fromInt(
+                        getInt(
+                            R.styleable.TextElement_keyboardType,
+                            KeyboardType.TEXT.inputType
+                        )
+                    )
                     setText(getString(R.styleable.TextElement_text))
                 } finally {
                     recycle()
@@ -144,8 +154,18 @@ class TextElement : FrameLayout {
             override fun onTextChanged(value: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun afterTextChanged(editable: Editable?) {
-                eventListeners.change.forEach {
-                    it(ChangeEvent(true, editable?.isEmpty() != false, listOf()))
+                // when a mask is applied, there are 2 change events raised:
+                // one with the raw user input, and a second after the mask has been applied
+                if (maskWatcher == null || maskWatcher?.isMaskApplied == true) {
+                    val event = ChangeEvent(
+                        maskWatcher?.isComplete ?: false,
+                        editable?.isEmpty() ?: false,
+                        validator(getText())
+                    )
+
+                    eventListeners.change.forEach {
+                        it(event)
+                    }
                 }
             }
         })

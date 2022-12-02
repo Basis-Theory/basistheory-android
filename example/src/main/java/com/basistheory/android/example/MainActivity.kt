@@ -1,10 +1,13 @@
 package com.basistheory.android.example
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.basistheory.android.service.BasisTheoryElements
+import com.basistheory.android.view.CardNumberElement
 import com.basistheory.android.view.KeyboardType
 import com.basistheory.android.view.TextElement
 import com.google.gson.GsonBuilder
@@ -13,34 +16,67 @@ import org.threeten.bp.Instant
 import org.threeten.bp.temporal.ChronoUnit
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var cardNumberElement: CardNumberElement
     private lateinit var nameElement: TextElement
     private lateinit var phoneNumberElement: TextElement
     private lateinit var socialSecurityNumberElement: TextElement
     private lateinit var orderNumberElement: TextElement
     private lateinit var tokenizeResult: TextView
+    private lateinit var tokenizeButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        cardNumberElement = findViewById(R.id.cardNumber)
         nameElement = findViewById(R.id.name)
         phoneNumberElement = findViewById(R.id.phoneNumber)
         socialSecurityNumberElement = findViewById(R.id.socialSecurityNumber)
         orderNumberElement = findViewById(R.id.orderNumber)
         tokenizeResult = findViewById(R.id.tokenizeResult)
+        tokenizeButton = findViewById(R.id.tokenizeButton)
 
         val digitRegex = Regex("""\d""")
         val charRegex = Regex("""[A-Za-z]""")
 
-        phoneNumberElement.keyboardType = KeyboardType.NUMBER // illustrates that it can be set programmatically
-        phoneNumberElement.mask = listOf("+", "1", "(", digitRegex,digitRegex,digitRegex, ")", " ", digitRegex, digitRegex, digitRegex, "-", digitRegex, digitRegex , digitRegex, digitRegex )
+        phoneNumberElement.keyboardType = KeyboardType.NUMBER
+        phoneNumberElement.mask = listOf(
+            "+",
+            "1",
+            "(",
+            digitRegex,
+            digitRegex,
+            digitRegex,
+            ")",
+            " ",
+            digitRegex,
+            digitRegex,
+            digitRegex,
+            "-",
+            digitRegex,
+            digitRegex,
+            digitRegex,
+            digitRegex
+        )
 
-        orderNumberElement.mask = listOf(charRegex, charRegex, charRegex, "-", digitRegex, digitRegex, digitRegex)
+        orderNumberElement.mask =
+            listOf(charRegex, charRegex, charRegex, "-", digitRegex, digitRegex, digitRegex)
+
+        cardNumberElement.addChangeEventListener {
+            if (!it.isValid && it.isComplete) {
+                cardNumberElement.textColor = Color.RED
+                tokenizeButton.isEnabled = false
+            } else {
+                cardNumberElement.textColor = Color.BLACK
+                tokenizeButton.isEnabled = true
+            }
+        }
     }
 
     fun setText(button: View) {
         assert(button.id == R.id.setTextButton)
 
+        cardNumberElement.setText("4242424242424242")
         nameElement.setText("Manually Set Name")
         phoneNumberElement.setText("2345678900")
         socialSecurityNumberElement.setText("234567890")
@@ -65,7 +101,8 @@ class MainActivity : AppCompatActivity() {
             val tokenizeResponse = bt.tokenize(object {
                 val type = "token"
                 val data = object {
-                    val myProp = "My Value"
+                    val staticProp = "Static Value"
+                    val cardNumber = cardNumberElement
                     val name = nameElement
                     val phoneNumber = phoneNumberElement
                     val socialSecurityNumber = socialSecurityNumberElement

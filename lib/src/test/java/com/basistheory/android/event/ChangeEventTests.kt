@@ -10,9 +10,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.android.controller.ActivityController
 import strikt.api.expectThat
 import strikt.assertions.hasSize
-import strikt.assertions.isEmpty
 import strikt.assertions.isFalse
 import strikt.assertions.isTrue
+import strikt.assertions.single
 
 
 @RunWith(RobolectricTestRunner::class)
@@ -54,9 +54,9 @@ class ChangeEventTests {
         textElement.setText(null)
 
         expectThat(changeEvents).hasSize(3).and {
-            get { elementAt(0).empty }.isFalse()
-            get { elementAt(1).empty }.isTrue()
-            get { elementAt(2).empty }.isTrue()
+            get { elementAt(0).isEmpty }.isFalse()
+            get { elementAt(1).isEmpty }.isTrue()
+            get { elementAt(2).isEmpty }.isTrue()
         }
     }
 
@@ -70,5 +70,57 @@ class ChangeEventTests {
         textElement.setText(textValue)
 
         expectThat(changeEvents).hasSize(2)
+    }
+
+    @Test
+    fun `ChangeEvent sets isComplete to false when mask is undefined`() {
+        val changeEvents = mutableListOf<ChangeEvent>()
+
+        textElement.addChangeEventListener { changeEvents.add(it) }
+        textElement.setText("1")
+
+        expectThat(changeEvents).single()
+            .get { isComplete }.isFalse()
+    }
+
+    @Test
+    fun `ChangeEvent computes isComplete based on mask`() {
+        val changeEvents = mutableListOf<ChangeEvent>()
+
+        textElement.mask = listOf(Regex("""\d"""), Regex("""\d"""))
+        textElement.addChangeEventListener { changeEvents.add(it) }
+        textElement.setText("1")
+        textElement.setText("12")
+
+        expectThat(changeEvents).hasSize(2).and {
+            get { elementAt(0).isComplete }.isFalse()
+            get { elementAt(1).isComplete }.isTrue()
+        }
+    }
+
+    @Test
+    fun `ChangeEvent sets isValid to true when validator is undefined`() {
+        val changeEvents = mutableListOf<ChangeEvent>()
+
+        textElement.addChangeEventListener { changeEvents.add(it) }
+        textElement.setText("1")
+
+        expectThat(changeEvents).single()
+            .get { isValid }.isTrue()
+    }
+
+    @Test
+    fun `ChangeEvent computes isValid based on validator`() {
+        val changeEvents = mutableListOf<ChangeEvent>()
+
+        textElement.validator = { (it?.length ?: 0) % 2 == 0 }
+        textElement.addChangeEventListener { changeEvents.add(it) }
+        textElement.setText("1")
+        textElement.setText("12")
+
+        expectThat(changeEvents).hasSize(2).and {
+            get { elementAt(0).isValid }.isFalse()
+            get { elementAt(1).isValid }.isTrue()
+        }
     }
 }

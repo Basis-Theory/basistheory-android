@@ -2,6 +2,7 @@ package com.basistheory.android.service
 
 import android.app.Activity
 import com.basistheory.TokenizeApi
+import com.basistheory.android.view.CardNumberElement
 import com.basistheory.android.view.TextElement
 import com.github.javafaker.Faker
 import io.mockk.every
@@ -26,6 +27,7 @@ class BasisTheoryElementsTests {
     private val faker = Faker()
     private lateinit var nameElement: TextElement
     private lateinit var phoneNumberElement: TextElement
+    private lateinit var cardNumberElement: CardNumberElement
 
     @get:Rule
     val mockkRule = MockKRule(this)
@@ -48,6 +50,7 @@ class BasisTheoryElementsTests {
 
         nameElement = TextElement(activity)
         phoneNumberElement = TextElement(activity)
+        cardNumberElement = CardNumberElement(activity)
     }
 
     @Test
@@ -133,7 +136,7 @@ class BasisTheoryElementsTests {
         }
 
     @Test
-    fun `tokenize should replace top level Element ref with underlying data value`() =
+    fun `tokenize should replace top level TextElement ref with underlying data value`() =
         runBlocking {
             every { provider.getTokenizeApi(any()) } returns tokenizeApi
 
@@ -143,6 +146,20 @@ class BasisTheoryElementsTests {
             bt.tokenize(nameElement)
 
             verify { tokenizeApi.tokenize(name) }
+        }
+
+    @Test
+    fun `tokenize should replace top level CardElement ref with underlying data value`() =
+        runBlocking {
+            every { provider.getTokenizeApi(any()) } returns tokenizeApi
+
+            val cardNumber = faker.business().creditCardNumber()
+            cardNumberElement.setText(cardNumber)
+
+            bt.tokenize(cardNumberElement)
+
+            val expectedTokenizedCardNumber = cardNumber.replace(Regex("""[^\d]"""), "")
+            verify { tokenizeApi.tokenize(expectedTokenizedCardNumber) }
         }
 
     @Test
@@ -156,11 +173,15 @@ class BasisTheoryElementsTests {
             val phoneNumber = faker.phoneNumber().phoneNumber()
             phoneNumberElement.setText(phoneNumber)
 
+            val cardNumber = faker.business().creditCardNumber()
+            cardNumberElement.setText(cardNumber)
+
             val request = object {
                 val type = "token"
                 val data = object {
                     val raw = faker.lorem().word()
                     val name = nameElement
+                    val cardNumber = cardNumberElement
                     val nested = object {
                         val raw = faker.lorem().word()
                         val phoneNumber = phoneNumberElement
@@ -175,6 +196,7 @@ class BasisTheoryElementsTests {
                 "data" to mapOf(
                     "raw" to request.data.raw,
                     "name" to name,
+                    "cardNumber" to cardNumber.replace(Regex("""[^\d]"""), ""),
                     "nested" to mapOf(
                         "raw" to request.data.nested.raw,
                         "phoneNumber" to phoneNumber

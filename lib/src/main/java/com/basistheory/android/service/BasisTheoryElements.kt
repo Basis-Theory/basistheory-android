@@ -29,9 +29,8 @@ class BasisTheoryElements internal constructor(
             if (value == null) continue
             val fieldType = value::class.java
             if (!fieldType.isPrimitiveType()) {
-                if (fieldType == TextElement::class.java) {
-                    val element = value as TextElement
-                    map[key] = element.getText()
+                if (value is TextElement) {
+                    map[key] = value.getText()
                 } else {
                     val children = value.toMap()
                     map[key] = children

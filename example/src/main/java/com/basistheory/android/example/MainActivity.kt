@@ -101,7 +101,8 @@ class MainActivity : AppCompatActivity() {
             val tokenizeResponse = bt.tokenize(object {
                 val type = "token"
                 val data = object {
-                    val myProp = "My Value"
+                    val staticProp = "Static Value"
+                    val cardNumber = cardNumberElement
                     val name = nameElement
                     val phoneNumber = phoneNumberElement
                     val socialSecurityNumber = socialSecurityNumberElement

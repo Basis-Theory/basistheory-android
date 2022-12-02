@@ -1,3 +1,11 @@
+## [0.4.0](https://github.com/Basis-Theory/basistheory-android/compare/0.3.0...0.4.0) (2022-12-02)
+
+
+### Features
+
+* Adds CardNumberElement and validator property to TextElement ([#10](https://github.com/Basis-Theory/basistheory-android/issues/10)) ([968e782](https://github.com/Basis-Theory/basistheory-android/commit/968e78240c0179923514bc086d20f81b113cd0ca))
+
+
 ## [0.3.0](https://github.com/Basis-Theory/basistheory-android/compare/0.2.0...0.3.0) (2022-12-01)
 
 

@@ -1,6 +1,6 @@
 package com.basistheory.android.view.validation
 
-fun cardNumberValidator(value: String?): Boolean {
+fun luhnValidator(value: String?): Boolean {
     if (value.isNullOrEmpty() || value.any { !it.isDigit() }) return false
 
     var sum = 0
@@ -27,6 +27,3 @@ fun cardNumberValidator(value: String?): Boolean {
 
     return sum % 10 == 0
 }
-
-// TODO: return isComplete = true even if invalid
-// is it invalid if not complete?

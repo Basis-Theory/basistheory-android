@@ -1,133 +1,51 @@
 package com.basistheory.android.example
 
-import android.graphics.Color
 import android.os.Bundle
-import android.view.View
-import android.widget.Button
-import android.widget.TextView
+import android.view.Menu
+import com.google.android.material.navigation.NavigationView
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
-import com.basistheory.android.service.BasisTheoryElements
-import com.basistheory.android.view.CardNumberElement
-import com.basistheory.android.view.CardVerificationCodeElement
-import com.basistheory.android.model.KeyboardType
-import com.basistheory.android.view.CardExpirationDateElement
-import com.basistheory.android.view.TextElement
-import com.google.gson.GsonBuilder
-import kotlinx.coroutines.runBlocking
-import org.threeten.bp.Instant
-import org.threeten.bp.temporal.ChronoUnit
+import com.basistheory.android.example.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var cardNumberElement: CardNumberElement
-    private lateinit var cardExpirationDateElement: CardExpirationDateElement
-    private lateinit var cvcElement: CardVerificationCodeElement
-    private lateinit var nameElement: TextElement
-    private lateinit var phoneNumberElement: TextElement
-    private lateinit var socialSecurityNumberElement: TextElement
-    private lateinit var orderNumberElement: TextElement
-    private lateinit var tokenizeResult: TextView
-    private lateinit var tokenizeButton: Button
+
+    private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        cardNumberElement = findViewById(R.id.cardNumber)
-        cardExpirationDateElement = findViewById(R.id.cardExpiration)
-        cvcElement = findViewById(R.id.cvc)
-        nameElement = findViewById(R.id.name)
-        phoneNumberElement = findViewById(R.id.phoneNumber)
-        socialSecurityNumberElement = findViewById(R.id.socialSecurityNumber)
-        orderNumberElement = findViewById(R.id.orderNumber)
-        tokenizeResult = findViewById(R.id.tokenizeResult)
-        tokenizeButton = findViewById(R.id.tokenizeButton)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val digitRegex = Regex("""\d""")
-        val charRegex = Regex("""[A-Za-z]""")
+        val drawerLayout: DrawerLayout = binding.androidSdk
+        val navView: NavigationView = binding.navView
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
 
-        phoneNumberElement.keyboardType = KeyboardType.NUMBER
-        phoneNumberElement.mask = listOf(
-            "+",
-            "1",
-            "(",
-            digitRegex,
-            digitRegex,
-            digitRegex,
-            ")",
-            " ",
-            digitRegex,
-            digitRegex,
-            digitRegex,
-            "-",
-            digitRegex,
-            digitRegex,
-            digitRegex,
-            digitRegex
+        appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.nav_home, R.id.nav_text_element
+            ), drawerLayout
         )
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
 
-        orderNumberElement.mask =
-            listOf(charRegex, charRegex, charRegex, "-", digitRegex, digitRegex, digitRegex)
-
-        // example of how an app could implement validation
-        cardNumberElement.addChangeEventListener {
-            if (!it.isValid && it.isComplete) {
-                cardNumberElement.textColor = Color.RED
-                tokenizeButton.isEnabled = false
-            } else {
-                cardNumberElement.textColor = Color.BLACK
-                tokenizeButton.isEnabled = true
-            }
-        }
     }
 
-    fun setText(button: View) {
-        assert(button.id == R.id.setTextButton)
-
-        cardNumberElement.setText("4242424242424242")
-        cardExpirationDateElement.setText("09/99")
-        cvcElement.setText("123")
-        nameElement.setText("Manually Set Name")
-        phoneNumberElement.setText("2345678900")
-        socialSecurityNumberElement.setText("234567890")
-        orderNumberElement.setText("ABC123")
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.navigation_menu, menu)
+        return true
     }
 
-    fun submit(button: View) {
-        assert(button.id == R.id.tokenizeButton)
-
-        val bt = BasisTheoryElements.builder()
-            .apiUrl(BuildConfig.BASIS_THEORY_API_URL)
-            .apiKey(BuildConfig.BASIS_THEORY_API_KEY)
-            .build()
-
-        /**
-         * Note: java.time.Instant is only supported on API level 26+.
-         * threetenbp is a backport of java.time for java 6/7 and Android API < 26
-         */
-        val expirationTimestamp = Instant.now().plus(5, ChronoUnit.MINUTES).toString()
-
-        runBlocking {
-            val tokenizeResponse = bt.tokenize(object {
-                val type = "token"
-                val data = object {
-                    val staticProp = "Static Value"
-                    val card = object {
-                        val cardNumber = cardNumberElement
-                        val expirationMonth = cardExpirationDateElement.month()
-                        val expirationYear = cardExpirationDateElement.year()
-                        val cvc = cvcElement
-                    }
-                    val name = nameElement
-                    val phoneNumber = phoneNumberElement
-                    val socialSecurityNumber = socialSecurityNumberElement
-                    val orderNumber = orderNumberElement
-                }
-                val expires_at = expirationTimestamp
-            })
-
-            val gson = GsonBuilder().setPrettyPrinting().create()
-
-            tokenizeResult.text = gson.toJson(tokenizeResponse)
-        }
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 }
+
+

@@ -23,4 +23,10 @@
         android:label="@string/menu_social_security_number_element"
         tools:layout="@layout/fragment_social_security_number_element" />
 
+    <fragment
+        android:id="@+id/nav_card_element"
+        android:name="com.basistheory.android.example.card_element.CardElementFragment"
+        android:label="@string/menu_card_element"
+        tools:layout="@layout/fragment_card_element" />
+
 </navigation>

@@ -12,5 +12,8 @@
         <item
             android:id="@+id/nav_social_security_number_element"
             android:title="@string/menu_social_security_number_element" />
+        <item
+            android:id="@+id/nav_card_element"
+            android:title="@string/menu_card_element" />
     </group>
 </menu>

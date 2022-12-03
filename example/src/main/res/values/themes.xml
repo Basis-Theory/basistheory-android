@@ -6,25 +6,22 @@
         <item name="colorPrimaryVariant">@color/gray_900</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondary">@color/primary</item>
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <item name="android:windowBackground">@color/gray_800</item>
+        <item name="android:windowBackground">?attr/colorPrimary</item>
         <!-- Customize your theme here. -->
+        <item name="materialButtonStyle">@style/Theme.TextElement.Button</item>
     </style>
 
-    <style name="Button.Teal" parent="ThemeOverlay.AppCompat">
-        <item name="colorAccent">@color/primary</item>
+    <style name="Theme.TextElement.Button" parent="Theme.Material3.Dark">
+        <item name="android:backgroundTint">?attr/colorPrimary</item>
     </style>
 
     <style name="Theme.TextElement.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-
-    <style name="Theme.TextElement.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="Theme.TextElement.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

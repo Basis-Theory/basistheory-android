@@ -9,4 +9,5 @@
     <string name="menu_home">Home</string>
     <string name="menu_text_element">Custom Form Elements</string>
     <string name="menu_social_security_number_element">Social Security Number</string>
+    <string name="menu_card_element">Card Elements</string>
 </resources>

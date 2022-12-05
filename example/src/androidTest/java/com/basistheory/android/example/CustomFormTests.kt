@@ -43,12 +43,12 @@ class CustomFormTests {
         val orderNumber = "ABC123"
 
         // type values into elements
-        onView(withId(R.id.cardNumber)).perform(typeText(cardNumber))
-        onView(withId(R.id.cvc)).perform(typeText(cvc))
-        onView(withId(R.id.name)).perform(typeText(name))
-        onView(withId(R.id.phoneNumber)).perform(typeText(phoneNumber))
-        onView(withId(R.id.socialSecurityNumber)).perform(typeText(ssn))
-        onView(withId(R.id.orderNumber)).perform(typeText(orderNumber))
+        onView(withId(R.id.cardNumber)).perform(scrollTo(), typeText(cardNumber))
+        onView(withId(R.id.cvc)).perform(scrollTo(), typeText(cvc))
+        onView(withId(R.id.name)).perform(scrollTo(), typeText(name))
+        onView(withId(R.id.phoneNumber)).perform(scrollTo(), typeText(phoneNumber))
+        onView(withId(R.id.socialSecurityNumber)).perform(scrollTo(), typeText(ssn))
+        onView(withId(R.id.orderNumber)).perform(scrollTo(), typeText(orderNumber))
 
         // click tokenize
         onView(withId(R.id.tokenizeButton)).perform(scrollTo(), click())

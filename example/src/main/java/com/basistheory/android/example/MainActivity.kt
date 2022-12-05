@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.basistheory.android.service.BasisTheoryElements
 import com.basistheory.android.view.CardNumberElement
+import com.basistheory.android.view.CardVerificationCodeElement
 import com.basistheory.android.view.KeyboardType
 import com.basistheory.android.view.TextElement
 import com.google.gson.GsonBuilder
@@ -17,6 +18,7 @@ import org.threeten.bp.temporal.ChronoUnit
 
 class MainActivity : AppCompatActivity() {
     private lateinit var cardNumberElement: CardNumberElement
+    private lateinit var cvcElement: CardVerificationCodeElement
     private lateinit var nameElement: TextElement
     private lateinit var phoneNumberElement: TextElement
     private lateinit var socialSecurityNumberElement: TextElement
@@ -29,6 +31,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         cardNumberElement = findViewById(R.id.cardNumber)
+        cvcElement = findViewById(R.id.cvc)
         nameElement = findViewById(R.id.name)
         phoneNumberElement = findViewById(R.id.phoneNumber)
         socialSecurityNumberElement = findViewById(R.id.socialSecurityNumber)
@@ -62,6 +65,7 @@ class MainActivity : AppCompatActivity() {
         orderNumberElement.mask =
             listOf(charRegex, charRegex, charRegex, "-", digitRegex, digitRegex, digitRegex)
 
+        // example of how an app could implement validation
         cardNumberElement.addChangeEventListener {
             if (!it.isValid && it.isComplete) {
                 cardNumberElement.textColor = Color.RED
@@ -77,6 +81,7 @@ class MainActivity : AppCompatActivity() {
         assert(button.id == R.id.setTextButton)
 
         cardNumberElement.setText("4242424242424242")
+        cvcElement.setText("123")
         nameElement.setText("Manually Set Name")
         phoneNumberElement.setText("2345678900")
         socialSecurityNumberElement.setText("234567890")
@@ -103,6 +108,7 @@ class MainActivity : AppCompatActivity() {
                 val data = object {
                     val staticProp = "Static Value"
                     val cardNumber = cardNumberElement
+                    val cvc = cvcElement
                     val name = nameElement
                     val phoneNumber = phoneNumberElement
                     val socialSecurityNumber = socialSecurityNumberElement

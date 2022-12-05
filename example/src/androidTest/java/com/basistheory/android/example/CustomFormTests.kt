@@ -17,7 +17,7 @@ import org.junit.runners.MethodSorters
 
 @RunWith(AndroidJUnit4::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class TextElementTests {
+class CustomFormTests {
 
     @get:Rule
     val activityRule = activityScenarioRule<MainActivity>()
@@ -26,6 +26,7 @@ class TextElementTests {
     fun canSetText() {
         onView(withId(R.id.setTextButton)).perform(click())
         onView(withText("4242 4242 4242 4242")).check(matches(isDisplayed()))
+        onView(withText("123")).check(matches(isDisplayed()))
         onView(withText("Manually Set Name")).check(matches(isDisplayed()))
         onView(withText("+1(234) 567-8900")).check(matches(isDisplayed()))
         onView(withText("234-56-7890")).check(matches(isDisplayed()))
@@ -35,6 +36,7 @@ class TextElementTests {
     @Test
     fun canTokenize() {
         val cardNumber = "4242424242424242"
+        val cvc = "123"
         val name = Faker().name().fullName()
         val phoneNumber = "2345678900"
         val ssn = "123456789"
@@ -42,6 +44,7 @@ class TextElementTests {
 
         // type values into elements
         onView(withId(R.id.cardNumber)).perform(typeText(cardNumber))
+        onView(withId(R.id.cvc)).perform(typeText(cvc))
         onView(withId(R.id.name)).perform(typeText(name))
         onView(withId(R.id.phoneNumber)).perform(typeText(phoneNumber))
         onView(withId(R.id.socialSecurityNumber)).perform(typeText(ssn))
@@ -55,6 +58,7 @@ class TextElementTests {
             matches(
                 allOf(
                     withSubstring(cardNumber), // displayed with mask, but transformed back to this value
+                    withSubstring(cvc),
                     withSubstring(name),
                     withSubstring("+1(234) 567-8900"),
                     withSubstring("123-45-6789"),

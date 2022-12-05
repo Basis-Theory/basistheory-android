@@ -3,6 +3,7 @@ package com.basistheory.android.service
 import android.app.Activity
 import com.basistheory.TokenizeApi
 import com.basistheory.android.view.CardNumberElement
+import com.basistheory.android.view.CardVerificationCodeElement
 import com.basistheory.android.view.TextElement
 import com.github.javafaker.Faker
 import io.mockk.every
@@ -28,6 +29,7 @@ class BasisTheoryElementsTests {
     private lateinit var nameElement: TextElement
     private lateinit var phoneNumberElement: TextElement
     private lateinit var cardNumberElement: CardNumberElement
+    private lateinit var cvcElement: CardVerificationCodeElement
 
     @get:Rule
     val mockkRule = MockKRule(this)
@@ -51,6 +53,7 @@ class BasisTheoryElementsTests {
         nameElement = TextElement(activity)
         phoneNumberElement = TextElement(activity)
         cardNumberElement = CardNumberElement(activity)
+        cvcElement = CardVerificationCodeElement(activity)
     }
 
     @Test
@@ -176,12 +179,18 @@ class BasisTheoryElementsTests {
             val cardNumber = faker.business().creditCardNumber()
             cardNumberElement.setText(cardNumber)
 
+            val cvc = faker.random().nextInt(100, 999).toString()
+            cvcElement.setText(cvc)
+
             val request = object {
                 val type = "token"
                 val data = object {
                     val raw = faker.lorem().word()
                     val name = nameElement
-                    val cardNumber = cardNumberElement
+                    val card = object {
+                        val number = cardNumberElement
+                        val cvc = cvcElement
+                    }
                     val nested = object {
                         val raw = faker.lorem().word()
                         val phoneNumber = phoneNumberElement
@@ -196,7 +205,10 @@ class BasisTheoryElementsTests {
                 "data" to mapOf(
                     "raw" to request.data.raw,
                     "name" to name,
-                    "cardNumber" to cardNumber.replace(Regex("""[^\d]"""), ""),
+                    "card" to mapOf(
+                        "number" to cardNumber.replace(Regex("""[^\d]"""), ""),
+                        "cvc" to cvc
+                    ),
                     "nested" to mapOf(
                         "raw" to request.data.nested.raw,
                         "phoneNumber" to phoneNumber

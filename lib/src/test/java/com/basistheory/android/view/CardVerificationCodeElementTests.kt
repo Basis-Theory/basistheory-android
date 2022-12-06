@@ -2,7 +2,6 @@ package com.basistheory.android.view
 
 import android.app.Activity
 import com.basistheory.android.event.ChangeEvent
-import com.basistheory.android.view.transform.regexReplaceElementTransform
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

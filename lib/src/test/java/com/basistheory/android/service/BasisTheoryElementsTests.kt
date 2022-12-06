@@ -2,6 +2,7 @@ package com.basistheory.android.service
 
 import android.app.Activity
 import com.basistheory.TokenizeApi
+import com.basistheory.android.view.CardExpirationDateElement
 import com.basistheory.android.view.CardNumberElement
 import com.basistheory.android.view.CardVerificationCodeElement
 import com.basistheory.android.view.TextElement
@@ -20,7 +21,11 @@ import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import java.time.Instant
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalUnit
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @RunWith(RobolectricTestRunner::class)
@@ -29,6 +34,7 @@ class BasisTheoryElementsTests {
     private lateinit var nameElement: TextElement
     private lateinit var phoneNumberElement: TextElement
     private lateinit var cardNumberElement: CardNumberElement
+    private lateinit var cardExpElement: CardExpirationDateElement
     private lateinit var cvcElement: CardVerificationCodeElement
 
     @get:Rule
@@ -53,6 +59,7 @@ class BasisTheoryElementsTests {
         nameElement = TextElement(activity)
         phoneNumberElement = TextElement(activity)
         cardNumberElement = CardNumberElement(activity)
+        cardExpElement = CardExpirationDateElement(activity)
         cvcElement = CardVerificationCodeElement(activity)
     }
 
@@ -166,6 +173,21 @@ class BasisTheoryElementsTests {
         }
 
     @Test
+    fun `tokenize should replace top level CardExpirationDateElement year ref with underlying data value`() =
+        runBlocking {
+            every { provider.getTokenizeApi(any()) } returns tokenizeApi
+
+            val expDate = LocalDate.now().plus(2, ChronoUnit.YEARS)
+            val month = expDate.monthValue.toString().padStart(2, '0')
+            val year = expDate.year.toString().takeLast(2)
+            cardExpElement.setText("$month/$year")
+
+            bt.tokenize(cardExpElement.month())
+
+            verify { tokenizeApi.tokenize(month) }
+        }
+
+    @Test
     fun `tokenize should replace Element refs within request object with underlying data values`() =
         runBlocking {
             every { provider.getTokenizeApi(any()) } returns tokenizeApi
@@ -179,6 +201,11 @@ class BasisTheoryElementsTests {
             val cardNumber = faker.business().creditCardNumber()
             cardNumberElement.setText(cardNumber)
 
+            val expDate = LocalDate.now().plus(2, ChronoUnit.YEARS)
+            val expMonth = expDate.monthValue.toString().padStart(2, '0')
+            val expYear = expDate.year.toString().takeLast(2)
+            cardExpElement.setText("$expMonth/$expYear")
+
             val cvc = faker.random().nextInt(100, 999).toString()
             cvcElement.setText(cvc)
 
@@ -189,6 +216,8 @@ class BasisTheoryElementsTests {
                     val name = nameElement
                     val card = object {
                         val number = cardNumberElement
+                        val expMonth = cardExpElement.month()
+                        val expYear = cardExpElement.year()
                         val cvc = cvcElement
                     }
                     val nested = object {
@@ -207,6 +236,8 @@ class BasisTheoryElementsTests {
                     "name" to name,
                     "card" to mapOf(
                         "number" to cardNumber.replace(Regex("""[^\d]"""), ""),
+                        "expMonth" to expMonth,
+                        "expYear" to expYear,
                         "cvc" to cvc
                     ),
                     "nested" to mapOf(

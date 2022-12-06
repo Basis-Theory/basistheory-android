@@ -16,6 +16,7 @@ import com.basistheory.android.event.BlurEvent
 import com.basistheory.android.event.ChangeEvent
 import com.basistheory.android.event.ElementEventListeners
 import com.basistheory.android.event.FocusEvent
+import com.basistheory.android.model.KeyboardType
 import com.basistheory.android.view.mask.MaskWatcher
 
 open class TextElement : FrameLayout {

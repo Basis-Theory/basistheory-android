@@ -28,7 +28,7 @@ class CardNumberElement : TextElement {
         super.keyboardType = KeyboardType.NUMBER
         super.mask = defaultMask
         super.transform = regexReplaceElementTransform(Regex("""\s"""), "")
-        super.validator = ::luhnValidator
+        super.validate = ::luhnValidator
     }
 
     companion object {

@@ -55,7 +55,7 @@ open class TextElement : FrameLayout {
     fun setText(value: String?) =
         input.setText(value)
 
-    internal var validator: (value: String?) -> Boolean =
+    internal var validate: (value: String?) -> Boolean =
         { _ -> true }
 
     internal var transform: (value: String?) -> String? =
@@ -77,9 +77,11 @@ open class TextElement : FrameLayout {
             input.inputType = value.inputType
         }
 
+    // todo: should this be public? only on TextElement but hide the setters on derived elements?
     var mask: List<Any>? = null
         set(value) {
-            if (value.isNullOrEmpty()) removeMask() else addMask(value)
+            field = value
+            maskWatcher = value?.let { MaskWatcher(it) }
         }
 
     var removeDefaultStyles: Boolean
@@ -136,38 +138,23 @@ open class TextElement : FrameLayout {
         subscribeToInputEvents()
     }
 
-    private fun addMask(mask: List<Any>) {
-        maskWatcher = MaskWatcher(mask)
-        input.addTextChangedListener(maskWatcher)
-    }
-
-    private fun removeMask() {
-        input.removeTextChangedListener(maskWatcher)
-        maskWatcher = null
+    protected open fun afterTextChanged(editable: Editable?) {
     }
 
     private fun subscribeToInputEvents() {
-        mask?.let { addMask(it) }
-
         input.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(value: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun beforeTextChanged(value: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                maskWatcher?.beforeTextChanged(value, p1, p2, p3)
+            }
 
-            override fun onTextChanged(value: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(value: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                maskWatcher?.onTextChanged(value, p1, p2, p3)
+            }
 
             override fun afterTextChanged(editable: Editable?) {
-                // when a mask is applied, there are 2 change events raised:
-                // one with the raw user input, and a second after the mask has been applied
-                if (maskWatcher == null || maskWatcher?.isMaskApplied == true) {
-                    val event = ChangeEvent(
-                        maskWatcher?.isComplete ?: false,
-                        editable?.isEmpty() ?: false,
-                        validator(getText())
-                    )
-
-                    eventListeners.change.forEach {
-                        it(event)
-                    }
-                }
+                this@TextElement.afterTextChanged(editable)
+                maskWatcher?.afterTextChanged(editable)
+                tryPublishChangeEvent(editable)
             }
         })
 
@@ -176,6 +163,24 @@ open class TextElement : FrameLayout {
                 eventListeners.focus.forEach { it(FocusEvent()) }
             else
                 eventListeners.blur.forEach { it(BlurEvent()) }
+        }
+    }
+
+    private fun tryPublishChangeEvent(editable: Editable?) {
+        // when a mask is applied, there are 2 change events raised:
+        // one with the raw user input, and a second after the mask has been applied
+        val shouldPublishEvent = maskWatcher == null || maskWatcher?.isMaskApplied == true
+
+        if (shouldPublishEvent) {
+            val event = ChangeEvent(
+                isComplete = maskWatcher?.isComplete ?: false,
+                isEmpty = editable?.isEmpty() ?: false,
+                isValid = validate(getText())
+            )
+
+            eventListeners.change.forEach {
+                it(event)
+            }
         }
     }
 }

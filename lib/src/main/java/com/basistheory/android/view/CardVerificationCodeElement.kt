@@ -25,7 +25,7 @@ class CardVerificationCodeElement : TextElement {
     private fun init() {
         super.keyboardType = KeyboardType.NUMBER
         super.mask = defaultMask
-        super.validator = { Regex("""^\d{3,4}$""").matches(it ?: "") }
+        super.validate = { Regex("""^\d{3,4}$""").matches(it ?: "") }
     }
 
     companion object {

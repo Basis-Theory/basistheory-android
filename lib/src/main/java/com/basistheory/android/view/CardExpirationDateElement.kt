@@ -1,10 +1,10 @@
 package com.basistheory.android.view
 
 import android.content.Context
+import android.text.Editable
 import android.util.AttributeSet
 import com.basistheory.android.model.ElementValueReference
 import com.basistheory.android.model.KeyboardType
-import com.basistheory.android.view.transform.regexReplaceElementTransform
 import com.basistheory.android.view.validation.futureDateValidator
 
 class CardExpirationDateElement : TextElement {
@@ -32,7 +32,7 @@ class CardExpirationDateElement : TextElement {
     private fun init() {
         super.keyboardType = KeyboardType.NUMBER
         super.mask = defaultMask
-        super.validator = { futureDateValidator(it) }
+        super.validate = { futureDateValidator(it) }
     }
 
     private fun getMonthValue(): String? =
@@ -45,12 +45,22 @@ class CardExpirationDateElement : TextElement {
             ?.split("/")
             ?.elementAtOrNull(1)
 
+    override fun afterTextChanged(editable: Editable?) {
+        val textValue = editable?.toString()
+        val firstChar = textValue?.firstOrNull()
+
+        if (firstChar?.isDigit() != true) return
+
+        val firstDigit = firstChar.digitToInt()
+        if (firstDigit > 1) {
+            editable.replace(0, textValue.length, "0$textValue")
+        }
+    }
+
     companion object {
         private val digit = Regex("""\d""")
 
         val defaultMask: List<Any> =
             listOf(digit, digit, "/", digit, digit)
     }
-
-    // todo: support leading non-zero digits being entered by user and pre-pending 0 on month
 }

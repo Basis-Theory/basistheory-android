@@ -12,6 +12,7 @@ import strikt.assertions.isEqualTo
 import strikt.assertions.isFalse
 import strikt.assertions.isTrue
 import strikt.assertions.single
+import java.time.LocalDate
 
 @RunWith(RobolectricTestRunner::class)
 class CardExpirationDateElementTests {
@@ -36,6 +37,25 @@ class CardExpirationDateElementTests {
     fun `applies mask when setting the value`() {
         cardExpirationDateElement.setText("1222")
         expectThat(cardExpirationDateElement.getText()).isEqualTo("12/22")
+    }
+
+    @Test
+    fun `can type single digit month without leading zero`() {
+        cardExpirationDateElement.setText("2")
+        expectThat(cardExpirationDateElement.getText()).isEqualTo("02/")
+
+        val year = (LocalDate.now().year + 1).toString().takeLast(2)
+        cardExpirationDateElement.setText("2$year")
+        expectThat(cardExpirationDateElement.getText()).isEqualTo("02/$year")
+    }
+
+    @Test
+    fun `does not add leading zero when first digit is 0 or 1`() {
+        cardExpirationDateElement.setText("0")
+        expectThat(cardExpirationDateElement.getText()).isEqualTo("0")
+
+        cardExpirationDateElement.setText("1")
+        expectThat(cardExpirationDateElement.getText()).isEqualTo("1")
     }
 
     @Test
@@ -82,7 +102,20 @@ class CardExpirationDateElementTests {
         val changeEvents = mutableListOf<ChangeEvent>()
         cardExpirationDateElement.addChangeEventListener { changeEvents.add(it) }
 
-        cardExpirationDateElement.setText("99/99")
+        cardExpirationDateElement.setText("13/99")
+        expectThat(changeEvents).single().and {
+            get { isValid }.isFalse()
+            get { isEmpty }.isFalse()
+            get { isComplete }.isTrue()
+        }
+    }
+
+    @Test
+    fun `ChangeEvent is raised once when single digit month is entered`() {
+        val changeEvents = mutableListOf<ChangeEvent>()
+        cardExpirationDateElement.addChangeEventListener { changeEvents.add(it) }
+
+        cardExpirationDateElement.setText("3")
         expectThat(changeEvents).single().and {
             get { isValid }.isFalse()
             get { isEmpty }.isFalse()

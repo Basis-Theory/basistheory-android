@@ -45,16 +45,16 @@ class CardExpirationDateElement : TextElement {
             ?.split("/")
             ?.elementAtOrNull(1)
 
-    override fun afterTextChanged(editable: Editable?) {
-        val textValue = editable?.toString()
-        val firstChar = textValue?.firstOrNull()
+    /**
+     * If the user entered a leading digit > 1, auto insert a leading 0
+     */
+    override fun transformUserInput(userInput: String?): String? {
+        val firstChar = userInput?.firstOrNull()
 
-        if (firstChar?.isDigit() != true) return
+        if (firstChar?.isDigit() != true) return userInput
 
         val firstDigit = firstChar.digitToInt()
-        if (firstDigit > 1) {
-            editable.replace(0, textValue.length, "0$textValue")
-        }
+        return if (firstDigit > 1) "0$userInput" else userInput
     }
 
     companion object {

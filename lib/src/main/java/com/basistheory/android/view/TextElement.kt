@@ -17,7 +17,8 @@ import com.basistheory.android.event.ChangeEvent
 import com.basistheory.android.event.ElementEventListeners
 import com.basistheory.android.event.FocusEvent
 import com.basistheory.android.model.KeyboardType
-import com.basistheory.android.view.mask.MaskWatcher
+import com.basistheory.android.model.InputAction
+import com.basistheory.android.view.mask.Mask
 
 open class TextElement : FrameLayout {
     private var attrs: AttributeSet? = null
@@ -25,7 +26,7 @@ open class TextElement : FrameLayout {
     private var input: AppCompatEditText = AppCompatEditText(context, attrs, defStyleAttr)
     private var defaultBackground = input.background // todo: find a better way to reference this
     private val eventListeners = ElementEventListeners()
-    private var maskWatcher: MaskWatcher? = null
+    private var maskValue: Mask? = null
 
     constructor(context: Context) : super(context) {
         initialize()
@@ -77,11 +78,10 @@ open class TextElement : FrameLayout {
             input.inputType = value.inputType
         }
 
-    // todo: should this be public? only on TextElement but hide the setters on derived elements?
     var mask: List<Any>? = null
         set(value) {
             field = value
-            maskWatcher = value?.let { MaskWatcher(it) }
+            maskValue = value?.let { Mask(it) }
         }
 
     var removeDefaultStyles: Boolean
@@ -138,23 +138,58 @@ open class TextElement : FrameLayout {
         subscribeToInputEvents()
     }
 
-    protected open fun afterTextChanged(editable: Editable?) {
-    }
+    protected open fun transformUserInput(userInput: String?): String? = userInput
 
     private fun subscribeToInputEvents() {
         input.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(value: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                maskWatcher?.beforeTextChanged(value, p1, p2, p3)
+            private var isInternalChange: Boolean = false
+            private var inputAction: InputAction = InputAction.INSERT
+
+            override fun beforeTextChanged(
+                value: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
             }
 
-            override fun onTextChanged(value: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                maskWatcher?.onTextChanged(value, p1, p2, p3)
+            override fun onTextChanged(
+                value: CharSequence?,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
+                if (isInternalChange) return
+
+                inputAction =
+                    if (before > 0 && count == 0) InputAction.DELETE
+                    else InputAction.INSERT
             }
 
             override fun afterTextChanged(editable: Editable?) {
-                this@TextElement.afterTextChanged(editable)
-                maskWatcher?.afterTextChanged(editable)
-                tryPublishChangeEvent(editable)
+                if (isInternalChange) return
+
+                val originalValue = editable?.toString()
+                val transformedValue = transformUserInput(originalValue)
+                    .let { maskValue?.evaluate(it, inputAction) ?: it }
+
+                if (originalValue != transformedValue)
+                    applyInternalChange(transformedValue)
+
+                publishChangeEvent(editable)
+            }
+
+            private fun applyInternalChange(value: String?) {
+                val editable = input.editableText
+                val originalFilters = editable.filters
+
+                isInternalChange = true
+
+                editable.filters = emptyArray()
+                editable.replace(0, editable.length, value)
+                editable.filters = originalFilters
+
+                isInternalChange = false
             }
         })
 
@@ -166,21 +201,15 @@ open class TextElement : FrameLayout {
         }
     }
 
-    private fun tryPublishChangeEvent(editable: Editable?) {
-        // when a mask is applied, there are 2 change events raised:
-        // one with the raw user input, and a second after the mask has been applied
-        val shouldPublishEvent = maskWatcher == null || maskWatcher?.isMaskApplied == true
+    private fun publishChangeEvent(editable: Editable?) {
+        val event = ChangeEvent(
+            isComplete = maskValue?.isComplete(editable?.toString()) ?: false,
+            isEmpty = editable?.isEmpty() ?: false,
+            isValid = validate(getText())
+        )
 
-        if (shouldPublishEvent) {
-            val event = ChangeEvent(
-                isComplete = maskWatcher?.isComplete ?: false,
-                isEmpty = editable?.isEmpty() ?: false,
-                isValid = validate(getText())
-            )
-
-            eventListeners.change.forEach {
-                it(event)
-            }
+        eventListeners.change.forEach {
+            it(event)
         }
     }
 }

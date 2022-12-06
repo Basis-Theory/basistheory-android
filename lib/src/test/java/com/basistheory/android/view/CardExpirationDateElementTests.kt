@@ -119,7 +119,7 @@ class CardExpirationDateElementTests {
         expectThat(changeEvents).single().and {
             get { isValid }.isFalse()
             get { isEmpty }.isFalse()
-            get { isComplete }.isTrue()
+            get { isComplete }.isFalse()
         }
     }
 }

@@ -7,20 +7,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import com.basistheory.android.example.BuildConfig
 import com.basistheory.android.example.R
 import com.basistheory.android.example.databinding.FragmentCardBinding
 import com.basistheory.android.example.util.prettyPrintJson
 import com.basistheory.android.service.BasisTheoryElements
+import com.basistheory.android.view.CardExpirationDateElement
 import com.basistheory.android.view.CardNumberElement
+import com.basistheory.android.view.CardVerificationCodeElement
 import kotlinx.coroutines.runBlocking
 import org.threeten.bp.Instant
 import org.threeten.bp.temporal.ChronoUnit
 
 class CardFragment : Fragment() {
     private lateinit var cardNumberElement: CardNumberElement
-//    private lateinit var cvcElement:
+    private lateinit var cardExpirationDateElement: CardExpirationDateElement
+    private lateinit var cvcElement: CardVerificationCodeElement
 
     private lateinit var tokenizeResult: TextView
     private lateinit var tokenizeButton: Button
@@ -39,6 +43,8 @@ class CardFragment : Fragment() {
         val root: View = binding.root
 
         cardNumberElement = root.findViewById(R.id.cardNumber)
+        cardExpirationDateElement = root.findViewById(R.id.cardExpiration)
+        cvcElement = root.findViewById(R.id.cvc)
 
         tokenizeResult = root.findViewById(R.id.tokenizeResult)
         tokenizeButton = root.findViewById(R.id.tokenizeButton)
@@ -48,7 +54,7 @@ class CardFragment : Fragment() {
                 cardNumberElement.textColor = Color.RED
                 tokenizeButton.isEnabled = false
             } else {
-                cardNumberElement.textColor = Color.BLACK
+                cardNumberElement.textColor = ResourcesCompat.getColor(resources, R.color.gray_800, null)
                 tokenizeButton.isEnabled = true
             }
         }
@@ -62,7 +68,8 @@ class CardFragment : Fragment() {
         assert(button.id == R.id.setTextButton)
 
         cardNumberElement.setText("4242424242424242")
-//        cvcElement.setText("123")
+        cardExpirationDateElement.setText("12/25")
+        cvcElement.setText("123")
     }
 
     fun submit(button: View) {
@@ -79,10 +86,12 @@ class CardFragment : Fragment() {
 
         runBlocking {
             val tokenizeResponse = bt.tokenize(object {
-                val type = "token"
+                val type = "card"
                 val data = object {
-                    val staticProp = "Static Value"
-                    val cardNumber = cardNumberElement
+                    val number = cardNumberElement
+                    val expiration_month = cardExpirationDateElement.month()
+                    val expiration_year = cardExpirationDateElement.year()
+                    val cvc = cvcElement
                 }
                 val expires_at = expirationTimestamp
             })

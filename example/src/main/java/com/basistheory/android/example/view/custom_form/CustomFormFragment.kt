@@ -12,7 +12,7 @@ import com.basistheory.android.example.R
 import com.basistheory.android.example.databinding.FragmentCustomFormBinding
 import com.basistheory.android.example.util.prettyPrintJson
 import com.basistheory.android.service.BasisTheoryElements
-import com.basistheory.android.view.KeyboardType
+import com.basistheory.android.model.KeyboardType
 import com.basistheory.android.view.TextElement
 import kotlinx.coroutines.runBlocking
 import org.threeten.bp.Instant

@@ -1,3 +1,11 @@
+## [0.5.0](https://github.com/Basis-Theory/basistheory-android/compare/0.4.0...0.5.0) (2022-12-07)
+
+
+### Features
+
+* Adds CardVerificationCodeElement ([#14](https://github.com/Basis-Theory/basistheory-android/issues/14)) ([f90e028](https://github.com/Basis-Theory/basistheory-android/commit/f90e02820533dcc972db73b6f8415e87fe701bf7))
+
+
 ## [0.4.0](https://github.com/Basis-Theory/basistheory-android/compare/0.3.0...0.4.0) (2022-12-02)
 
 

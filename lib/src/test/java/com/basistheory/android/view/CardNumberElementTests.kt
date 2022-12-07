@@ -36,6 +36,12 @@ class CardNumberElementTests {
     }
 
     @Test
+    fun `applies mask when setting the value`() {
+        cardNumberElement.setText("4242abc4242def4242geh4242")
+        expectThat(cardNumberElement.getText()).isEqualTo("4242424242424242")
+    }
+
+    @Test
     fun `applies the transform when retrieving the value`() {
         cardNumberElement.setText("4242 4242 4242 4242")
         expectThat(cardNumberElement.getText()).isEqualTo("4242424242424242")

@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import com.basistheory.android.view.transform.regexReplaceElementTransform
 import com.basistheory.android.view.validation.luhnValidator
 
-class CardNumberElement : TextElement {
+class CardVerificationCodeElement : TextElement {
 
     constructor(context: Context) : super(context) {
         init()
@@ -20,22 +20,19 @@ class CardNumberElement : TextElement {
         attrs,
         defStyleAttr
     ) {
-      init()
+        init()
     }
 
     private fun init() {
         super.keyboardType = KeyboardType.NUMBER
         super.mask = defaultMask
-        super.transform = regexReplaceElementTransform(Regex("""\s"""), "")
-        super.validator = ::luhnValidator
+        super.validator = { Regex("""^\d{3,4}$""").matches(it ?: "") }
     }
 
     companion object {
         private val digit = Regex("""\d""")
 
         val defaultMask: List<Any> =
-            (1..19).map {
-                if (it % 5 == 0 && it > 0) " " else digit
-            }
+            listOf(digit, digit, digit)
     }
 }

@@ -107,6 +107,7 @@ open class TextElement : FrameLayout {
     }
 
     private fun initialize() {
+        // wires up attributes declared in the xml layout with properties on this element
         context.theme.obtainStyledAttributes(attrs, R.styleable.TextElement, defStyleAttr, 0)
             .apply {
                 try {
@@ -185,11 +186,24 @@ open class TextElement : FrameLayout {
 
                 isInternalChange = true
 
+                // disable filters on the underlying input applied by the input/keyboard type
                 editable.filters = emptyArray()
                 editable.replace(0, editable.length, value)
                 editable.filters = originalFilters
 
                 isInternalChange = false
+            }
+
+            private fun publishChangeEvent(editable: Editable?) {
+                val event = ChangeEvent(
+                    isComplete = maskValue?.isComplete(editable?.toString()) ?: false,
+                    isEmpty = editable?.isEmpty() ?: false,
+                    isValid = validate(getText())
+                )
+
+                eventListeners.change.forEach {
+                    it(event)
+                }
             }
         })
 
@@ -198,18 +212,6 @@ open class TextElement : FrameLayout {
                 eventListeners.focus.forEach { it(FocusEvent()) }
             else
                 eventListeners.blur.forEach { it(BlurEvent()) }
-        }
-    }
-
-    private fun publishChangeEvent(editable: Editable?) {
-        val event = ChangeEvent(
-            isComplete = maskValue?.isComplete(editable?.toString()) ?: false,
-            isEmpty = editable?.isEmpty() ?: false,
-            isValid = validate(getText())
-        )
-
-        eventListeners.change.forEach {
-            it(event)
         }
     }
 }

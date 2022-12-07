@@ -1,4 +1,4 @@
-package com.basistheory.android.example.social_security_number
+package com.basistheory.android.example.view.social_security_number
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,19 +8,19 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.basistheory.android.example.BuildConfig
 import com.basistheory.android.example.R
-import com.basistheory.android.example.databinding.FragmentSocialSecurityNumberElementBinding
+import com.basistheory.android.example.databinding.FragmentSocialSecurityNumberBinding
+import com.basistheory.android.example.util.prettyPrintJson
 import com.basistheory.android.service.BasisTheoryElements
 import com.basistheory.android.view.TextElement
-import com.google.gson.GsonBuilder
 import kotlinx.coroutines.runBlocking
 import org.threeten.bp.Instant
 import org.threeten.bp.temporal.ChronoUnit
 
-class SocialSecurityElementFragment : Fragment() {
+class SocialSecurityNumberFragment : Fragment() {
     private lateinit var socialSecurityNumberElement: TextElement
     private lateinit var tokenizeResult: TextView
 
-    private var _binding: FragmentSocialSecurityNumberElementBinding? = null
+    private var _binding: FragmentSocialSecurityNumberBinding? = null
 
     private val binding get() = _binding!!
 
@@ -30,9 +30,8 @@ class SocialSecurityElementFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        _binding = FragmentSocialSecurityNumberElementBinding.inflate(inflater, container, false)
+        _binding = FragmentSocialSecurityNumberBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
 
         socialSecurityNumberElement = root.findViewById(R.id.socialSecurityNumber)
 
@@ -59,11 +58,9 @@ class SocialSecurityElementFragment : Fragment() {
             .apiKey(BuildConfig.BASIS_THEORY_API_KEY)
             .build()
 
-        /**
-         * Note: java.time.Instant is only supported on API level 26+.
-         * threetenbp is a backport of java.time for java 6/7 and Android API < 26
-         */
-        val expirationTimestamp = Instant.now().plus(5, ChronoUnit.MINUTES).toString()
+        val expirationTimestamp = Instant.now()
+            .plus(5, ChronoUnit.MINUTES)
+            .toString()
 
         runBlocking {
             val tokenizeResponse = bt.tokenize(object {
@@ -74,9 +71,7 @@ class SocialSecurityElementFragment : Fragment() {
                 val expires_at = expirationTimestamp
             })
 
-            val gson = GsonBuilder().setPrettyPrinting().create()
-
-            tokenizeResult.text = gson.toJson(tokenizeResponse)
+            tokenizeResult.text = tokenizeResponse.prettyPrintJson()
         }
     }
 }

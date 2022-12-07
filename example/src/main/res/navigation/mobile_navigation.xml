@@ -3,30 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/nav_card">
 
     <fragment
-        android:id="@+id/nav_home"
-        android:name="com.basistheory.android.example.home.HomeFragment"
-        android:label="Basis Theory"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/nav_card"
+        android:name="com.basistheory.android.example.view.card.CardFragment"
+        android:label="@string/menu_card"
+        tools:layout="@layout/fragment_card" />
 
     <fragment
-        android:id="@+id/nav_text_element"
-        android:name="com.basistheory.android.example.text_element.TextElementFragment"
-        android:label="@string/menu_text_element"
-        tools:layout="@layout/fragment_text_element" />
+        android:id="@+id/nav_social_security_number"
+        android:name="com.basistheory.android.example.view.social_security_number.SocialSecurityNumberFragment"
+        android:label="@string/menu_social_security_number"
+        tools:layout="@layout/fragment_social_security_number" />
 
     <fragment
-        android:id="@+id/nav_social_security_number_element"
-        android:name="com.basistheory.android.example.social_security_number.SocialSecurityElementFragment"
-        android:label="@string/menu_social_security_number_element"
-        tools:layout="@layout/fragment_social_security_number_element" />
-
-    <fragment
-        android:id="@+id/nav_card_element"
-        android:name="com.basistheory.android.example.card_element.CardElementFragment"
-        android:label="@string/menu_card_element"
-        tools:layout="@layout/fragment_card_element" />
+        android:id="@+id/nav_custom_form"
+        android:name="com.basistheory.android.example.view.custom_form.CustomFormFragment"
+        android:label="@string/menu_custom_form"
+        tools:layout="@layout/fragment_custom_form" />
 
 </navigation>

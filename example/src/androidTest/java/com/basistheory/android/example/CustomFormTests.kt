@@ -6,6 +6,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.activityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.basistheory.android.example.view.MainActivity
 import com.github.javafaker.Faker
 import org.hamcrest.Matchers.allOf
 import org.junit.Assert.*

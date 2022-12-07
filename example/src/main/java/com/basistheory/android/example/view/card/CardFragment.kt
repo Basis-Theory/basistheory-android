@@ -1,4 +1,4 @@
-package com.basistheory.android.example.card_element
+package com.basistheory.android.example.view.card
 
 import android.graphics.Color
 import android.os.Bundle
@@ -10,22 +10,22 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.basistheory.android.example.BuildConfig
 import com.basistheory.android.example.R
-import com.basistheory.android.example.databinding.FragmentCardElementBinding
-import com.basistheory.android.example.databinding.FragmentTextElementBinding
+import com.basistheory.android.example.databinding.FragmentCardBinding
+import com.basistheory.android.example.util.prettyPrintJson
 import com.basistheory.android.service.BasisTheoryElements
 import com.basistheory.android.view.CardNumberElement
-import com.google.gson.GsonBuilder
 import kotlinx.coroutines.runBlocking
 import org.threeten.bp.Instant
 import org.threeten.bp.temporal.ChronoUnit
 
-class CardElementFragment : Fragment() {
+class CardFragment : Fragment() {
     private lateinit var cardNumberElement: CardNumberElement
+//    private lateinit var cvcElement:
 
     private lateinit var tokenizeResult: TextView
     private lateinit var tokenizeButton: Button
 
-    private var _binding: FragmentCardElementBinding? = null
+    private var _binding: FragmentCardBinding? = null
 
     private val binding get() = _binding!!
 
@@ -35,7 +35,7 @@ class CardElementFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        _binding = FragmentCardElementBinding.inflate(inflater, container, false)
+        _binding = FragmentCardBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         cardNumberElement = root.findViewById(R.id.cardNumber)
@@ -62,6 +62,7 @@ class CardElementFragment : Fragment() {
         assert(button.id == R.id.setTextButton)
 
         cardNumberElement.setText("4242424242424242")
+//        cvcElement.setText("123")
     }
 
     fun submit(button: View) {
@@ -72,11 +73,9 @@ class CardElementFragment : Fragment() {
             .apiKey(BuildConfig.BASIS_THEORY_API_KEY)
             .build()
 
-        /**
-         * Note: java.time.Instant is only supported on API level 26+.
-         * threetenbp is a backport of java.time for java 6/7 and Android API < 26
-         */
-        val expirationTimestamp = Instant.now().plus(5, ChronoUnit.MINUTES).toString()
+        val expirationTimestamp = Instant.now()
+            .plus(5, ChronoUnit.MINUTES)
+            .toString()
 
         runBlocking {
             val tokenizeResponse = bt.tokenize(object {
@@ -88,9 +87,7 @@ class CardElementFragment : Fragment() {
                 val expires_at = expirationTimestamp
             })
 
-            val gson = GsonBuilder().setPrettyPrinting().create()
-
-            tokenizeResult.text = gson.toJson(tokenizeResponse)
+            tokenizeResult.text = tokenizeResponse.prettyPrintJson()
         }
     }
 }

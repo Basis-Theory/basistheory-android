@@ -1,6 +1,5 @@
-package com.basistheory.android.example.text_element
+package com.basistheory.android.example.view.custom_form
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,24 +9,23 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.basistheory.android.example.BuildConfig
 import com.basistheory.android.example.R
-import com.basistheory.android.example.databinding.FragmentTextElementBinding
+import com.basistheory.android.example.databinding.FragmentCustomFormBinding
+import com.basistheory.android.example.util.prettyPrintJson
 import com.basistheory.android.service.BasisTheoryElements
-import com.basistheory.android.view.CardNumberElement
 import com.basistheory.android.view.KeyboardType
 import com.basistheory.android.view.TextElement
-import com.google.gson.GsonBuilder
 import kotlinx.coroutines.runBlocking
 import org.threeten.bp.Instant
 import org.threeten.bp.temporal.ChronoUnit
 
-class TextElementFragment : Fragment() {
+class CustomFormFragment : Fragment() {
     private lateinit var nameElement: TextElement
     private lateinit var phoneNumberElement: TextElement
     private lateinit var orderNumberElement: TextElement
     private lateinit var tokenizeResult: TextView
     private lateinit var tokenizeButton: Button
 
-    private var _binding: FragmentTextElementBinding? = null
+    private var _binding: FragmentCustomFormBinding? = null
 
     private val binding get() = _binding!!
 
@@ -37,7 +35,7 @@ class TextElementFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        _binding = FragmentTextElementBinding.inflate(inflater, container, false)
+        _binding = FragmentCustomFormBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         nameElement = root.findViewById(R.id.name)
@@ -56,7 +54,6 @@ class TextElementFragment : Fragment() {
 
         _binding?.tokenizeButton?.setOnClickListener { submit(it) }
         _binding?.setTextButton?.setOnClickListener { setText(it) }
-
 
         subscribeToEvents()
 
@@ -94,11 +91,9 @@ class TextElementFragment : Fragment() {
             .apiKey(BuildConfig.BASIS_THEORY_API_KEY)
             .build()
 
-        /**
-         * Note: java.time.Instant is only supported on API level 26+.
-         * threetenbp is a backport of java.time for java 6/7 and Android API < 26
-         */
-        val expirationTimestamp = Instant.now().plus(5, ChronoUnit.MINUTES).toString()
+        val expirationTimestamp = Instant.now()
+            .plus(5, ChronoUnit.MINUTES)
+            .toString()
 
         runBlocking {
             val tokenizeResponse = bt.tokenize(object {
@@ -112,9 +107,7 @@ class TextElementFragment : Fragment() {
                 val expires_at = expirationTimestamp
             })
 
-            val gson = GsonBuilder().setPrettyPrinting().create()
-
-            tokenizeResult.text = gson.toJson(tokenizeResponse)
+            tokenizeResult.text = tokenizeResponse.prettyPrintJson()
         }
     }
 }

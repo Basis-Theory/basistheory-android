@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    tools:context="com.basistheory.android.example.card_element.CardElementFragment">
+    tools:context="com.basistheory.android.example.view.card.CardFragment">
 
     <ScrollView
         android:background="@color/white"
@@ -38,7 +38,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-
+                    android:backgroundTint="@color/primary"
                     android:onClick="submit"
                     android:text="Tokenize" />
 

@@ -4,16 +4,13 @@
     tools:showIn="navigation_view">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_home"
-            android:title="@string/menu_home" />
+            android:id="@+id/nav_card"
+            android:title="@string/menu_card" />
         <item
-            android:id="@+id/nav_text_element"
-            android:title="@string/menu_text_element" />
+            android:id="@+id/nav_social_security_number"
+            android:title="@string/menu_social_security_number" />
         <item
-            android:id="@+id/nav_social_security_number_element"
-            android:title="@string/menu_social_security_number_element" />
-        <item
-            android:id="@+id/nav_card_element"
-            android:title="@string/menu_card_element" />
+            android:id="@+id/nav_custom_form"
+            android:title="@string/menu_custom_form" />
     </group>
 </menu>

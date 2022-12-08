@@ -64,10 +64,8 @@ class SocialSecurityNumberFragment : Fragment() {
 
         runBlocking {
             val tokenizeResponse = bt.tokenize(object {
-                val type = "token"
-                val data = object {
-                    val socialSecurityNumber = socialSecurityNumberElement
-                }
+                val type = "social_security_number"
+                val data = socialSecurityNumberElement
                 val expires_at = expirationTimestamp
             })
 

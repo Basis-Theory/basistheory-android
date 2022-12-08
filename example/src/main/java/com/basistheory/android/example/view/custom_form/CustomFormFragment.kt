@@ -99,7 +99,6 @@ class CustomFormFragment : Fragment() {
             val tokenizeResponse = bt.tokenize(object {
                 val type = "token"
                 val data = object {
-                    val staticProp = "Static Value"
                     val name = nameElement
                     val phoneNumber = phoneNumberElement
                     val orderNumber = orderNumberElement

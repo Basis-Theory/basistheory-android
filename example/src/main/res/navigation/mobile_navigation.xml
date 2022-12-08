@@ -8,19 +8,19 @@
     <fragment
         android:id="@+id/nav_card"
         android:name="com.basistheory.android.example.view.card.CardFragment"
-        android:label="@string/menu_card"
+        android:label="@string/title_card"
         tools:layout="@layout/fragment_card" />
 
     <fragment
         android:id="@+id/nav_social_security_number"
         android:name="com.basistheory.android.example.view.social_security_number.SocialSecurityNumberFragment"
-        android:label="@string/menu_social_security_number"
+        android:label="@string/title_social_security_number"
         tools:layout="@layout/fragment_social_security_number" />
 
     <fragment
         android:id="@+id/nav_custom_form"
         android:name="com.basistheory.android.example.view.custom_form.CustomFormFragment"
-        android:label="@string/menu_custom_form"
+        android:label="@string/title_custom_form"
         tools:layout="@layout/fragment_custom_form" />
 
 </navigation>

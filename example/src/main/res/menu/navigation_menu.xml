@@ -5,12 +5,12 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_card"
-            android:title="@string/menu_card" />
+            android:title="@string/title_card" />
         <item
             android:id="@+id/nav_social_security_number"
-            android:title="@string/menu_social_security_number" />
+            android:title="@string/title_social_security_number" />
         <item
             android:id="@+id/nav_custom_form"
-            android:title="@string/menu_custom_form" />
+            android:title="@string/title_custom_form" />
     </group>
 </menu>

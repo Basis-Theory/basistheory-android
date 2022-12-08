@@ -39,7 +39,7 @@ class CustomFormTests {
     fun canTokenize() {
         val cardNumber = "4242424242424242"
         val expMonth = "11"
-        val expYear = (LocalDate.now().year + 1).toString().takeLast(2)
+        val expYear = (LocalDate.now().year + 1).toString()
         val cvc = "123"
         val name = Faker().name().fullName()
         val phoneNumber = "2345678900"
@@ -48,7 +48,7 @@ class CustomFormTests {
 
         // type values into elements
         onView(withId(R.id.cardNumber)).perform(scrollTo(), typeText(cardNumber))
-        onView(withId(R.id.cardExpiration)).perform(scrollTo(), typeText("$expMonth/$expYear"))
+        onView(withId(R.id.cardExpiration)).perform(scrollTo(), typeText("$expMonth/${expYear.takeLast(2)}"))
         onView(withId(R.id.cvc)).perform(scrollTo(), typeText(cvc))
         onView(withId(R.id.name)).perform(scrollTo(), typeText(name))
         onView(withId(R.id.phoneNumber)).perform(scrollTo(), typeText(phoneNumber))

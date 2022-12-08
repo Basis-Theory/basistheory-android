@@ -173,18 +173,20 @@ class BasisTheoryElementsTests {
         }
 
     @Test
-    fun `tokenize should replace top level CardExpirationDateElement year ref with underlying data value`() =
+    fun `tokenize should replace top level CardExpirationDateElement refs with underlying data value`() =
         runBlocking {
             every { provider.getTokenizeApi(any()) } returns tokenizeApi
 
             val expDate = LocalDate.now().plus(2, ChronoUnit.YEARS)
             val month = expDate.monthValue.toString().padStart(2, '0')
-            val year = expDate.year.toString().takeLast(2)
-            cardExpElement.setText("$month/$year")
+            val year = expDate.year.toString()
+            cardExpElement.setText("$month/${year.takeLast(2)}")
 
             bt.tokenize(cardExpElement.month())
-
             verify { tokenizeApi.tokenize(month) }
+
+            bt.tokenize(cardExpElement.year())
+            verify { tokenizeApi.tokenize(year) }
         }
 
     @Test
@@ -203,8 +205,8 @@ class BasisTheoryElementsTests {
 
             val expDate = LocalDate.now().plus(2, ChronoUnit.YEARS)
             val expMonth = expDate.monthValue.toString().padStart(2, '0')
-            val expYear = expDate.year.toString().takeLast(2)
-            cardExpElement.setText("$expMonth/$expYear")
+            val expYear = expDate.year.toString()
+            cardExpElement.setText("$expMonth/${expYear.takeLast(2)}")
 
             val cvc = faker.random().nextInt(100, 999).toString()
             cvcElement.setText(cvc)

@@ -44,6 +44,7 @@ class CardExpirationDateElement : TextElement {
         getText()
             ?.split("/")
             ?.elementAtOrNull(1)
+            ?.let { "20$it" }
 
     /**
      * If the user entered a leading digit > 1, auto insert a leading 0

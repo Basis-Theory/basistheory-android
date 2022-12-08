@@ -20,39 +20,29 @@ class SocialSecurityNumberFragment : Fragment() {
     private lateinit var socialSecurityNumberElement: TextElement
     private lateinit var tokenizeResult: TextView
 
-    private var _binding: FragmentSocialSecurityNumberBinding? = null
-
-    private val binding get() = _binding!!
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val binding = FragmentSocialSecurityNumberBinding.inflate(inflater, container, false)
 
-        _binding = FragmentSocialSecurityNumberBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        socialSecurityNumberElement = binding.root.findViewById(R.id.socialSecurityNumber)
 
-        socialSecurityNumberElement = root.findViewById(R.id.socialSecurityNumber)
+        tokenizeResult = binding.root.findViewById(R.id.tokenize_result)
 
-        tokenizeResult = root.findViewById(R.id.tokenizeResult)
+        binding.tokenizeButton.setOnClickListener { tokenize() }
+        binding.autofillButton.setOnClickListener { autofill() }
 
-        _binding?.tokenizeButton?.setOnClickListener { submit(it) }
-        _binding?.setTextButton?.setOnClickListener { setText(it) }
-
-        return root
+        return binding.root
     }
 
 
-   fun setText(button: View) {
-        assert(button.id == R.id.setTextButton)
-
+   private fun autofill() {
        socialSecurityNumberElement.setText("234567890")
     }
 
-    fun submit(button: View) {
-        assert(button.id == R.id.tokenizeButton)
-
+    private fun tokenize() {
         val bt = BasisTheoryElements.builder()
             .apiUrl(BuildConfig.BASIS_THEORY_API_URL)
             .apiKey(BuildConfig.BASIS_THEORY_API_KEY)

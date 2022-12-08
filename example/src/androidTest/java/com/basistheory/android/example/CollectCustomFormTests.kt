@@ -3,9 +3,7 @@ package com.basistheory.android.example
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.DrawerActions
 import androidx.test.espresso.contrib.DrawerActions.open
-import androidx.test.espresso.contrib.NavigationViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.activityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -14,12 +12,9 @@ import com.github.javafaker.Faker
 import org.hamcrest.Matchers.allOf
 import org.junit.Assert.*
 import org.junit.Before
-import org.junit.FixMethodOrder
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.junit.runners.MethodSorters
-import java.time.LocalDate
 
 @RunWith(AndroidJUnit4::class)
 class CollectCustomFormTests {
@@ -35,7 +30,7 @@ class CollectCustomFormTests {
 
     @Test
     fun canAutofill() {
-        onView(withId(R.id.setTextButton)).perform(scrollTo(), click())
+        onView(withId(R.id.`@+id/autofill_button`)).perform(scrollTo(), click())
 
         onView(withText("Manually Set Name")).check(matches(isDisplayed()))
         onView(withText("+1(234) 567-8900")).check(matches(isDisplayed()))
@@ -54,10 +49,10 @@ class CollectCustomFormTests {
         onView(withId(R.id.orderNumber)).perform(scrollTo(), typeText(orderNumber))
 
         // click tokenize
-        onView(withId(R.id.tokenizeButton)).perform(scrollTo(), click())
+        onView(withId(R.id.tokenize_button)).perform(scrollTo(), click())
 
         // assertions on tokenize response
-        onView(withId(R.id.tokenizeResult)).check(
+        onView(withId(R.id.tokenize_result)).check(
             matches(
                 allOf(
                     withSubstring(name),

@@ -13,7 +13,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:orientation="vertical">
 
@@ -57,28 +57,26 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/tokenizeButton"
+                    android:id="@+id/tokenize_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:backgroundTint="@color/primary"
-                    android:onClick="submit"
-                    android:text="Tokenize" />
+                    android:text="@string/tokenize" />
 
                 <Button
-                    android:id="@+id/setTextButton"
+                    android:id="@+id/autofill_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
                     android:layout_marginTop="20dp"
                     android:backgroundTint="@color/primary"
-                    android:onClick="setText"
-                    android:text="Set Text" />
+                    android:text="@string/autofill" />
 
             </LinearLayout>
 
             <TextView
-                android:id="@+id/tokenizeResult"
+                android:id="@+id/tokenize_result"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"

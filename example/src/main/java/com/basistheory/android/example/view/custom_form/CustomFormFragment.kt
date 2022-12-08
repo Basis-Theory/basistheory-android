@@ -25,24 +25,18 @@ class CustomFormFragment : Fragment() {
     private lateinit var tokenizeResult: TextView
     private lateinit var tokenizeButton: Button
 
-    private var _binding: FragmentCustomFormBinding? = null
-
-    private val binding get() = _binding!!
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val binding = FragmentCustomFormBinding.inflate(inflater, container, false)
 
-        _binding = FragmentCustomFormBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-
-        nameElement = root.findViewById(R.id.name)
-        phoneNumberElement = root.findViewById(R.id.phoneNumber)
-        orderNumberElement = root.findViewById(R.id.orderNumber)
-        tokenizeResult = root.findViewById(R.id.tokenizeResult)
-        tokenizeButton = root.findViewById(R.id.tokenizeButton)
+        nameElement = binding.root.findViewById(R.id.name)
+        phoneNumberElement = binding.root.findViewById(R.id.phoneNumber)
+        orderNumberElement = binding.root.findViewById(R.id.orderNumber)
+        tokenizeResult = binding.root.findViewById(R.id.tokenize_result)
+        tokenizeButton = binding.root.findViewById(R.id.tokenize_button)
 
         val digitRegex = Regex("""\d""")
         val charRegex = Regex("""[A-Za-z]""")
@@ -52,40 +46,19 @@ class CustomFormFragment : Fragment() {
 
         orderNumberElement.mask = listOf(charRegex, charRegex, charRegex, "-", digitRegex, digitRegex, digitRegex)
 
-        _binding?.tokenizeButton?.setOnClickListener { submit(it) }
-        _binding?.setTextButton?.setOnClickListener { setText(it) }
+        binding.tokenizeButton.setOnClickListener { tokenize() }
+        binding.autofillButton.setOnClickListener { autofill() }
 
-        subscribeToEvents()
-
-        return root
+        return binding.root
     }
 
-
-    private fun subscribeToEvents() {
-        nameElement.addChangeEventListener {
-            println("Change event received: $it")
-        }
-
-        nameElement.addFocusEventListener {
-            println("Element gained focus")
-        }
-
-        nameElement.addBlurEventListener {
-            println("Element lost focus")
-        }
-    }
-
-   fun setText(button: View) {
-        assert(button.id == R.id.setTextButton)
-
-       nameElement.setText("Manually Set Name")
+   private fun autofill() {
+       nameElement.setText("John Doe")
        phoneNumberElement.setText("2345678900")
        orderNumberElement.setText("ABC123")
     }
 
-    fun submit(button: View) {
-        assert(button.id == R.id.tokenizeButton)
-
+    private fun tokenize() {
         val bt = BasisTheoryElements.builder()
             .apiUrl(BuildConfig.BASIS_THEORY_API_URL)
             .apiKey(BuildConfig.BASIS_THEORY_API_KEY)

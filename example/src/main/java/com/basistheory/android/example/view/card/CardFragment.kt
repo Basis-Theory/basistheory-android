@@ -29,26 +29,32 @@ class CardFragment : Fragment() {
     private lateinit var tokenizeResult: TextView
     private lateinit var tokenizeButton: Button
 
-    private var _binding: FragmentCardBinding? = null
-
-    private val binding get() = _binding!!
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val binding = FragmentCardBinding.inflate(inflater, container, false)
 
-        _binding = FragmentCardBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        cardNumberElement = binding.root.findViewById(R.id.cardNumber)
+        cardExpirationDateElement = binding.root.findViewById(R.id.cardExpiration)
+        cvcElement = binding.root.findViewById(R.id.cvc)
 
-        cardNumberElement = root.findViewById(R.id.cardNumber)
-        cardExpirationDateElement = root.findViewById(R.id.cardExpiration)
-        cvcElement = root.findViewById(R.id.cvc)
+        tokenizeResult = binding.root.findViewById(R.id.tokenize_result)
+        tokenizeButton = binding.root.findViewById(R.id.tokenize_button)
 
-        tokenizeResult = root.findViewById(R.id.tokenizeResult)
-        tokenizeButton = root.findViewById(R.id.tokenizeButton)
+        binding.tokenizeButton.setOnClickListener { tokenize() }
+        binding.autofillButton.setOnClickListener { autofill() }
 
+        setValidationListeners()
+
+        return binding.root
+    }
+
+    /**
+     * demonstrates how an application could wire up custom validation behaviors
+     */
+    private fun setValidationListeners() {
         cardNumberElement.addChangeEventListener {
             if (!it.isValid && it.isComplete) {
                 cardNumberElement.textColor = Color.RED
@@ -58,23 +64,15 @@ class CardFragment : Fragment() {
                 tokenizeButton.isEnabled = true
             }
         }
-
-        _binding?.tokenizeButton?.setOnClickListener { submit(it) }
-        _binding?.setTextButton?.setOnClickListener { setText(it) }
-        return root
     }
 
-    fun setText(button: View) {
-        assert(button.id == R.id.setTextButton)
-
+    private fun autofill() {
         cardNumberElement.setText("4242424242424242")
         cardExpirationDateElement.setText("12/25")
         cvcElement.setText("123")
     }
 
-    fun submit(button: View) {
-        assert(button.id == R.id.tokenizeButton)
-
+    private fun tokenize() {
         val bt = BasisTheoryElements.builder()
             .apiUrl(BuildConfig.BASIS_THEORY_API_URL)
             .apiKey(BuildConfig.BASIS_THEORY_API_KEY)

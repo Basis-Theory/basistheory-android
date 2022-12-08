@@ -29,8 +29,8 @@ class CollectCardTests {
     }
 
     @Test
-    fun canSetText() {
-        onView(withId(R.id.`@+id/autofill_button`)).perform(scrollTo(), click())
+    fun canAutofill() {
+        onView(withId(R.id.autofill_button)).perform(scrollTo(), click())
 
         onView(withText("4242 4242 4242 4242")).check(matches(isDisplayed()))
         onView(withText("12/25")).check(matches(isDisplayed()))

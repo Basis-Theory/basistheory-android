@@ -27,8 +27,8 @@ class CollectSocialSecurityNumberTests {
     }
 
     @Test
-    fun canSetText() {
-        onView(withId(R.id.`@+id/autofill_button`)).perform(scrollTo(), click())
+    fun canAutofill() {
+        onView(withId(R.id.autofill_button)).perform(scrollTo(), click())
 
         onView(withText("234-56-7890")).check(matches(isDisplayed()))
     }

@@ -30,7 +30,7 @@ class CollectCustomFormTests {
 
     @Test
     fun canAutofill() {
-        onView(withId(R.id.`@+id/autofill_button`)).perform(scrollTo(), click())
+        onView(withId(R.id.autofill_button)).perform(scrollTo(), click())
 
         onView(withText("Manually Set Name")).check(matches(isDisplayed()))
         onView(withText("+1(234) 567-8900")).check(matches(isDisplayed()))

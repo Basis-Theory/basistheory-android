@@ -56,8 +56,6 @@ class CardFragment : Fragment() {
      */
     private fun setValidationListeners() {
         cardNumberElement.addChangeEventListener {
-            println(it)
-
             if (!it.isValid && it.isComplete) {
                 cardNumberElement.textColor = Color.RED
                 tokenizeButton.isEnabled = false

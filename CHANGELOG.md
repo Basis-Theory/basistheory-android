@@ -1,3 +1,11 @@
+## [0.6.0](https://github.com/Basis-Theory/basistheory-android/compare/0.5.0...0.6.0) (2022-12-09)
+
+
+### Features
+
+* Adds CardExpirationDateElement ([#15](https://github.com/Basis-Theory/basistheory-android/issues/15)) ([464d376](https://github.com/Basis-Theory/basistheory-android/commit/464d37633a5e50ed0bdd2d806cc413593babf818))
+
+
 ## [0.5.0](https://github.com/Basis-Theory/basistheory-android/compare/0.4.0...0.5.0) (2022-12-07)
 
 

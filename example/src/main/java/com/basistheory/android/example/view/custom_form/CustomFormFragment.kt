@@ -4,23 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.basistheory.android.example.BuildConfig
-import com.basistheory.android.example.R
-import com.basistheory.android.example.databinding.FragmentCardBinding
 import com.basistheory.android.example.databinding.FragmentCustomFormBinding
-import com.basistheory.android.example.util.prettyPrintJson
 import com.basistheory.android.example.util.tokenExpirationTimestamp
 import com.basistheory.android.example.viewmodel.TokenizeViewModel
-import com.basistheory.android.service.BasisTheoryElements
 import com.basistheory.android.model.KeyboardType
-import com.basistheory.android.view.TextElement
-import kotlinx.coroutines.runBlocking
-import org.threeten.bp.Instant
-import org.threeten.bp.temporal.ChronoUnit
 
 class CustomFormFragment : Fragment() {
     private val binding: FragmentCustomFormBinding by lazy {

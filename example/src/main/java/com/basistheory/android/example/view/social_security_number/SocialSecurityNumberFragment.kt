@@ -6,10 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.basistheory.android.example.BuildConfig
 import com.basistheory.android.example.R
+import com.basistheory.android.example.databinding.FragmentCustomFormBinding
 import com.basistheory.android.example.databinding.FragmentSocialSecurityNumberBinding
 import com.basistheory.android.example.util.prettyPrintJson
+import com.basistheory.android.example.util.tokenExpirationTimestamp
+import com.basistheory.android.example.viewmodel.TokenizeViewModel
 import com.basistheory.android.service.BasisTheoryElements
 import com.basistheory.android.view.TextElement
 import kotlinx.coroutines.runBlocking
@@ -17,19 +21,19 @@ import org.threeten.bp.Instant
 import org.threeten.bp.temporal.ChronoUnit
 
 class SocialSecurityNumberFragment : Fragment() {
-    private lateinit var socialSecurityNumberElement: TextElement
-    private lateinit var tokenizeResult: TextView
+    private val binding: FragmentSocialSecurityNumberBinding by lazy {
+        FragmentSocialSecurityNumberBinding.inflate(layoutInflater)
+    }
+    private val viewModel: TokenizeViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentSocialSecurityNumberBinding.inflate(inflater, container, false)
-
-        socialSecurityNumberElement = binding.socialSecurityNumber
-
-        tokenizeResult = binding.tokenizeResult
+        super.onCreateView(inflater, container, savedInstanceState)
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
 
         binding.tokenizeButton.setOnClickListener { tokenize() }
         binding.autofillButton.setOnClickListener { autofill() }
@@ -37,31 +41,15 @@ class SocialSecurityNumberFragment : Fragment() {
         return binding.root
     }
 
-
    private fun autofill() {
-       socialSecurityNumberElement.setText("234567890")
+       binding.socialSecurityNumber.setText("234567890")
     }
 
-    private fun tokenize() {
-        val bt = BasisTheoryElements.builder()
-            .apiUrl(BuildConfig.BASIS_THEORY_API_URL)
-            .apiKey(BuildConfig.BASIS_THEORY_API_KEY)
-            .build()
-
-        val expirationTimestamp = Instant.now()
-            .plus(5, ChronoUnit.MINUTES)
-            .toString()
-
-        runBlocking {
-            val tokenizeResponse = bt.tokenize(object {
+    private fun tokenize() =
+        viewModel.tokenize(
+            object {
                 val type = "social_security_number"
-                val data = socialSecurityNumberElement
-                val expires_at = expirationTimestamp
-            })
-
-            tokenizeResult.text = tokenizeResponse.prettyPrintJson()
-        }
-    }
+                val data = binding.socialSecurityNumber
+                val expires_at = tokenExpirationTimestamp()
+            }).observe(viewLifecycleOwner) {}
 }
-
-

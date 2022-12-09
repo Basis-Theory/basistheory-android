@@ -7,10 +7,14 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.basistheory.android.example.BuildConfig
 import com.basistheory.android.example.R
+import com.basistheory.android.example.databinding.FragmentCardBinding
 import com.basistheory.android.example.databinding.FragmentCustomFormBinding
 import com.basistheory.android.example.util.prettyPrintJson
+import com.basistheory.android.example.util.tokenExpirationTimestamp
+import com.basistheory.android.example.viewmodel.TokenizeViewModel
 import com.basistheory.android.service.BasisTheoryElements
 import com.basistheory.android.model.KeyboardType
 import com.basistheory.android.view.TextElement
@@ -19,33 +23,28 @@ import org.threeten.bp.Instant
 import org.threeten.bp.temporal.ChronoUnit
 
 class CustomFormFragment : Fragment() {
-    private lateinit var nameElement: TextElement
-    private lateinit var phoneNumberElement: TextElement
-    private lateinit var orderNumberElement: TextElement
-    private lateinit var tokenizeResult: TextView
-    private lateinit var tokenizeButton: Button
+    private val binding: FragmentCustomFormBinding by lazy {
+        FragmentCustomFormBinding.inflate(layoutInflater)
+    }
+    private val viewModel: TokenizeViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentCustomFormBinding.inflate(inflater, container, false)
-
-        nameElement = binding.name
-        phoneNumberElement = binding.phoneNumber
-        orderNumberElement = binding.orderNumber
-        tokenizeResult = binding.tokenizeResult
-        tokenizeButton = binding.tokenizeButton
+        super.onCreateView(inflater, container, savedInstanceState)
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
 
         val digitRegex = Regex("""\d""")
         val charRegex = Regex("""[A-Za-z]""")
 
         // illustrates that keyboardType can be set programmatically (or in xml)
-        phoneNumberElement.keyboardType = KeyboardType.NUMBER
-        phoneNumberElement.mask = listOf("+", "1", "(", digitRegex,digitRegex,digitRegex, ")", " ", digitRegex, digitRegex, digitRegex, "-", digitRegex, digitRegex , digitRegex, digitRegex )
+        binding.phoneNumber.keyboardType = KeyboardType.NUMBER
+        binding.phoneNumber.mask = listOf("+", "1", "(", digitRegex,digitRegex,digitRegex, ")", " ", digitRegex, digitRegex, digitRegex, "-", digitRegex, digitRegex , digitRegex, digitRegex )
 
-        orderNumberElement.mask = listOf(charRegex, charRegex, charRegex, "-", digitRegex, digitRegex, digitRegex)
+        binding.orderNumber.mask = listOf(charRegex, charRegex, charRegex, "-", digitRegex, digitRegex, digitRegex)
 
         binding.tokenizeButton.setOnClickListener { tokenize() }
         binding.autofillButton.setOnClickListener { autofill() }
@@ -54,35 +53,22 @@ class CustomFormFragment : Fragment() {
     }
 
    private fun autofill() {
-       nameElement.setText("John Doe")
-       phoneNumberElement.setText("2345678900")
-       orderNumberElement.setText("ABC123")
+       binding.name.setText("John Doe")
+       binding.phoneNumber.setText("2345678900")
+       binding.orderNumber.setText("ABC123")
     }
 
-    private fun tokenize() {
-        val bt = BasisTheoryElements.builder()
-            .apiUrl(BuildConfig.BASIS_THEORY_API_URL)
-            .apiKey(BuildConfig.BASIS_THEORY_API_KEY)
-            .build()
-
-        val expirationTimestamp = Instant.now()
-            .plus(5, ChronoUnit.MINUTES)
-            .toString()
-
-        runBlocking {
-            val tokenizeResponse = bt.tokenize(object {
+    private fun tokenize() =
+        viewModel.tokenize(
+            object {
                 val type = "token"
                 val data = object {
-                    val name = nameElement
-                    val phoneNumber = phoneNumberElement
-                    val orderNumber = orderNumberElement
+                    val name = binding.name
+                    val phoneNumber = binding.phoneNumber
+                    val orderNumber = binding.orderNumber
                 }
-                val expires_at = expirationTimestamp
-            })
-
-            tokenizeResult.text = tokenizeResponse.prettyPrintJson()
-        }
-    }
+                val expires_at = tokenExpirationTimestamp()
+            }).observe(viewLifecycleOwner) {}
 }
 
 

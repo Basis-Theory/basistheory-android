@@ -1,16 +1,17 @@
 package com.basistheory.android.view.mask
 
+import com.basistheory.android.model.InputAction
+
 internal class Mask(mask: List<Any>) {
 
     private val sanitizedMask = sanitizeAndValidateMask(mask)
 
-    fun apply(text: CharSequence, action: Action): MaskResult {
-        if (text.isEmpty())
-            return MaskResult("", "", false)
+    fun evaluate(text: String?, action: InputAction): String? {
+        if (text.isNullOrEmpty())
+            return ""
 
         val source = text.iterator()
         val maskedValue = mutableListOf<Char>()
-        val unMaskedValue = mutableListOf<Char>()
         var inputChar = source.nextOrNull()
 
         for (maskChar in sanitizedMask) {
@@ -28,23 +29,19 @@ internal class Mask(mask: List<Any>) {
                     inputChar = source.nextOrNull()
                 } else {
                     maskedValue.add(inputChar)
-                    unMaskedValue.add(inputChar)
                     inputChar = source.nextOrNull()
                 }
             } else {
-                if (inputChar == null && action == Action.DELETE) break
+                if (inputChar == null && action == InputAction.DELETE) break
                 maskedValue.add(maskChar.toString().single())
             }
         }
 
-        val maskedText = maskedValue.joinToString("")
-        val unMaskedText = unMaskedValue.joinToString("")
-        val isComplete = maskedText.length == sanitizedMask.count()
-
-        return MaskResult(
-            maskedText, unMaskedText, isComplete
-        )
+        return maskedValue.joinToString("")
     }
+
+    fun isComplete(value: String?): Boolean =
+        !value.isNullOrEmpty() && value.length == sanitizedMask.count()
 
     private fun sanitizeAndValidateMask(
         mask: List<Any>

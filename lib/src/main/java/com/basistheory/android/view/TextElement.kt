@@ -16,7 +16,9 @@ import com.basistheory.android.event.BlurEvent
 import com.basistheory.android.event.ChangeEvent
 import com.basistheory.android.event.ElementEventListeners
 import com.basistheory.android.event.FocusEvent
-import com.basistheory.android.view.mask.MaskWatcher
+import com.basistheory.android.model.KeyboardType
+import com.basistheory.android.model.InputAction
+import com.basistheory.android.view.mask.Mask
 
 open class TextElement : FrameLayout {
     private var attrs: AttributeSet? = null
@@ -24,7 +26,7 @@ open class TextElement : FrameLayout {
     private var input: AppCompatEditText = AppCompatEditText(context, attrs, defStyleAttr)
     private var defaultBackground = input.background // todo: find a better way to reference this
     private val eventListeners = ElementEventListeners()
-    private var maskWatcher: MaskWatcher? = null
+    private var maskValue: Mask? = null
 
     constructor(context: Context) : super(context) {
         initialize()
@@ -54,7 +56,7 @@ open class TextElement : FrameLayout {
     fun setText(value: String?) =
         input.setText(value)
 
-    internal var validator: (value: String?) -> Boolean =
+    internal var validate: (value: String?) -> Boolean =
         { _ -> true }
 
     internal var transform: (value: String?) -> String? =
@@ -78,7 +80,8 @@ open class TextElement : FrameLayout {
 
     var mask: List<Any>? = null
         set(value) {
-            if (value.isNullOrEmpty()) removeMask() else addMask(value)
+            field = value
+            maskValue = value?.let { Mask(it) }
         }
 
     var removeDefaultStyles: Boolean
@@ -104,6 +107,7 @@ open class TextElement : FrameLayout {
     }
 
     private fun initialize() {
+        // wires up attributes declared in the xml layout with properties on this element
         context.theme.obtainStyledAttributes(attrs, R.styleable.TextElement, defStyleAttr, 0)
             .apply {
                 try {
@@ -135,37 +139,70 @@ open class TextElement : FrameLayout {
         subscribeToInputEvents()
     }
 
-    private fun addMask(mask: List<Any>) {
-        maskWatcher = MaskWatcher(mask)
-        input.addTextChangedListener(maskWatcher)
-    }
-
-    private fun removeMask() {
-        input.removeTextChangedListener(maskWatcher)
-        maskWatcher = null
-    }
+    protected open fun transformUserInput(userInput: String?): String? = userInput
 
     private fun subscribeToInputEvents() {
-        mask?.let { addMask(it) }
-
         input.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(value: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            private var isInternalChange: Boolean = false
+            private var inputAction: InputAction = InputAction.INSERT
 
-            override fun onTextChanged(value: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun beforeTextChanged(
+                value: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+            }
+
+            override fun onTextChanged(
+                value: CharSequence?,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
+                if (isInternalChange) return
+
+                inputAction =
+                    if (before > 0 && count == 0) InputAction.DELETE
+                    else InputAction.INSERT
+            }
 
             override fun afterTextChanged(editable: Editable?) {
-                // when a mask is applied, there are 2 change events raised:
-                // one with the raw user input, and a second after the mask has been applied
-                if (maskWatcher == null || maskWatcher?.isMaskApplied == true) {
-                    val event = ChangeEvent(
-                        maskWatcher?.isComplete ?: false,
-                        editable?.isEmpty() ?: false,
-                        validator(getText())
-                    )
+                if (isInternalChange) return
 
-                    eventListeners.change.forEach {
-                        it(event)
-                    }
+                val originalValue = editable?.toString()
+                val transformedValue = transformUserInput(originalValue)
+                    .let { maskValue?.evaluate(it, inputAction) ?: it }
+
+                if (originalValue != transformedValue)
+                    applyInternalChange(transformedValue)
+
+                publishChangeEvent(editable)
+            }
+
+            private fun applyInternalChange(value: String?) {
+                val editable = input.editableText
+                val originalFilters = editable.filters
+
+                isInternalChange = true
+
+                // disable filters on the underlying input applied by the input/keyboard type
+                editable.filters = emptyArray()
+                editable.replace(0, editable.length, value)
+                editable.filters = originalFilters
+
+                isInternalChange = false
+            }
+
+            private fun publishChangeEvent(editable: Editable?) {
+                val event = ChangeEvent(
+                    isComplete = maskValue?.isComplete(editable?.toString()) ?: false,
+                    isEmpty = editable?.isEmpty() ?: false,
+                    isValid = validate(getText())
+                )
+
+                eventListeners.change.forEach {
+                    it(event)
                 }
             }
         })

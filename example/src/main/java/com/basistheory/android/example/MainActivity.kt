@@ -9,7 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.basistheory.android.service.BasisTheoryElements
 import com.basistheory.android.view.CardNumberElement
 import com.basistheory.android.view.CardVerificationCodeElement
-import com.basistheory.android.view.KeyboardType
+import com.basistheory.android.model.KeyboardType
+import com.basistheory.android.view.CardExpirationDateElement
 import com.basistheory.android.view.TextElement
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.runBlocking
@@ -18,6 +19,7 @@ import org.threeten.bp.temporal.ChronoUnit
 
 class MainActivity : AppCompatActivity() {
     private lateinit var cardNumberElement: CardNumberElement
+    private lateinit var cardExpirationDateElement: CardExpirationDateElement
     private lateinit var cvcElement: CardVerificationCodeElement
     private lateinit var nameElement: TextElement
     private lateinit var phoneNumberElement: TextElement
@@ -31,6 +33,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         cardNumberElement = findViewById(R.id.cardNumber)
+        cardExpirationDateElement = findViewById(R.id.cardExpiration)
         cvcElement = findViewById(R.id.cvc)
         nameElement = findViewById(R.id.name)
         phoneNumberElement = findViewById(R.id.phoneNumber)
@@ -81,6 +84,7 @@ class MainActivity : AppCompatActivity() {
         assert(button.id == R.id.setTextButton)
 
         cardNumberElement.setText("4242424242424242")
+        cardExpirationDateElement.setText("09/99")
         cvcElement.setText("123")
         nameElement.setText("Manually Set Name")
         phoneNumberElement.setText("2345678900")
@@ -107,8 +111,12 @@ class MainActivity : AppCompatActivity() {
                 val type = "token"
                 val data = object {
                     val staticProp = "Static Value"
-                    val cardNumber = cardNumberElement
-                    val cvc = cvcElement
+                    val card = object {
+                        val cardNumber = cardNumberElement
+                        val expirationMonth = cardExpirationDateElement.month()
+                        val expirationYear = cardExpirationDateElement.year()
+                        val cvc = cvcElement
+                    }
                     val name = nameElement
                     val phoneNumber = phoneNumberElement
                     val socialSecurityNumber = socialSecurityNumberElement

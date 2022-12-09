@@ -2,6 +2,7 @@ package com.basistheory.android.view
 
 import android.content.Context
 import android.util.AttributeSet
+import com.basistheory.android.model.KeyboardType
 import com.basistheory.android.view.transform.regexReplaceElementTransform
 import com.basistheory.android.view.validation.luhnValidator
 
@@ -27,7 +28,7 @@ class CardNumberElement : TextElement {
         super.keyboardType = KeyboardType.NUMBER
         super.mask = defaultMask
         super.transform = regexReplaceElementTransform(Regex("""\s"""), "")
-        super.validator = ::luhnValidator
+        super.validate = ::luhnValidator
     }
 
     companion object {

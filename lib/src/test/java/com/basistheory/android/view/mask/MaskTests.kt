@@ -1,6 +1,7 @@
 package com.basistheory.android.view.mask
 
 
+import com.basistheory.android.model.InputAction
 import org.junit.Test
 import strikt.api.expect
 import strikt.api.expectCatching
@@ -59,19 +60,13 @@ class MaskTests {
             digitRegex
         )
         val mask = Mask(maskPattern)
+        val maskedValue = mask.evaluate("2345678900", InputAction.INSERT)
 
-        val maskResult = mask.apply(
-            "2345678900",
-            Action.INSERT
-        )
-
-        expectThat(maskResult) {
-            get { maskedValue }.isEqualTo("+1(234) 567-8900")
-            get { unMaskedValue }.isEqualTo("2345678900")
-            get { isComplete }.isTrue()
+        expect {
+            that(maskedValue).isEqualTo("+1(234) 567-8900")
+            that(mask.isComplete(maskedValue)).isTrue()
         }
     }
-
 
     @Test
     fun `mask is marked as done only when completed`() {
@@ -82,19 +77,10 @@ class MaskTests {
         )
         val mask = Mask(maskPattern)
 
-        val incompleteMaskResult = mask.apply(
-            "2",
-            Action.INSERT
-        )
-
-        expectThat(incompleteMaskResult.isComplete).isFalse()
-
-        val completeMaskResult = mask.apply(
-            "23",
-            Action.INSERT
-        )
-
-        expectThat(completeMaskResult.isComplete).isTrue()
+        expect {
+            that(mask.isComplete("2")).isFalse()
+            that(mask.isComplete("23")).isTrue()
+        }
     }
 
     @Test
@@ -114,7 +100,7 @@ class MaskTests {
         )
         val mask = Mask(maskPattern)
 
-        expectThat(mask.apply("e2e2e", Action.INSERT).maskedValue).isEqualTo("e-2-e-2-e")
+        expectThat(mask.evaluate("e2e2e", InputAction.INSERT)).isEqualTo("e-2-e-2-e")
     }
 
     @Test
@@ -128,8 +114,8 @@ class MaskTests {
         val mask = Mask(maskPattern)
 
         expect {
-            that(mask.apply("AB", Action.INSERT).maskedValue).isEqualTo("A_B")
-            that(mask.apply("A_B", Action.INSERT).maskedValue).isEqualTo("A_B")
+            that(mask.evaluate("AB", InputAction.INSERT)).isEqualTo("A_B")
+            that(mask.evaluate("A_B", InputAction.INSERT)).isEqualTo("A_B")
         }
     }
 
@@ -148,8 +134,8 @@ class MaskTests {
         val mask = Mask(maskPattern)
 
         expect {
-            that(mask.apply("+1(1", Action.INSERT).maskedValue).isEqualTo("+1(1")
-            that(mask.apply("1", Action.INSERT).maskedValue).isEqualTo("+1(1")
+            that(mask.evaluate("+1(1", InputAction.INSERT)).isEqualTo("+1(1")
+            that(mask.evaluate("1", InputAction.INSERT)).isEqualTo("+1(1")
         }
     }
 
@@ -164,12 +150,12 @@ class MaskTests {
         val mask = Mask(maskPattern)
 
         expect {
-            that(mask.apply("12", Action.INSERT).maskedValue).isEqualTo("1-2")
-            that(mask.apply("1-2", Action.INSERT).maskedValue).isEqualTo("1-2") // x
-            that(mask.apply("AB", Action.INSERT).maskedValue).isEqualTo("A-B")
-            that(mask.apply("A-B", Action.INSERT).maskedValue).isEqualTo("A-B")
-            that(mask.apply("$#", Action.INSERT).maskedValue).isEqualTo("$-#")
-            that(mask.apply("$-#", Action.INSERT).maskedValue).isEqualTo("$-#")
+            that(mask.evaluate("12", InputAction.INSERT)).isEqualTo("1-2")
+            that(mask.evaluate("1-2", InputAction.INSERT)).isEqualTo("1-2") // x
+            that(mask.evaluate("AB", InputAction.INSERT)).isEqualTo("A-B")
+            that(mask.evaluate("A-B", InputAction.INSERT)).isEqualTo("A-B")
+            that(mask.evaluate("$#", InputAction.INSERT)).isEqualTo("$-#")
+            that(mask.evaluate("$-#", InputAction.INSERT)).isEqualTo("$-#")
         }
     }
 
@@ -187,9 +173,9 @@ class MaskTests {
         val mask = Mask(maskPattern)
 
         expect {
-            that(mask.apply("ee23dd", Action.INSERT).maskedValue).isEqualTo("e-2-d")
-            that(mask.apply("ee23234", Action.INSERT).maskedValue).isEqualTo("e-2-")
-            that(mask.apply("asdf", Action.INSERT).maskedValue).isEqualTo("a-")
+            that(mask.evaluate("ee23dd", InputAction.INSERT)).isEqualTo("e-2-d")
+            that(mask.evaluate("ee23234", InputAction.INSERT)).isEqualTo("e-2-")
+            that(mask.evaluate("asdf", InputAction.INSERT)).isEqualTo("a-")
         }
     }
 
@@ -198,7 +184,12 @@ class MaskTests {
         val maskPattern = listOf("#", "#", "#", "-", '#', '#', "-", "#", "#", "#", "#")
         val mask = Mask(maskPattern)
 
-        expectThat(mask.apply("123456789", Action.INSERT).maskedValue).isEqualTo("123-45-6789")
+        expectThat(
+            mask.evaluate(
+                "123456789",
+                InputAction.INSERT
+            )
+        ).isEqualTo("123-45-6789")
     }
 
     @Test
@@ -207,9 +198,24 @@ class MaskTests {
         val mask = Mask(maskPattern)
 
         expect {
-            that(mask.apply("123AB1234", Action.INSERT).maskedValue).isEqualTo("123-AB-1234")
-            that(mask.apply("123ABA1$#", Action.INSERT).maskedValue).isEqualTo("123-AB-A1$#")
-            that(mask.apply("1234ABA1$#", Action.INSERT).maskedValue).isEqualTo("123-AB-A1$#")
+            that(
+                mask.evaluate(
+                    "123AB1234",
+                    InputAction.INSERT
+                )
+            ).isEqualTo("123-AB-1234")
+            that(
+                mask.evaluate(
+                    "123ABA1$#",
+                    InputAction.INSERT
+                )
+            ).isEqualTo("123-AB-A1$#")
+            that(
+                mask.evaluate(
+                    "1234ABA1$#",
+                    InputAction.INSERT
+                )
+            ).isEqualTo("123-AB-A1$#")
         }
     }
 
@@ -223,8 +229,8 @@ class MaskTests {
         val mask = Mask(maskPattern)
 
         expect {
-            that(mask.apply("", Action.INSERT).maskedValue).isEqualTo("")
-            that(mask.apply("", Action.DELETE).maskedValue).isEqualTo("")
+            that(mask.evaluate("", InputAction.INSERT)).isEqualTo("")
+            that(mask.evaluate("", InputAction.DELETE)).isEqualTo("")
         }
     }
 }

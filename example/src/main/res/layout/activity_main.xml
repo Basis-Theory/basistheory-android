@@ -25,6 +25,16 @@
                 bt:hint="Card Number"
                 bt:removeDefaultStyles="true" />
 
+            <com.basistheory.android.view.CardExpirationDateElement
+                android:id="@+id/cardExpiration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/rounded_edit_text"
+                android:padding="5dp"
+                bt:hint="Expiration Date"
+                bt:removeDefaultStyles="true" />
+
             <com.basistheory.android.view.CardVerificationCodeElement
                 android:id="@+id/cvc"
                 android:layout_width="match_parent"

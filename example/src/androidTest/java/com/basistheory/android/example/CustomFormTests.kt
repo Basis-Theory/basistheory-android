@@ -14,6 +14,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
+import java.time.LocalDate
 
 @RunWith(AndroidJUnit4::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -26,6 +27,7 @@ class CustomFormTests {
     fun canSetText() {
         onView(withId(R.id.setTextButton)).perform(click())
         onView(withText("4242 4242 4242 4242")).check(matches(isDisplayed()))
+        onView(withText("09/99")).check(matches(isDisplayed()))
         onView(withText("123")).check(matches(isDisplayed()))
         onView(withText("Manually Set Name")).check(matches(isDisplayed()))
         onView(withText("+1(234) 567-8900")).check(matches(isDisplayed()))
@@ -36,6 +38,8 @@ class CustomFormTests {
     @Test
     fun canTokenize() {
         val cardNumber = "4242424242424242"
+        val expMonth = "11"
+        val expYear = (LocalDate.now().year + 1).toString()
         val cvc = "123"
         val name = Faker().name().fullName()
         val phoneNumber = "2345678900"
@@ -44,6 +48,7 @@ class CustomFormTests {
 
         // type values into elements
         onView(withId(R.id.cardNumber)).perform(scrollTo(), typeText(cardNumber))
+        onView(withId(R.id.cardExpiration)).perform(scrollTo(), typeText("$expMonth/${expYear.takeLast(2)}"))
         onView(withId(R.id.cvc)).perform(scrollTo(), typeText(cvc))
         onView(withId(R.id.name)).perform(scrollTo(), typeText(name))
         onView(withId(R.id.phoneNumber)).perform(scrollTo(), typeText(phoneNumber))
@@ -58,6 +63,8 @@ class CustomFormTests {
             matches(
                 allOf(
                     withSubstring(cardNumber), // displayed with mask, but transformed back to this value
+                    withSubstring(expMonth),
+                    withSubstring(expYear),
                     withSubstring(cvc),
                     withSubstring(name),
                     withSubstring("+1(234) 567-8900"),

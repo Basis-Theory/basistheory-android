@@ -1,5 +1,6 @@
 package com.basistheory.android.service
 
+import com.basistheory.android.model.ElementValueReference
 import com.basistheory.android.util.isPrimitiveType
 import com.basistheory.android.util.toMap
 import com.basistheory.android.view.TextElement
@@ -19,6 +20,7 @@ class BasisTheoryElements internal constructor(
             val request =
                 if (body::class.java.isPrimitiveType()) body
                 else if (body is TextElement) body.getText()
+                else if (body is ElementValueReference) body.getValue()
                 else replaceElementRefs(body.toMap())
 
             tokenizeApiClient.tokenize(request)
@@ -31,6 +33,9 @@ class BasisTheoryElements internal constructor(
             if (!fieldType.isPrimitiveType()) {
                 if (value is TextElement) {
                     map[key] = value.getText()
+                }
+                else if (value is ElementValueReference) {
+                    map[key] = value.getValue()
                 } else {
                     val children = value.toMap()
                     map[key] = children

@@ -7,14 +7,14 @@ import android.os.Parcelable
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.view.View.OnFocusChangeListener
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
-import android.widget.LinearLayout
+import android.widget.FrameLayout
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.os.bundleOf
 import com.basistheory.android.R
-import com.basistheory.android.databinding.TextElementBinding
 import com.basistheory.android.event.BlurEvent
 import com.basistheory.android.event.ChangeEvent
 import com.basistheory.android.event.ElementEventListeners
@@ -23,24 +23,51 @@ import com.basistheory.android.model.InputAction
 import com.basistheory.android.model.KeyboardType
 import com.basistheory.android.view.mask.Mask
 
+
 open class TextElement @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : LinearLayout(context, attrs, defStyleAttr) {
-    private val viewBinding = TextElementBinding.inflate(
-        LayoutInflater.from(context),
-        this,
-        true
-    )
-
-    private val editText = viewBinding.editText
+) : FrameLayout(context, attrs, defStyleAttr) {
+    private val editText = AppCompatEditText(context, null, androidx.appcompat.R.attr.editTextStyle)
     private var defaultBackground = editText.background
     private val eventListeners = ElementEventListeners()
     private var isInternalChange: Boolean = false
 
     internal var maskValue: Mask? = null
     internal var inputAction: InputAction = InputAction.INSERT
+
+    init {
+        editText.layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        super.addView(editText)
+
+        // wires up attributes declared in the xml layout with properties on this element
+        context.theme.obtainStyledAttributes(attrs, R.styleable.TextElement, defStyleAttr, 0)
+            .apply {
+                try {
+                    textColor = getColor(R.styleable.TextElement_textColor, Color.BLACK)
+                    hint = getString(R.styleable.TextElement_hint)
+                    removeDefaultStyles =
+                        getBoolean(R.styleable.TextElement_removeDefaultStyles, false)
+                    mask = getString(R.styleable.TextElement_mask)?.split("")
+                        ?.filter { it.isNotEmpty() }
+                    keyboardType = KeyboardType.fromInt(
+                        getInt(
+                            R.styleable.TextElement_keyboardType,
+                            KeyboardType.TEXT.inputType
+                        )
+                    )
+                    setText(getString(R.styleable.TextElement_text))
+                } finally {
+                    recycle()
+                }
+            }
+
+        subscribeToInputEvents()
+    }
 
     // this MUST be internal to prevent host apps from accessing the raw input values
     internal fun getText(): String? =
@@ -97,32 +124,6 @@ open class TextElement @JvmOverloads constructor(
 
     override fun onCreateInputConnection(outAttrs: EditorInfo): InputConnection? {
         return editText.onCreateInputConnection(outAttrs)
-    }
-
-    init {
-        // wires up attributes declared in the xml layout with properties on this element
-        context.theme.obtainStyledAttributes(attrs, R.styleable.TextElement, defStyleAttr, 0)
-            .apply {
-                try {
-                    textColor = getColor(R.styleable.TextElement_textColor, Color.BLACK)
-                    hint = getString(R.styleable.TextElement_hint)
-                    removeDefaultStyles =
-                        getBoolean(R.styleable.TextElement_removeDefaultStyles, false)
-                    mask = getString(R.styleable.TextElement_mask)?.split("")
-                        ?.filter { it.isNotEmpty() }
-                    keyboardType = KeyboardType.fromInt(
-                        getInt(
-                            R.styleable.TextElement_keyboardType,
-                            KeyboardType.TEXT.inputType
-                        )
-                    )
-                    setText(getString(R.styleable.TextElement_text))
-                } finally {
-                    recycle()
-                }
-            }
-
-        subscribeToInputEvents()
     }
 
     protected open fun beforeTextChanged(value: String?): String? = value

@@ -47,9 +47,6 @@ android {
             withJavadocJar()
         }
     }
-    buildFeatures {
-        viewBinding true
-    }
 }
 afterEvaluate {
     publishing {

@@ -32,16 +32,17 @@ class CustomFormFragment : Fragment() {
     ): View {
         val binding = FragmentCustomFormBinding.inflate(inflater, container, false)
 
-        nameElement = binding.root.findViewById(R.id.name)
-        phoneNumberElement = binding.root.findViewById(R.id.phoneNumber)
-        orderNumberElement = binding.root.findViewById(R.id.orderNumber)
-        tokenizeResult = binding.root.findViewById(R.id.tokenize_result)
-        tokenizeButton = binding.root.findViewById(R.id.tokenize_button)
+        nameElement = binding.name
+        phoneNumberElement = binding.phoneNumber
+        orderNumberElement = binding.orderNumber
+        tokenizeResult = binding.tokenizeResult
+        tokenizeButton = binding.tokenizeButton
 
         val digitRegex = Regex("""\d""")
         val charRegex = Regex("""[A-Za-z]""")
 
-        phoneNumberElement.keyboardType = KeyboardType.NUMBER // illustrates that it can be set programmatically
+        // illustrates that keyboardType can be set programmatically (or in xml)
+        phoneNumberElement.keyboardType = KeyboardType.NUMBER
         phoneNumberElement.mask = listOf("+", "1", "(", digitRegex,digitRegex,digitRegex, ")", " ", digitRegex, digitRegex, digitRegex, "-", digitRegex, digitRegex , digitRegex, digitRegex )
 
         orderNumberElement.mask = listOf(charRegex, charRegex, charRegex, "-", digitRegex, digitRegex, digitRegex)

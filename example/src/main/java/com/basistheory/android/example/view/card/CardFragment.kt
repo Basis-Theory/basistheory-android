@@ -36,12 +36,12 @@ class CardFragment : Fragment() {
     ): View {
         val binding = FragmentCardBinding.inflate(inflater, container, false)
 
-        cardNumberElement = binding.root.findViewById(R.id.cardNumber)
-        cardExpirationDateElement = binding.root.findViewById(R.id.cardExpiration)
-        cvcElement = binding.root.findViewById(R.id.cvc)
+        cardNumberElement = binding.cardNumber
+        cardExpirationDateElement = binding.cardExpiration
+        cvcElement = binding.cvc
 
-        tokenizeResult = binding.root.findViewById(R.id.tokenize_result)
-        tokenizeButton = binding.root.findViewById(R.id.tokenize_button)
+        tokenizeResult = binding.tokenizeResult
+        tokenizeButton = binding.tokenizeButton
 
         binding.tokenizeButton.setOnClickListener { tokenize() }
         binding.autofillButton.setOnClickListener { autofill() }

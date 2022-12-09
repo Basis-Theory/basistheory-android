@@ -27,9 +27,9 @@ class SocialSecurityNumberFragment : Fragment() {
     ): View {
         val binding = FragmentSocialSecurityNumberBinding.inflate(inflater, container, false)
 
-        socialSecurityNumberElement = binding.root.findViewById(R.id.socialSecurityNumber)
+        socialSecurityNumberElement = binding.socialSecurityNumber
 
-        tokenizeResult = binding.root.findViewById(R.id.tokenize_result)
+        tokenizeResult = binding.tokenizeResult
 
         binding.tokenizeButton.setOnClickListener { tokenize() }
         binding.autofillButton.setOnClickListener { autofill() }

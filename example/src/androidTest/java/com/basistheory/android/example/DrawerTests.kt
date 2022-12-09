@@ -19,7 +19,6 @@ import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 
 @RunWith(AndroidJUnit4::class)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class DrawerTests {
 
     @get:Rule
@@ -43,8 +42,11 @@ class DrawerTests {
             R.id.nav_social_security_number to R.string.title_social_security_number,
             R.id.nav_custom_form to R.string.title_custom_form
         ).forEach { (navId, stringId) ->
+            // navigate to view
             onView(withId(R.id.drawer_layout)).perform(open())
             onView(withId(navId)).perform(click())
+
+            // assert that the fragment title is displayed in the action bar
             onView(
                 allOf(
                     withText(stringId),

@@ -12,10 +12,8 @@ import android.view.inputmethod.InputConnection
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatEditText
 import com.basistheory.android.R
-import com.basistheory.android.event.BlurEvent
-import com.basistheory.android.event.ChangeEvent
-import com.basistheory.android.event.ElementEventListeners
-import com.basistheory.android.event.FocusEvent
+import com.basistheory.android.event.*
+import com.basistheory.android.view.mask.Mask
 import com.basistheory.android.view.mask.MaskWatcher
 
 open class TextElement : FrameLayout {
@@ -59,6 +57,24 @@ open class TextElement : FrameLayout {
 
     internal var transform: (value: String?) -> String? =
         { value -> value }
+
+    internal var watcher: (mask: List<Any>?) -> MaskWatcher? =
+        { mask -> mask?.let { MaskWatcher(it) } }
+
+    internal var elementChangeEvent: (
+        value: String?,
+        isComplete: Boolean,
+        isEmpty: Boolean,
+        isValid: Boolean
+    ) -> ChangeEvent =
+        { _: String?, isComplete: Boolean, isEmpty: Boolean, isValid: Boolean ->
+            ChangeEvent(
+                isComplete,
+                isEmpty,
+                isValid,
+                mutableListOf()
+            )
+        }
 
     var textColor: Int
         get() = input.currentTextColor
@@ -136,7 +152,7 @@ open class TextElement : FrameLayout {
     }
 
     private fun addMask(mask: List<Any>) {
-        maskWatcher = MaskWatcher(mask)
+        maskWatcher = watcher(mask)
         input.addTextChangedListener(maskWatcher)
     }
 
@@ -157,7 +173,8 @@ open class TextElement : FrameLayout {
                 // when a mask is applied, there are 2 change events raised:
                 // one with the raw user input, and a second after the mask has been applied
                 if (maskWatcher == null || maskWatcher?.isMaskApplied == true) {
-                    val event = ChangeEvent(
+                    val event = elementChangeEvent(
+                        input.text.toString(),
                         maskWatcher?.isComplete ?: false,
                         editable?.isEmpty() ?: false,
                         validator(getText())

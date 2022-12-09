@@ -2,8 +2,6 @@ package com.basistheory.android.view
 
 import android.content.Context
 import android.util.AttributeSet
-import com.basistheory.android.view.transform.regexReplaceElementTransform
-import com.basistheory.android.view.validation.luhnValidator
 
 class CardVerificationCodeElement : TextElement {
 

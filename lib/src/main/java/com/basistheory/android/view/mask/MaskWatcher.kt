@@ -3,10 +3,10 @@ package com.basistheory.android.view.mask
 import android.text.Editable
 import android.text.TextWatcher
 
-internal class MaskWatcher(mask: List<Any>) : TextWatcher {
-    private val mask: Mask = Mask(mask)
-    private var result: MaskResult? = null
-    private var isApplyingMask: Boolean = false
+internal open class MaskWatcher(mask: List<Any>) : TextWatcher {
+    protected var mask: Mask = Mask(mask)
+    protected var result: MaskResult? = null
+    protected var isApplyingMask: Boolean = false
 
     val isMaskApplied: Boolean
         get() = isApplyingMask
@@ -28,7 +28,12 @@ internal class MaskWatcher(mask: List<Any>) : TextWatcher {
         isApplyingMask = false
     }
 
-    override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {
+    override fun beforeTextChanged(
+        charSequence: CharSequence?,
+        start: Int,
+        count: Int,
+        after: Int
+    ) {
     }
 
     override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {

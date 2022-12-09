@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">Android SDK</string>
+    <string name="app_name">Basis Theory Demo</string>
+
+    <string name="title_card">Collect Cards</string>
+    <string name="title_social_security_number">Collect SSNs</string>
+    <string name="title_custom_form">Custom Forms</string>
+
+    <string name="autofill">Autofill</string>
+    <string name="tokenize">Tokenize</string>
 </resources>

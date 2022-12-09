@@ -113,7 +113,7 @@ class ChangeEventTests {
     fun `ChangeEvent computes isValid based on validator`() {
         val changeEvents = mutableListOf<ChangeEvent>()
 
-        textElement.validator = { (it?.length ?: 0) % 2 == 0 }
+        textElement.validate = { (it?.length ?: 0) % 2 == 0 }
         textElement.addChangeEventListener { changeEvents.add(it) }
         textElement.setText("1")
         textElement.setText("12")

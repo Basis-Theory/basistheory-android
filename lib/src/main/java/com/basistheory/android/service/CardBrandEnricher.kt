@@ -162,8 +162,8 @@ class CardBrandEnricher {
         )
     )
 
-    fun evaluateCard(number: String?): CardResult? {
-        number ?: return null
+    fun evaluateCard(number: String?): CardResult {
+        if(number.isNullOrBlank()) return CardResult(null, false)
 
         var longestMatch = 0
         val bestMatch = CardResult(null, false)
@@ -172,7 +172,7 @@ class CardBrandEnricher {
             cardDetails.identifierRanges.forEach { range ->
                 val possibleMatch = number.take(range.first.length)
 
-                if (range.second != null && range.first.toInt() <= possibleMatch.toInt() && possibleMatch.toInt() <= range.second!!.toInt()) {
+                if (!range.second.isNullOrBlank() && range.first.toInt() <= possibleMatch.toInt() && possibleMatch.toInt() <= range.second!!.toInt()) {
                     longestMatch = considerBestMatchUpdate(
                         longestMatch,
                         possibleMatch,

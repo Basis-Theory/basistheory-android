@@ -2,17 +2,14 @@ package com.basistheory.android.view
 
 import android.app.Activity
 import com.basistheory.android.event.ChangeEvent
-import com.basistheory.android.view.transform.regexReplaceElementTransform
+import com.basistheory.android.service.CardBrandEnricher
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import strikt.api.expectThat
-import strikt.assertions.isEqualTo
-import strikt.assertions.isFalse
-import strikt.assertions.isTrue
-import strikt.assertions.single
+import strikt.assertions.*
 
 @RunWith(RobolectricTestRunner::class)
 class CardNumberElementTests {
@@ -26,8 +23,6 @@ class CardNumberElementTests {
 
     @Test
     fun `can clear the value`() {
-        cardNumberElement.transform = regexReplaceElementTransform(Regex("[\\s]"))
-
         cardNumberElement.setText(null)
         expectThat(cardNumberElement.getText()).isEqualTo("") // note: EditText transforms nulls to ""
 
@@ -39,6 +34,13 @@ class CardNumberElementTests {
     fun `applies mask when setting the value`() {
         cardNumberElement.setText("4242abc4242def4242geh4242")
         expectThat(cardNumberElement.getText()).isEqualTo("4242424242424242")
+    }
+
+    @Test
+    fun `applies mask based on card brand`() {
+        cardNumberElement.setText("4242abc4242def4242geh4242")
+        expectThat(cardNumberElement.mask?.joinToString(""))
+            .isEqualTo(CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_19LENGTH)
     }
 
     @Test
@@ -60,6 +62,7 @@ class CardNumberElementTests {
             get { isValid }.isFalse()
             get { isEmpty }.isFalse()
             get { isComplete }.isFalse()
+            get { details }.isEmpty()
         }
     }
 
@@ -73,6 +76,10 @@ class CardNumberElementTests {
             get { isValid }.isTrue()
             get { isEmpty }.isFalse()
             get { isComplete }.isTrue()
+            get { details.first() }.and {
+                get { type }.isEqualTo("cardBrand")
+                get { message }.isEqualTo("visa")
+            }
         }
     }
 
@@ -86,6 +93,10 @@ class CardNumberElementTests {
             get { isValid }.isFalse()
             get { isEmpty }.isFalse()
             get { isComplete }.isTrue()
+            get { details.first() }.and {
+                get { type }.isEqualTo("cardBrand")
+                get { message }.isEqualTo("visa")
+            }
         }
     }
 }

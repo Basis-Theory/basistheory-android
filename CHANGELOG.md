@@ -1,3 +1,19 @@
+## [0.7.0](https://github.com/Basis-Theory/basistheory-android/compare/0.6.0...0.7.0) (2022-12-09)
+
+
+### Features
+
+* add navigation to example app ([#13](https://github.com/Basis-Theory/basistheory-android/issues/13)) ([28b2320](https://github.com/Basis-Theory/basistheory-android/commit/28b23208d99c0f44b1d159dfdfc7a75c80dc4ce8))
+
+
+## [0.6.0](https://github.com/Basis-Theory/basistheory-android/compare/0.5.0...0.6.0) (2022-12-09)
+
+
+### Features
+
+* Adds CardExpirationDateElement ([#15](https://github.com/Basis-Theory/basistheory-android/issues/15)) ([464d376](https://github.com/Basis-Theory/basistheory-android/commit/464d37633a5e50ed0bdd2d806cc413593babf818))
+
+
 ## [0.5.0](https://github.com/Basis-Theory/basistheory-android/compare/0.4.0...0.5.0) (2022-12-07)
 
 

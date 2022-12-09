@@ -1,11 +1,12 @@
 package com.basistheory.android.view
 
 import android.content.Context
+import android.text.Editable
 import android.util.AttributeSet
 import com.basistheory.android.event.ChangeEvent
 import com.basistheory.android.event.EventDetails
 import com.basistheory.android.service.CardBrandEnricher
-import com.basistheory.android.view.mask.CardNumberMaskWatcher
+import com.basistheory.android.model.KeyboardType
 import com.basistheory.android.view.transform.regexReplaceElementTransform
 import com.basistheory.android.view.validation.luhnValidator
 
@@ -26,27 +27,49 @@ class CardNumberElement : TextElement {
         attrs,
         defStyleAttr
     ) {
-      init()
+        init()
+    }
+
+    override fun afterTextChangedHandler(editable: Editable?) {
+        val cardResult = cardBrandEnricher.evaluateCard(getDigitsOnly(editable?.toString()))
+        if (cardResult.cardDetails?.cardMask != null)
+            mask = cardResult.cardDetails!!.cardMask.toList()
+
+        super.afterTextChangedHandler(editable)
     }
 
     private fun init() {
         super.keyboardType = KeyboardType.NUMBER
         super.mask = defaultMask
         super.transform = regexReplaceElementTransform(Regex("""\s"""), "")
-        super.validator = ::luhnValidator
-        super.watcher = { mask -> mask?.let { CardNumberMaskWatcher(it) } }
-        super.elementChangeEvent = { value: String?, isComplete: Boolean, isEmpty: Boolean, isValid: Boolean ->
-            val cardResult = cardBrandEnricher.evaluateCard(value)
-            val eventDetails = cardResult?.cardDetails?.brand?.let{ b -> mutableListOf( EventDetails("cardBrand", b)) } ?: mutableListOf()
+        super.validate = ::luhnValidator
 
-            ChangeEvent(
-                isComplete,
-                isEmpty,
-                isValid,
-                eventDetails)
-        }
+        super.elementChangeEvent =
+            { value: String?, _: Boolean, isEmpty: Boolean, isValid: Boolean ->
+                val cardResult = cardBrandEnricher.evaluateCard(getDigitsOnly(value))
+                val eventDetails = cardResult.cardDetails?.brand?.let { b ->
+                    mutableListOf(
+                        EventDetails(
+                            "cardBrand",
+                            b
+                        )
+                    )
+                } ?: mutableListOf()
+
+                ChangeEvent(
+                    cardResult.complete ?: false,
+                    isEmpty,
+                    isValid,
+                    eventDetails
+                )
+            }
 
         cardBrandEnricher = CardBrandEnricher()
+    }
+
+    private fun getDigitsOnly(text: String?): String? {
+        val maskedValue = maskValue?.evaluate(text, inputAction)
+        return transform(maskedValue)
     }
 
     companion object {

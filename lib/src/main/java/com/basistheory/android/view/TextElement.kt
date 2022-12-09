@@ -2,16 +2,19 @@ package com.basistheory.android.view
 
 import android.content.Context
 import android.graphics.Color
+import android.os.Bundle
+import android.os.Parcelable
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View.OnFocusChangeListener
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
-import android.widget.FrameLayout
-import androidx.appcompat.widget.AppCompatEditText
+import android.widget.LinearLayout
+import androidx.core.os.bundleOf
 import com.basistheory.android.R
+import com.basistheory.android.databinding.TextElementBinding
 import com.basistheory.android.event.BlurEvent
 import com.basistheory.android.event.ChangeEvent
 import com.basistheory.android.event.ElementEventListeners
@@ -20,44 +23,31 @@ import com.basistheory.android.model.InputAction
 import com.basistheory.android.model.KeyboardType
 import com.basistheory.android.view.mask.Mask
 
-open class TextElement : FrameLayout {
-    private var attrs: AttributeSet? = null
-    private var defStyleAttr: Int = androidx.appcompat.R.attr.editTextStyle
-    private var input: AppCompatEditText = AppCompatEditText(context, attrs, defStyleAttr)
-    private var defaultBackground = input.background // todo: find a better way to reference this
-    private val eventListeners = ElementEventListeners()
-    internal var maskValue: Mask? = null
+open class TextElement @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : LinearLayout(context, attrs, defStyleAttr) {
+    private val viewBinding = TextElementBinding.inflate(
+        LayoutInflater.from(context),
+        this,
+        true
+    )
 
-    internal var inputAction: InputAction = InputAction.INSERT
+    private val editText = viewBinding.editText
+    private var defaultBackground = editText.background
+    private val eventListeners = ElementEventListeners()
     private var isInternalChange: Boolean = false
 
-    constructor(context: Context) : super(context) {
-        initialize()
-    }
-
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        this.attrs = attrs
-
-        initialize()
-    }
-
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
-    ) {
-        this.attrs = attrs
-        this.defStyleAttr = defStyleAttr
-
-        initialize()
-    }
+    internal var maskValue: Mask? = null
+    internal var inputAction: InputAction = InputAction.INSERT
 
     // this MUST be internal to prevent host apps from accessing the raw input values
     internal fun getText(): String? =
-        transform(input.text?.toString())
+        transform(editText.text?.toString())
 
     fun setText(value: String?) =
-        input.setText(value)
+        editText.setText(value)
 
     internal var validate: (value: String?) -> Boolean =
         { _ -> true }
@@ -66,19 +56,19 @@ open class TextElement : FrameLayout {
         { value -> value }
 
     var textColor: Int
-        get() = input.currentTextColor
-        set(value) = input.setTextColor(value)
+        get() = editText.currentTextColor
+        set(value) = editText.setTextColor(value)
 
     var hint: CharSequence?
-        get() = input.hint
+        get() = editText.hint
         set(value) {
-            input.hint = value
+            editText.hint = value
         }
 
     var keyboardType: KeyboardType
-        get() = KeyboardType.fromInt(input.inputType)
+        get() = KeyboardType.fromInt(editText.inputType)
         set(value) {
-            input.inputType = value.inputType
+            editText.inputType = value.inputType
         }
 
     var mask: List<Any>? = null
@@ -88,9 +78,9 @@ open class TextElement : FrameLayout {
         }
 
     var removeDefaultStyles: Boolean
-        get() = input.background == null
+        get() = editText.background == null
         set(value) {
-            input.background = if (value) null else defaultBackground
+            editText.background = if (value) null else defaultBackground
         }
 
     fun addChangeEventListener(listener: (ChangeEvent) -> Unit) {
@@ -106,10 +96,10 @@ open class TextElement : FrameLayout {
     }
 
     override fun onCreateInputConnection(outAttrs: EditorInfo): InputConnection? {
-        return input.onCreateInputConnection(outAttrs)
+        return editText.onCreateInputConnection(outAttrs)
     }
 
-    private fun initialize() {
+    init {
         // wires up attributes declared in the xml layout with properties on this element
         context.theme.obtainStyledAttributes(attrs, R.styleable.TextElement, defStyleAttr, 0)
             .apply {
@@ -132,13 +122,6 @@ open class TextElement : FrameLayout {
                 }
             }
 
-        input.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
-
-        super.addView(input)
-
         subscribeToInputEvents()
     }
 
@@ -157,21 +140,8 @@ open class TextElement : FrameLayout {
             mutableListOf()
         )
 
-    private fun afterTextChangedHandler(editable: Editable?) {
-        if (isInternalChange) return
-
-        val originalValue = editable?.toString()
-        val transformedValue = beforeTextChanged(originalValue)
-            .let { maskValue?.evaluate(it, inputAction) ?: it }
-
-        if (originalValue != transformedValue)
-            applyInternalChange(transformedValue)
-
-        publishChangeEvent(editable)
-    }
-
     private fun subscribeToInputEvents() {
-        input.addTextChangedListener(object : TextWatcher {
+        editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(
                 value: CharSequence?,
                 start: Int,
@@ -198,7 +168,7 @@ open class TextElement : FrameLayout {
             }
         })
 
-        input.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
+        editText.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
             if (hasFocus)
                 eventListeners.focus.forEach { it(FocusEvent()) }
             else
@@ -206,8 +176,21 @@ open class TextElement : FrameLayout {
         }
     }
 
+    private fun afterTextChangedHandler(editable: Editable?) {
+        if (isInternalChange) return
+
+        val originalValue = editable?.toString()
+        val transformedValue = beforeTextChanged(originalValue)
+            .let { maskValue?.evaluate(it, inputAction) ?: it }
+
+        if (originalValue != transformedValue)
+            applyInternalChange(transformedValue)
+
+        publishChangeEvent(editable)
+    }
+
     private fun applyInternalChange(value: String?) {
-        val editable = input.editableText
+        val editable = editText.editableText
         val originalFilters = editable.filters
 
         isInternalChange = true
@@ -231,5 +214,26 @@ open class TextElement : FrameLayout {
         eventListeners.change.forEach {
             it(event)
         }
+    }
+
+    override fun onSaveInstanceState(): Parcelable {
+        return bundleOf(
+            STATE_SUPER to super.onSaveInstanceState(),
+            STATE_INPUT to editText.onSaveInstanceState()
+        )
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable) {
+        if (state is Bundle) {
+            editText.onRestoreInstanceState(state.getParcelable(STATE_INPUT))
+            super.onRestoreInstanceState(state.getParcelable(STATE_SUPER))
+        } else {
+            super.onRestoreInstanceState(state)
+        }
+    }
+
+    internal companion object {
+        private const val STATE_SUPER = "state_super"
+        private const val STATE_INPUT = "state_input"
     }
 }

@@ -10,7 +10,7 @@ import com.basistheory.android.example.R
 import com.basistheory.android.example.util.prettyPrintJson
 import com.basistheory.android.service.BasisTheoryElements
 
-class TokenizeViewModel(application: Application): AndroidViewModel(application) {
+open class TokenizeViewModel(application: Application): AndroidViewModel(application) {
     private val _errorMessage = MutableLiveData<String?>(null)
     val errorMessage: LiveData<String?>
         get() = _errorMessage

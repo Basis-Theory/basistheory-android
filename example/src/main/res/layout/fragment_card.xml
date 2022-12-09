@@ -7,7 +7,7 @@
         <import type="android.view.View"/>
         <variable
             name="viewModel"
-            type="com.basistheory.android.example.viewmodel.TokenizeViewModel" />
+            type="com.basistheory.android.example.viewmodel.CardFragmentViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -33,8 +33,8 @@
                     android:background="@drawable/rounded_edit_text"
                     android:padding="5dp"
                     bt:hint="Card Number"
-                    bt:removeDefaultStyles="true"
-                    bt:textColor="@color/gray_800" />
+                    bt:removeDefaultStyles="true" />
+<!--                    bt:textColor="@{ viewModel.cardNumberState.value }" />-->
 
                 <com.basistheory.android.view.CardExpirationDateElement
                     android:id="@+id/cardExpiration"
@@ -69,6 +69,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
                         android:backgroundTint="@color/primary"
+                        android:enabled="@{ viewModel.canTokenize }"
                         android:text="@string/tokenize" />
 
                     <Button

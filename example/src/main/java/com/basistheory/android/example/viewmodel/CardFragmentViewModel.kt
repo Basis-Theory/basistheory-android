@@ -1,47 +1,37 @@
 package com.basistheory.android.example.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.liveData
 import com.basistheory.android.event.ChangeEvent
-import com.basistheory.android.example.BuildConfig
-import com.basistheory.android.example.R
-import com.basistheory.android.example.util.prettyPrintJson
-import com.basistheory.android.service.BasisTheoryElements
 
 class CardFragmentViewModel(application: Application) : TokenizeViewModel(application) {
-    val cardNumberState = MutableLiveData(ElementState())
-    val cardExpirationState = MutableLiveData(ElementState())
-    val cardCvcState = MutableLiveData(ElementState())
+    val cardNumber = ElementViewModel()
+    val cardExpiration = ElementViewModel()
+    val cardCvc = ElementViewModel()
 
-    val canTokenize: MediatorLiveData<Boolean> = MediatorLiveData<Boolean>().apply {
-        addSource(cardNumberState) {
-            value = coalesce(it, cardExpirationState.value, cardCvcState.value)
+    val canSubmit: MediatorLiveData<Boolean> = MediatorLiveData<Boolean>().apply {
+        addSource(cardNumber.canSubmit) {
+            value = coalesce(it, cardExpiration.canSubmit.value, cardCvc.canSubmit.value)
         }
-        addSource(cardExpirationState) {
-            value = coalesce(cardNumberState.value, it, cardCvcState.value)
+        addSource(cardExpiration.canSubmit) {
+            value = coalesce(cardNumber.canSubmit.value, it, cardCvc.canSubmit.value)
         }
-        addSource(cardCvcState) {
-            value = coalesce(cardNumberState.value, cardExpirationState.value, it)
+        addSource(cardCvc.canSubmit) {
+            value = coalesce(cardNumber.canSubmit.value, cardExpiration.canSubmit.value, it)
         }
     }
 
-    private fun coalesce(vararg states: ElementState?): Boolean =
-        states.all { it != null && it.canTokenize }
+    private fun coalesce(vararg states: Boolean?): Boolean =
+        states.all { it == true }
 }
 
-data class ElementState(
-    val isComplete: Boolean = false,
-    val isValid: Boolean = true
-) {
-    val canTokenize
-        get() = isComplete && isValid
+class ElementViewModel {
+    val isInvalid = MutableLiveData(false)
+    val canSubmit = MutableLiveData(false)
 
-    companion object {
-        fun from(e: ChangeEvent) =
-            ElementState(e.isComplete, e.isValid)
+    fun observe(e: ChangeEvent) {
+        isInvalid.value = e.isComplete && !e.isValid
+        canSubmit.value = e.isComplete && e.isValid
     }
 }

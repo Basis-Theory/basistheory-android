@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="android.view.View"/>
+
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.basistheory.android.example.viewmodel.CardFragmentViewModel" />
@@ -33,8 +35,8 @@
                     android:background="@drawable/rounded_edit_text"
                     android:padding="5dp"
                     bt:hint="Card Number"
-                    bt:removeDefaultStyles="true" />
-<!--                    bt:textColor="@{ viewModel.cardNumberState.value }" />-->
+                    bt:removeDefaultStyles="true"
+                    bt:textColor="@{ viewModel.cardNumber.isInvalid ? @color/red : @color/gray_800 }" />
 
                 <com.basistheory.android.view.CardExpirationDateElement
                     android:id="@+id/cardExpiration"
@@ -45,7 +47,7 @@
                     android:padding="5dp"
                     bt:hint="Expiration Date"
                     bt:removeDefaultStyles="true"
-                    bt:textColor="@color/gray_800" />
+                    bt:textColor="@{ viewModel.cardExpiration.isInvalid ? @color/red : @color/gray_800 }" />
 
                 <com.basistheory.android.view.CardVerificationCodeElement
                     android:id="@+id/cvc"
@@ -56,7 +58,7 @@
                     android:padding="5dp"
                     bt:hint="CVC"
                     bt:removeDefaultStyles="true"
-                    bt:textColor="@color/gray_800" />
+                    bt:textColor="@{ viewModel.cardCvc.isInvalid ? @color/red : @color/gray_800 }" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -69,7 +71,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
                         android:backgroundTint="@color/primary"
-                        android:enabled="@{ viewModel.canTokenize }"
+                        android:enabled="@{ viewModel.canSubmit }"
                         android:text="@string/tokenize" />
 
                     <Button

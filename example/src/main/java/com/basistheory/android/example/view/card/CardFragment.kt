@@ -9,7 +9,6 @@ import androidx.fragment.app.viewModels
 import com.basistheory.android.example.databinding.FragmentCardBinding
 import com.basistheory.android.example.util.tokenExpirationTimestamp
 import com.basistheory.android.example.viewmodel.CardFragmentViewModel
-import com.basistheory.android.example.viewmodel.ElementState
 
 class CardFragment : Fragment() {
     private val binding: FragmentCardBinding by lazy {
@@ -58,13 +57,13 @@ class CardFragment : Fragment() {
      */
     private fun setValidationListeners() {
         binding.cardNumber.addChangeEventListener {
-            viewModel.cardNumberState.value = ElementState.from(it)
+            viewModel.cardNumber.observe(it)
         }
         binding.cardExpiration.addChangeEventListener {
-            viewModel.cardExpirationState.value = ElementState.from(it)
+            viewModel.cardExpiration.observe(it)
         }
         binding.cvc.addChangeEventListener {
-            viewModel.cardCvcState.value = ElementState.from(it)
+            viewModel.cardCvc.observe(it)
         }
     }
 }

@@ -65,21 +65,6 @@ open class TextElement : FrameLayout {
     internal var transform: (value: String?) -> String? =
         { value -> value }
 
-    internal var elementChangeEvent: (
-        value: String?,
-        isComplete: Boolean,
-        isEmpty: Boolean,
-        isValid: Boolean
-    ) -> ChangeEvent =
-        { _: String?, isComplete: Boolean, isEmpty: Boolean, isValid: Boolean ->
-            ChangeEvent(
-                isComplete,
-                isEmpty,
-                isValid,
-                mutableListOf()
-            )
-        }
-
     var textColor: Int
         get() = input.currentTextColor
         set(value) = input.setTextColor(value)
@@ -157,13 +142,26 @@ open class TextElement : FrameLayout {
         subscribeToInputEvents()
     }
 
-    protected open fun transformUserInput(userInput: String?): String? = userInput
+    protected open fun beforeTextChanged(value: String?): String? = value
 
-    protected open fun afterTextChangedHandler(editable: Editable?) {
+    protected open fun createElementChangeEvent(
+        value: String?,
+        isComplete: Boolean,
+        isEmpty: Boolean,
+        isValid: Boolean
+    ): ChangeEvent =
+        ChangeEvent(
+            isComplete,
+            isEmpty,
+            isValid,
+            mutableListOf()
+        )
+
+    private fun afterTextChangedHandler(editable: Editable?) {
         if (isInternalChange) return
 
         val originalValue = editable?.toString()
-        val transformedValue = transformUserInput(originalValue)
+        val transformedValue = beforeTextChanged(originalValue)
             .let { maskValue?.evaluate(it, inputAction) ?: it }
 
         if (originalValue != transformedValue)
@@ -223,7 +221,7 @@ open class TextElement : FrameLayout {
     }
 
     private fun publishChangeEvent(editable: Editable?) {
-        val event = elementChangeEvent(
+        val event = createElementChangeEvent(
             getText(),
             maskValue?.isComplete(editable?.toString()) ?: false,
             editable?.isEmpty() ?: false,

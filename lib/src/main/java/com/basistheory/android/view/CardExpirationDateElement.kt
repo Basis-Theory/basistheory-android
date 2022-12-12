@@ -49,13 +49,13 @@ class CardExpirationDateElement : TextElement {
     /**
      * If the user entered a leading digit > 1, auto insert a leading 0
      */
-    override fun transformUserInput(userInput: String?): String? {
-        val firstChar = userInput?.firstOrNull()
+    override fun beforeTextChanged(value: String?): String? {
+        val firstChar = value?.firstOrNull()
 
-        if (firstChar?.isDigit() != true) return userInput
+        if (firstChar?.isDigit() != true) return value
 
         val firstDigit = firstChar.digitToInt()
-        return if (firstDigit > 1) "0$userInput" else userInput
+        return if (firstDigit > 1) "0$value" else value
     }
 
     companion object {

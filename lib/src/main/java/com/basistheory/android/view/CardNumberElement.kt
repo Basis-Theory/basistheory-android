@@ -12,7 +12,7 @@ import com.basistheory.android.view.validation.luhnValidator
 
 class CardNumberElement : TextElement {
 
-    private lateinit var cardBrandEnricher: CardBrandEnricher
+    private val cardBrandEnricher: CardBrandEnricher = CardBrandEnricher()
 
     constructor(context: Context) : super(context) {
         init()
@@ -30,12 +30,36 @@ class CardNumberElement : TextElement {
         init()
     }
 
-    override fun afterTextChangedHandler(editable: Editable?) {
-        val cardResult = cardBrandEnricher.evaluateCard(getDigitsOnly(editable?.toString()))
+    override fun beforeTextChanged(value: String?): String? {
+        val cardResult = cardBrandEnricher.evaluateCard(getDigitsOnly(value))
         if (cardResult.cardDetails?.cardMask != null)
             mask = cardResult.cardDetails!!.cardMask.toList()
 
-        super.afterTextChangedHandler(editable)
+        return value
+    }
+
+    override fun createElementChangeEvent(
+        value: String?,
+        isComplete: Boolean,
+        isEmpty: Boolean,
+        isValid: Boolean
+    ): ChangeEvent {
+        val cardResult = cardBrandEnricher.evaluateCard(getDigitsOnly(value))
+        val eventDetails = cardResult.cardDetails?.brand?.let { brand ->
+            mutableListOf(
+                EventDetails(
+                    "cardBrand",
+                    brand
+                )
+            )
+        } ?: mutableListOf()
+
+        return ChangeEvent(
+            cardResult.complete,
+            isEmpty,
+            isValid,
+            eventDetails
+        )
     }
 
     private fun init() {
@@ -43,28 +67,6 @@ class CardNumberElement : TextElement {
         super.mask = defaultMask
         super.transform = regexReplaceElementTransform(Regex("""\s"""), "")
         super.validate = ::luhnValidator
-
-        super.elementChangeEvent =
-            { value: String?, _: Boolean, isEmpty: Boolean, isValid: Boolean ->
-                val cardResult = cardBrandEnricher.evaluateCard(getDigitsOnly(value))
-                val eventDetails = cardResult.cardDetails?.brand?.let { b ->
-                    mutableListOf(
-                        EventDetails(
-                            "cardBrand",
-                            b
-                        )
-                    )
-                } ?: mutableListOf()
-
-                ChangeEvent(
-                    cardResult.complete ?: false,
-                    isEmpty,
-                    isValid,
-                    eventDetails
-                )
-            }
-
-        cardBrandEnricher = CardBrandEnricher()
     }
 
     private fun getDigitsOnly(text: String?): String? {

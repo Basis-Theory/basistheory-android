@@ -1,6 +1,8 @@
 package com.basistheory.android.service
 
-class CardBrandEnricher {
+import com.basistheory.android.constants.CardBrands
+
+internal class CardBrandEnricher {
 
     object CardMasks {
         const val MASK_4_8_12GAPS_19LENGTH = "#### #### #### #######"
@@ -17,12 +19,16 @@ class CardBrandEnricher {
 
     class CardResult(
         var cardDetails: CardDetails?,
-        var complete: Boolean
-    )
+        var cardLength: Int = -1,
+        var identifierLength: Int = -1,
+    ) {
+        val complete: Boolean
+            get() = cardDetails?.validLengths?.contains(cardLength) ?: false
+    }
 
     private val cardBrands = listOf(
         CardDetails(
-            "visa",
+            CardBrands.VISA.label,
             listOf("4" to null),
             intArrayOf(16, 18, 19),
             "###",
@@ -30,7 +36,7 @@ class CardBrandEnricher {
         ),
 
         CardDetails(
-            "mastercard", listOf(
+            CardBrands.MASTERCARD.label, listOf(
                 "51" to "55",
                 "2221" to "2229",
                 "223" to "229",
@@ -41,14 +47,14 @@ class CardBrandEnricher {
         ),
 
         CardDetails(
-            "americanExpress", listOf(
+            CardBrands.AMERICAN_EXPRESS.label, listOf(
                 "34" to null,
                 "37" to null
             ), intArrayOf(15), "####", "#### ###### #####"
         ),
 
         CardDetails(
-            "dinersClub", listOf(
+            CardBrands.DINERS_CLUB.label, listOf(
                 "36" to null,
                 "38" to "39",
                 "300" to "305"
@@ -56,7 +62,7 @@ class CardBrandEnricher {
         ),
 
         CardDetails(
-            "discover", listOf(
+            CardBrands.DISCOVER.label, listOf(
                 "65" to null,
                 "6011" to "39",
                 "644" to "649"
@@ -64,7 +70,7 @@ class CardBrandEnricher {
         ),
 
         CardDetails(
-            "jcb", listOf(
+            CardBrands.JCB.label, listOf(
                 "2131" to null,
                 "1800" to "39",
                 "3528" to "3589"
@@ -72,7 +78,7 @@ class CardBrandEnricher {
         ),
 
         CardDetails(
-            "unionPay", listOf(
+            CardBrands.UNION_PAY.label, listOf(
                 "620" to null,
                 "6270" to null,
                 "6272" to null,
@@ -93,7 +99,7 @@ class CardBrandEnricher {
         ),
 
         CardDetails(
-            "maestro", listOf(
+            CardBrands.MAESTRO.label, listOf(
                 "493698" to null,
                 "63" to null,
                 "67" to null,
@@ -106,7 +112,7 @@ class CardBrandEnricher {
         ),
 
         CardDetails(
-            "elo", listOf(
+            CardBrands.ELO.label, listOf(
                 "401178" to null,
                 "401179" to null,
                 "438935" to null,
@@ -136,7 +142,7 @@ class CardBrandEnricher {
         ),
 
         CardDetails(
-            "mir",
+            CardBrands.MIR.label,
             listOf("2200" to "2204"),
             intArrayOf(16, 17, 18, 19),
             "###",
@@ -144,7 +150,7 @@ class CardBrandEnricher {
         ),
 
         CardDetails(
-            "hiper", listOf(
+            CardBrands.HIPER.label, listOf(
                 "637095" to null,
                 "63737423" to null,
                 "63743358" to null,
@@ -156,38 +162,25 @@ class CardBrandEnricher {
         ),
 
         CardDetails(
-            "hipercard", listOf(
+            CardBrands.HIPERCARD.label, listOf(
                 "606282" to null,
             ), intArrayOf(16), "###", CardMasks.MASK_4_8_12GAPS_16LENGTH
         )
     )
 
     fun evaluateCard(number: String?): CardResult {
-        if(number.isNullOrBlank()) return CardResult(null, false)
+        if (number.isNullOrBlank()) return CardResult(null)
 
-        var longestMatch = 0
-        val bestMatch = CardResult(null, false)
+        var bestMatch = CardResult(null)
 
         cardBrands.forEach { cardDetails ->
             cardDetails.identifierRanges.forEach { range ->
                 val possibleMatch = number.take(range.first.length)
 
                 if (!range.second.isNullOrBlank() && range.first.toInt() <= possibleMatch.toInt() && possibleMatch.toInt() <= range.second!!.toInt()) {
-                    longestMatch = considerBestMatchUpdate(
-                        longestMatch,
-                        possibleMatch,
-                        bestMatch,
-                        cardDetails,
-                        number
-                    )
+                    bestMatch = chooseBestMatch(bestMatch, cardDetails, possibleMatch, number)
                 } else if (range.first == possibleMatch) {
-                    longestMatch = considerBestMatchUpdate(
-                        longestMatch,
-                        possibleMatch,
-                        bestMatch,
-                        cardDetails,
-                        number
-                    )
+                    bestMatch = chooseBestMatch(bestMatch, cardDetails, possibleMatch, number)
                 }
             }
         }
@@ -195,21 +188,12 @@ class CardBrandEnricher {
         return bestMatch
     }
 
-    private fun considerBestMatchUpdate(
-        longestMatch: Int,
-        possibleMatch: String,
-        bestMatch: CardResult,
+    private fun chooseBestMatch(
+        currentBestMatch: CardResult,
         cardDetails: CardDetails,
+        identifierMatch: String,
         number: String
-    ): Int {
-        if (longestMatch < possibleMatch.length) {
-            bestMatch.cardDetails = cardDetails
-
-            bestMatch.complete = cardDetails.validLengths.contains(number.length)
-
-            return possibleMatch.length
-        }
-
-        return longestMatch
-    }
+    ): CardResult =
+        if (currentBestMatch.identifierLength < identifierMatch.length) CardResult(cardDetails, number.length)
+        else currentBestMatch
 }

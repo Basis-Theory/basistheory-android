@@ -39,7 +39,7 @@ class CardNumberElementTests {
     @Test
     fun `applies mask based on card brand`() {
         cardNumberElement.setText("4242abc4242def4242geh4242")
-        expectThat(cardNumberElement.mask?.joinToString(""))
+        expectThat(cardNumberElement.mask?.characterMasks?.joinToString(""))
             .isEqualTo(CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_19LENGTH)
     }
 

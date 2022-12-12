@@ -1,8 +1,10 @@
 package com.basistheory.android.view.transform
 
-fun regexReplaceElementTransform(
-    regex: Regex,
-    replacement: String = ""
-): (value: String?) -> String? = {
-    if (it == null) null else regex.replace(it, replacement)
+class RegexReplaceElementTransform(
+    private val regex: Regex,
+    private val replacement: String = ""
+): ElementTransform() {
+
+    override fun apply(value: String?): String? =
+        if (value == null) null else regex.replace(value, replacement)
 }

@@ -2,8 +2,19 @@ package com.basistheory.android.view.mask
 
 import com.basistheory.android.model.InputAction
 
-class Mask(mask: List<Any>) {
-    private val sanitizedMask = sanitizeAndValidateMask(mask)
+class ElementMask {
+    val characterMasks: List<Any>
+
+    constructor(value: List<Any>) {
+        characterMasks = sanitizeAndValidateMask(value)
+    }
+
+    constructor(value: String) {
+        characterMasks = sanitizeAndValidateMask(value
+            .split("")
+            .filter { it.isNotEmpty() }
+        )
+    }
 
     internal fun evaluate(text: String?, action: InputAction): String? {
         if (text.isNullOrEmpty())
@@ -13,18 +24,18 @@ class Mask(mask: List<Any>) {
         val maskedValue = mutableListOf<Char>()
         var inputChar = source.nextOrNull()
 
-        for (maskChar in sanitizedMask) {
-            if (maskChar !is Regex && maskChar == inputChar.toString()) {
-                maskedValue.add(maskChar.toString().single())
+        for (charMask in characterMasks) {
+            if (charMask !is Regex && charMask == inputChar.toString()) {
+                maskedValue.add(charMask.toString().single())
                 // if text starts with maskedValue, then move the iterator forward
                 if (text.toString().startsWith(maskedValue.joinToString("")))
                     inputChar = source.nextOrNull()
-            } else if (maskChar is Regex) {
-                inputChar = source.nextCharMatchingMask(inputChar, maskChar)
+            } else if (charMask is Regex) {
+                inputChar = source.nextCharMatchingMask(inputChar, charMask)
 
                 if (inputChar == null) {
                     break // do not render placeholders
-                } else if (!maskChar.matches(inputChar.toString())) {
+                } else if (!charMask.matches(inputChar.toString())) {
                     inputChar = source.nextOrNull()
                 } else {
                     maskedValue.add(inputChar)
@@ -32,7 +43,7 @@ class Mask(mask: List<Any>) {
                 }
             } else {
                 if (inputChar == null && action == InputAction.DELETE) break
-                maskedValue.add(maskChar.toString().single())
+                maskedValue.add(charMask.toString().single())
             }
         }
 
@@ -40,7 +51,7 @@ class Mask(mask: List<Any>) {
     }
 
     fun isComplete(value: String?): Boolean =
-        !value.isNullOrEmpty() && value.length == sanitizedMask.count()
+        !value.isNullOrEmpty() && value.length == characterMasks.count()
 
     private fun sanitizeAndValidateMask(
         mask: List<Any>

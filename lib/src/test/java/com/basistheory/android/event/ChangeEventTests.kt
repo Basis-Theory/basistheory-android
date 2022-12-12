@@ -2,6 +2,8 @@ package com.basistheory.android.event
 
 import android.app.Activity
 import com.basistheory.android.view.TextElement
+import com.basistheory.android.view.mask.ElementMask
+import com.basistheory.android.view.validation.RegexValidator
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -87,7 +89,7 @@ class ChangeEventTests {
     fun `ChangeEvent computes isComplete based on mask`() {
         val changeEvents = mutableListOf<ChangeEvent>()
 
-        textElement.mask = listOf(Regex("""\d"""), Regex("""\d"""))
+        textElement.mask = ElementMask(listOf(Regex("""\d"""), Regex("""\d""")))
         textElement.addChangeEventListener { changeEvents.add(it) }
         textElement.setText("1")
         textElement.setText("12")
@@ -113,7 +115,7 @@ class ChangeEventTests {
     fun `ChangeEvent computes isValid based on validator`() {
         val changeEvents = mutableListOf<ChangeEvent>()
 
-        textElement.validate = { (it?.length ?: 0) % 2 == 0 }
+        textElement.validator = RegexValidator("""\d{2}""")
         textElement.addChangeEventListener { changeEvents.add(it) }
         textElement.setText("1")
         textElement.setText("12")

@@ -194,6 +194,6 @@ internal class CardBrandEnricher {
         identifierMatch: String,
         number: String
     ): CardResult =
-        if (currentBestMatch.identifierLength < identifierMatch.length) CardResult(cardDetails, number.length)
+        if (currentBestMatch.identifierLength < identifierMatch.length) CardResult(cardDetails, number.length, identifierMatch.length)
         else currentBestMatch
 }

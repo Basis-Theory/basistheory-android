@@ -38,16 +38,23 @@ Add this dependency to your project's build file:
 ## Features
 
 - [TextElement](docs/TextElement.md) to securely collect text input
+- [CardNumberElement](docs/CardNumberElement.md) to securely collect credit card numbers
+- [CardExpirationDateElement](docs/CardExpirationDateElement.md) to securely collect card expiration dates
+- [CardVerificationCodeElement](docs/CardVerificationCode.md) to securely collect card verification codes
 - [BasisTheoryElements](docs/BasisTheoryElements.md) service to tokenize sensitive data entered into Elements
+- [Styling](docs/Styling.md) - custom styles and branding are fully supported
 - [Events](docs/Events.md) - subscribe to events raised by Elements
 
 ## Example Usage
 
 A full example Android app can be viewed within the [example](example) module within this repo.
 
+For example, the following code collects and tokenizes a credit card:
+
 ```kotlin
-val nameElement = findViewById(R.id.name)
-val phoneNumberElement = findViewById(R.id.phoneNumber)
+val cardNumberElement = findViewById(R.id.card_number)
+val cardExpirationDateElement = findViewById(R.id.expiration_date)
+val cardVerificationCodeElement = findViewById(R.id.cvc)
 
 val bt = BasisTheoryElements.builder()
     .apiUrl(BuildConfig.BASIS_THEORY_API_URL)
@@ -56,15 +63,15 @@ val bt = BasisTheoryElements.builder()
 
 runBlocking {
     val tokenizeResponse = bt.tokenize(object {
-        val type = "token"
+        val type = "card"
         val data = object {
-            val name = nameElement
-            val phoneNumber = phoneNumberElement
+            val number = cardNumberElement
+            val expiration_month = cardExpirationDateElement.month()
+            val expiration_year = cardExpirationDateElement.year()
+            val cvc = cardVerificationCodeElement
         }
     })
 }
 ```
 
-Relevant highlights include:
-- [MainActivity.kt](example/src/main/java/com/basistheory/example/MainActivity.kt)
-- [MainActivity.xml](example/src/main/res/layout/activity_main.xml)
+For more detailed usage examples, please refer to the [example app](example).

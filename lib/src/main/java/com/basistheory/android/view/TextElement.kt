@@ -16,8 +16,8 @@ import com.basistheory.android.event.BlurEvent
 import com.basistheory.android.event.ChangeEvent
 import com.basistheory.android.event.ElementEventListeners
 import com.basistheory.android.event.FocusEvent
-import com.basistheory.android.model.KeyboardType
 import com.basistheory.android.model.InputAction
+import com.basistheory.android.model.KeyboardType
 import com.basistheory.android.view.mask.Mask
 
 open class TextElement : FrameLayout {
@@ -26,7 +26,10 @@ open class TextElement : FrameLayout {
     private var input: AppCompatEditText = AppCompatEditText(context, attrs, defStyleAttr)
     private var defaultBackground = input.background // todo: find a better way to reference this
     private val eventListeners = ElementEventListeners()
-    private var maskValue: Mask? = null
+    internal var maskValue: Mask? = null
+
+    internal var inputAction: InputAction = InputAction.INSERT
+    private var isInternalChange: Boolean = false
 
     constructor(context: Context) : super(context) {
         initialize()
@@ -139,13 +142,36 @@ open class TextElement : FrameLayout {
         subscribeToInputEvents()
     }
 
-    protected open fun transformUserInput(userInput: String?): String? = userInput
+    protected open fun beforeTextChanged(value: String?): String? = value
+
+    protected open fun createElementChangeEvent(
+        value: String?,
+        isComplete: Boolean,
+        isEmpty: Boolean,
+        isValid: Boolean
+    ): ChangeEvent =
+        ChangeEvent(
+            isComplete,
+            isEmpty,
+            isValid,
+            mutableListOf()
+        )
+
+    private fun afterTextChangedHandler(editable: Editable?) {
+        if (isInternalChange) return
+
+        val originalValue = editable?.toString()
+        val transformedValue = beforeTextChanged(originalValue)
+            .let { maskValue?.evaluate(it, inputAction) ?: it }
+
+        if (originalValue != transformedValue)
+            applyInternalChange(transformedValue)
+
+        publishChangeEvent(editable)
+    }
 
     private fun subscribeToInputEvents() {
         input.addTextChangedListener(object : TextWatcher {
-            private var isInternalChange: Boolean = false
-            private var inputAction: InputAction = InputAction.INSERT
-
             override fun beforeTextChanged(
                 value: CharSequence?,
                 start: Int,
@@ -168,42 +194,7 @@ open class TextElement : FrameLayout {
             }
 
             override fun afterTextChanged(editable: Editable?) {
-                if (isInternalChange) return
-
-                val originalValue = editable?.toString()
-                val transformedValue = transformUserInput(originalValue)
-                    .let { maskValue?.evaluate(it, inputAction) ?: it }
-
-                if (originalValue != transformedValue)
-                    applyInternalChange(transformedValue)
-
-                publishChangeEvent(editable)
-            }
-
-            private fun applyInternalChange(value: String?) {
-                val editable = input.editableText
-                val originalFilters = editable.filters
-
-                isInternalChange = true
-
-                // disable filters on the underlying input applied by the input/keyboard type
-                editable.filters = emptyArray()
-                editable.replace(0, editable.length, value)
-                editable.filters = originalFilters
-
-                isInternalChange = false
-            }
-
-            private fun publishChangeEvent(editable: Editable?) {
-                val event = ChangeEvent(
-                    isComplete = maskValue?.isComplete(editable?.toString()) ?: false,
-                    isEmpty = editable?.isEmpty() ?: false,
-                    isValid = validate(getText())
-                )
-
-                eventListeners.change.forEach {
-                    it(event)
-                }
+                afterTextChangedHandler(editable)
             }
         })
 
@@ -212,6 +203,33 @@ open class TextElement : FrameLayout {
                 eventListeners.focus.forEach { it(FocusEvent()) }
             else
                 eventListeners.blur.forEach { it(BlurEvent()) }
+        }
+    }
+
+    private fun applyInternalChange(value: String?) {
+        val editable = input.editableText
+        val originalFilters = editable.filters
+
+        isInternalChange = true
+
+        // disable filters on the underlying input applied by the input/keyboard type
+        editable.filters = emptyArray()
+        editable.replace(0, editable.length, value)
+        editable.filters = originalFilters
+
+        isInternalChange = false
+    }
+
+    private fun publishChangeEvent(editable: Editable?) {
+        val event = createElementChangeEvent(
+            getText(),
+            maskValue?.isComplete(editable?.toString()) ?: false,
+            editable?.isEmpty() ?: false,
+            validate(getText())
+        )
+
+        eventListeners.change.forEach {
+            it(event)
         }
     }
 }

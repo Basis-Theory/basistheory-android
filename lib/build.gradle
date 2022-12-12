@@ -71,6 +71,7 @@ dependencies {
     implementation 'org.threeten:threetenbp:1.6.4'
     implementation 'com.github.basis-theory:basistheory-java:master-SNAPSHOT'
     testImplementation 'junit:junit:4.13.2'
+    testImplementation 'pl.pragmatists:JUnitParams:1.1.1'
     testImplementation 'org.robolectric:robolectric:4.9'
     testImplementation 'io.strikt:strikt-core:0.34.1'
     testImplementation 'com.github.javafaker:javafaker:1.0.2'

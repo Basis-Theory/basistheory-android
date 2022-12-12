@@ -70,8 +70,8 @@ To run unit tests, execute the command:
 
 ### Acceptance Tests
 
-Acceptance tetss rely upon the `example` module to provide an Android app that consumes the `lib`
-module, simulating a real consumer of our Android Library. Acceptance tests are written using 
+Acceptance tests rely upon the `example` module to provide an Android app that uses the `lib`
+module, simulating a real user of our Android Library. Acceptance tests are written using 
 [Espresso](https://developer.android.com/training/testing/espresso) and rely upon an emulator being 
 configured and running on your local machine. An emulator should come pre-installed with 
 Android Studio, or you can follow [these instructions](https://developer.android.com/studio/run/managing-avds) 

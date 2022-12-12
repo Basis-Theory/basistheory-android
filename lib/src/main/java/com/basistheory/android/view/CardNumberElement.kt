@@ -1,12 +1,18 @@
 package com.basistheory.android.view
 
 import android.content.Context
+import android.text.Editable
 import android.util.AttributeSet
+import com.basistheory.android.event.ChangeEvent
+import com.basistheory.android.event.EventDetails
+import com.basistheory.android.service.CardBrandEnricher
 import com.basistheory.android.model.KeyboardType
 import com.basistheory.android.view.transform.regexReplaceElementTransform
 import com.basistheory.android.view.validation.luhnValidator
 
 class CardNumberElement : TextElement {
+
+    private val cardBrandEnricher: CardBrandEnricher = CardBrandEnricher()
 
     constructor(context: Context) : super(context) {
         init()
@@ -21,7 +27,39 @@ class CardNumberElement : TextElement {
         attrs,
         defStyleAttr
     ) {
-      init()
+        init()
+    }
+
+    override fun beforeTextChanged(value: String?): String? {
+        val cardResult = cardBrandEnricher.evaluateCard(getDigitsOnly(value))
+        if (cardResult.cardDetails?.cardMask != null)
+            mask = cardResult.cardDetails!!.cardMask.toList()
+
+        return value
+    }
+
+    override fun createElementChangeEvent(
+        value: String?,
+        isComplete: Boolean,
+        isEmpty: Boolean,
+        isValid: Boolean
+    ): ChangeEvent {
+        val cardResult = cardBrandEnricher.evaluateCard(getDigitsOnly(value))
+        val eventDetails = cardResult.cardDetails?.brand?.let { brand ->
+            mutableListOf(
+                EventDetails(
+                    "cardBrand",
+                    brand
+                )
+            )
+        } ?: mutableListOf()
+
+        return ChangeEvent(
+            cardResult.complete,
+            isEmpty,
+            isValid,
+            eventDetails
+        )
     }
 
     private fun init() {
@@ -29,6 +67,11 @@ class CardNumberElement : TextElement {
         super.mask = defaultMask
         super.transform = regexReplaceElementTransform(Regex("""\s"""), "")
         super.validate = ::luhnValidator
+    }
+
+    private fun getDigitsOnly(text: String?): String? {
+        val maskedValue = maskValue?.evaluate(text, inputAction)
+        return transform(maskedValue)
     }
 
     companion object {

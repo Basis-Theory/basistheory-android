@@ -1,3 +1,11 @@
+## [0.8.0](https://github.com/Basis-Theory/basistheory-android/compare/0.7.0...0.8.0) (2022-12-12)
+
+
+### Features
+
+* Adds card brand specific validation and masking ([#17](https://github.com/Basis-Theory/basistheory-android/issues/17)) ([cd87b8e](https://github.com/Basis-Theory/basistheory-android/commit/cd87b8e43bc5df4d2b5819475d46c0048c72ccd3))
+
+
 ## [0.7.0](https://github.com/Basis-Theory/basistheory-android/compare/0.6.0...0.7.0) (2022-12-09)
 
 

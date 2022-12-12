@@ -7,6 +7,7 @@ import androidx.test.espresso.contrib.DrawerActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.activityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.basistheory.android.example.util.waitUntilVisible
 import com.basistheory.android.example.view.MainActivity
 import org.junit.Assert.*
 import org.junit.Before
@@ -44,6 +45,8 @@ class CollectSocialSecurityNumberTests {
         onView(withId(R.id.tokenize_button)).perform(scrollTo(), click())
 
         // assertions on tokenize response
-        onView(withId(R.id.tokenize_result)).check(matches(withSubstring("123-45-6789")))
+        onView(withId(R.id.tokenize_result))
+            .perform(waitUntilVisible())
+            .check(matches(withSubstring("123-45-6789")))
     }
 }

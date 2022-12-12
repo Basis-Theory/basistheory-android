@@ -7,6 +7,7 @@ import androidx.test.espresso.contrib.DrawerActions.open
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.activityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.basistheory.android.example.util.waitUntilVisible
 import com.basistheory.android.example.view.MainActivity
 import com.github.javafaker.Faker
 import org.hamcrest.Matchers.allOf
@@ -52,14 +53,16 @@ class CollectCustomFormTests {
         onView(withId(R.id.tokenize_button)).perform(scrollTo(), click())
 
         // assertions on tokenize response
-        onView(withId(R.id.tokenize_result)).check(
-            matches(
-                allOf(
-                    withSubstring(name),
-                    withSubstring("+1(234) 567-8900"),
-                    withSubstring("ABC-123")
+        onView(withId(R.id.tokenize_result))
+            .perform(waitUntilVisible())
+            .check(
+                matches(
+                    allOf(
+                        withSubstring(name),
+                        withSubstring("+1(234) 567-8900"),
+                        withSubstring("ABC-123")
+                    )
                 )
             )
-        )
     }
 }

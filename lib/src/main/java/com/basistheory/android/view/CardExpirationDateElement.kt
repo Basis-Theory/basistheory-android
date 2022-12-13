@@ -7,29 +7,16 @@ import com.basistheory.android.model.ElementValueReference
 import com.basistheory.android.model.KeyboardType
 import com.basistheory.android.view.validation.futureDateValidator
 
-class CardExpirationDateElement : TextElement {
-
-    constructor(context: Context) : super(context) {
-        init()
-    }
-
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        init()
-    }
-
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
-    ) {
-      init()
-    }
+class CardExpirationDateElement @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0) : TextElement(context, attrs, defStyleAttr) {
 
     fun month(): ElementValueReference = ElementValueReference(::getMonthValue)
 
     fun year(): ElementValueReference = ElementValueReference(::getYearValue)
 
-    private fun init() {
+    init {
         super.keyboardType = KeyboardType.NUMBER
         super.mask = defaultMask
         super.validate = { futureDateValidator(it) }

@@ -1,47 +1,29 @@
 package com.basistheory.android.example.view.card
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
-import com.basistheory.android.example.BuildConfig
-import com.basistheory.android.example.R
+import androidx.fragment.app.viewModels
 import com.basistheory.android.example.databinding.FragmentCardBinding
-import com.basistheory.android.example.util.prettyPrintJson
-import com.basistheory.android.service.BasisTheoryElements
-import com.basistheory.android.view.CardExpirationDateElement
-import com.basistheory.android.view.CardNumberElement
-import com.basistheory.android.view.CardVerificationCodeElement
-import kotlinx.coroutines.runBlocking
-import org.threeten.bp.Instant
-import org.threeten.bp.temporal.ChronoUnit
+import com.basistheory.android.example.util.tokenExpirationTimestamp
+import com.basistheory.android.example.viewmodel.CardFragmentViewModel
 
 class CardFragment : Fragment() {
-    private lateinit var cardNumberElement: CardNumberElement
-    private lateinit var cardExpirationDateElement: CardExpirationDateElement
-    private lateinit var cvcElement: CardVerificationCodeElement
-
-    private lateinit var tokenizeResult: TextView
-    private lateinit var tokenizeButton: Button
+    private val binding: FragmentCardBinding by lazy {
+        FragmentCardBinding.inflate(layoutInflater)
+    }
+    private val viewModel: CardFragmentViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentCardBinding.inflate(inflater, container, false)
-
-        cardNumberElement = binding.cardNumber
-        cardExpirationDateElement = binding.cardExpiration
-        cvcElement = binding.cvc
-
-        tokenizeResult = binding.tokenizeResult
-        tokenizeButton = binding.tokenizeButton
+        super.onCreateView(inflater, container, savedInstanceState)
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
 
         binding.tokenizeButton.setOnClickListener { tokenize() }
         binding.autofillButton.setOnClickListener { autofill() }
@@ -51,52 +33,37 @@ class CardFragment : Fragment() {
         return binding.root
     }
 
-    /**
-     * demonstrates how an application could wire up custom validation behaviors
-     */
-    private fun setValidationListeners() {
-        cardNumberElement.addChangeEventListener {
-            if (!it.isValid && it.isComplete) {
-                cardNumberElement.textColor = Color.RED
-                tokenizeButton.isEnabled = false
-            } else {
-                cardNumberElement.textColor = ResourcesCompat.getColor(resources, R.color.gray_800, null)
-                tokenizeButton.isEnabled = true
-            }
-        }
-    }
-
     private fun autofill() {
-        cardNumberElement.setText("4242424242424242")
-        cardExpirationDateElement.setText("12/25")
-        cvcElement.setText("123")
+        binding.cardNumber.setText("4242424242424242")
+        binding.cardExpiration.setText("12/25")
+        binding.cvc.setText("123")
     }
 
-    private fun tokenize() {
-        val bt = BasisTheoryElements.builder()
-            .apiUrl(BuildConfig.BASIS_THEORY_API_URL)
-            .apiKey(BuildConfig.BASIS_THEORY_API_KEY)
-            .build()
-
-        val expirationTimestamp = Instant.now()
-            .plus(5, ChronoUnit.MINUTES)
-            .toString()
-
-        runBlocking {
-            val tokenizeResponse = bt.tokenize(object {
+    private fun tokenize() =
+        viewModel.tokenize(
+            object {
                 val type = "card"
                 val data = object {
-                    val number = cardNumberElement
-                    val expiration_month = cardExpirationDateElement.month()
-                    val expiration_year = cardExpirationDateElement.year()
-                    val cvc = cvcElement
+                    val number = binding.cardNumber
+                    val expiration_month = binding.cardExpiration.month()
+                    val expiration_year = binding.cardExpiration.year()
+                    val cvc = binding.cvc
                 }
-                val expires_at = expirationTimestamp
-            })
+                val expires_at = tokenExpirationTimestamp()
+            }).observe(viewLifecycleOwner) {}
 
-            tokenizeResult.text = tokenizeResponse.prettyPrintJson()
+    /**
+     * demonstrates how an application could potentially wire up custom validation behaviors
+     */
+    private fun setValidationListeners() {
+        binding.cardNumber.addChangeEventListener {
+            viewModel.cardNumber.observe(it)
+        }
+        binding.cardExpiration.addChangeEventListener {
+            viewModel.cardExpiration.observe(it)
+        }
+        binding.cvc.addChangeEventListener {
+            viewModel.cardCvc.observe(it)
         }
     }
 }
-
-

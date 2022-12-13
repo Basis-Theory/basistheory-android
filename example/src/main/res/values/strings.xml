@@ -7,4 +7,5 @@
 
     <string name="autofill">Autofill</string>
     <string name="tokenize">Tokenize</string>
+    <string name="tokenize_error">Error during tokenization: %1$s</string>
 </resources>

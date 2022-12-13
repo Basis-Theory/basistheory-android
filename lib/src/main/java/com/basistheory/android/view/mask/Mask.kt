@@ -2,11 +2,10 @@ package com.basistheory.android.view.mask
 
 import com.basistheory.android.model.InputAction
 
-internal class Mask(mask: List<Any>) {
-
+class Mask(mask: List<Any>) {
     private val sanitizedMask = sanitizeAndValidateMask(mask)
 
-    fun evaluate(text: String?, action: InputAction): String? {
+    internal fun evaluate(text: String?, action: InputAction): String? {
         if (text.isNullOrEmpty())
             return ""
 
@@ -61,17 +60,17 @@ internal class Mask(mask: List<Any>) {
             }
         }
         .toList()
-}
 
-internal fun CharIterator.nextOrNull(): Char? = if (hasNext()) nextChar() else null
+    private fun CharIterator.nextOrNull(): Char? = if (hasNext()) nextChar() else null
 
-internal fun CharIterator.nextCharMatchingMask(inputChar: Char?, maskChar: Regex): Char? {
-    var nextInputChar = inputChar ?: return null
+    private fun CharIterator.nextCharMatchingMask(inputChar: Char?, maskChar: Regex): Char? {
+        var nextInputChar = inputChar ?: return null
 
-    while (hasNext()) {
-        if (maskChar.matches(nextInputChar.toString())) break
-        nextInputChar = nextChar()
+        while (hasNext()) {
+            if (maskChar.matches(nextInputChar.toString())) break
+            nextInputChar = nextChar()
+        }
+
+        return if (maskChar.matches(nextInputChar.toString())) nextInputChar else null
     }
-
-    return if (maskChar.matches(nextInputChar.toString())) nextInputChar else null
 }

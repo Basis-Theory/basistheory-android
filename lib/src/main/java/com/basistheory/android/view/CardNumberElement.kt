@@ -1,33 +1,26 @@
 package com.basistheory.android.view
 
 import android.content.Context
-import android.text.Editable
 import android.util.AttributeSet
 import com.basistheory.android.event.ChangeEvent
 import com.basistheory.android.event.EventDetails
-import com.basistheory.android.service.CardBrandEnricher
 import com.basistheory.android.model.KeyboardType
+import com.basistheory.android.service.CardBrandEnricher
 import com.basistheory.android.view.transform.regexReplaceElementTransform
 import com.basistheory.android.view.validation.luhnValidator
 
-class CardNumberElement : TextElement {
+class CardNumberElement @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0) : TextElement(context, attrs, defStyleAttr) {
 
     private val cardBrandEnricher: CardBrandEnricher = CardBrandEnricher()
 
-    constructor(context: Context) : super(context) {
-        init()
-    }
-
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        init()
-    }
-
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
-    ) {
-        init()
+    init {
+        super.keyboardType = KeyboardType.NUMBER
+        super.mask = defaultMask
+        super.transform = regexReplaceElementTransform(Regex("""\s"""), "")
+        super.validate = ::luhnValidator
     }
 
     override fun beforeTextChanged(value: String?): String? {
@@ -60,13 +53,6 @@ class CardNumberElement : TextElement {
             isValid,
             eventDetails
         )
-    }
-
-    private fun init() {
-        super.keyboardType = KeyboardType.NUMBER
-        super.mask = defaultMask
-        super.transform = regexReplaceElementTransform(Regex("""\s"""), "")
-        super.validate = ::luhnValidator
     }
 
     private fun getDigitsOnly(text: String?): String? {

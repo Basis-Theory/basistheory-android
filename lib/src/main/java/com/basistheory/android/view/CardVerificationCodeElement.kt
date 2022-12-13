@@ -4,25 +4,12 @@ import android.content.Context
 import android.util.AttributeSet
 import com.basistheory.android.model.KeyboardType
 
-class CardVerificationCodeElement : TextElement {
+class CardVerificationCodeElement @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0) : TextElement(context, attrs, defStyleAttr) {
 
-    constructor(context: Context) : super(context) {
-        init()
-    }
-
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        init()
-    }
-
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
-    ) {
-        init()
-    }
-
-    private fun init() {
+    init {
         super.keyboardType = KeyboardType.NUMBER
         super.mask = defaultMask
         super.validate = { Regex("""^\d{3,4}$""").matches(it ?: "") }

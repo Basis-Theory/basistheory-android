@@ -7,8 +7,10 @@ import androidx.test.espresso.contrib.DrawerActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.activityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.basistheory.android.example.util.waitUntilVisible
 import com.basistheory.android.example.view.MainActivity
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.not
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
@@ -46,22 +48,65 @@ class CollectCardTests {
 
         // type values into elements
         onView(withId(R.id.cardNumber)).perform(scrollTo(), typeText(cardNumber))
-        onView(withId(R.id.cardExpiration)).perform(scrollTo(), typeText("$expMonth/${expYear.takeLast(2)}"))
+        onView(withId(R.id.cardExpiration)).perform(
+            scrollTo(),
+            typeText("$expMonth/${expYear.takeLast(2)}")
+        )
         onView(withId(R.id.cvc)).perform(scrollTo(), typeText(cvc))
 
         // click tokenize
         onView(withId(R.id.tokenize_button)).perform(scrollTo(), click())
 
         // assertions on tokenize response
-        onView(withId(R.id.tokenize_result)).check(
-            matches(
-                allOf(
-                    withSubstring(cardNumber), // displayed with mask, but transformed back to this value
-                    withSubstring(expMonth),
-                    withSubstring(expYear),
-                    withSubstring(cvc)
+        onView(withId(R.id.tokenize_result))
+            .perform(waitUntilVisible())
+            .check(
+                matches(
+                    allOf(
+                        withSubstring(cardNumber), // displayed with mask, but transformed back to this value
+                        withSubstring(expMonth),
+                        withSubstring(expYear),
+                        withSubstring(cvc)
+                    )
                 )
             )
+    }
+
+    @Test
+    fun cannotTokenizeWithInvalidCardNumber() {
+        val cardNumber = "4242424242424243" // luhn invalid
+        val expMonth = "11"
+        val expYear = "99"
+        val cvc = "123"
+
+        // type values into elements
+        onView(withId(R.id.cardNumber)).perform(scrollTo(), typeText(cardNumber))
+        onView(withId(R.id.cardExpiration)).perform(
+            scrollTo(),
+            typeText("$expMonth/${expYear}")
         )
+        onView(withId(R.id.cvc)).perform(scrollTo(), typeText(cvc))
+
+        // assert tokenize is disabled
+        onView(withId(R.id.tokenize_button)).check(matches(not(isEnabled())))
+    }
+
+    @Test
+    fun cannotTokenizeWithInvalidExpirationDate() {
+        val cardNumber = "4242424242424242"
+        val expMonth = "11"
+        val expYear = "20" // invalid exp year in the past
+        val cvc = "123"
+
+        // type values into elements
+        onView(withId(R.id.cardNumber)).perform(scrollTo(), typeText(cardNumber))
+        onView(withId(R.id.cardExpiration)).perform(
+            scrollTo(),
+            typeText("$expMonth/${expYear}")
+        )
+        onView(withId(R.id.cvc)).perform(scrollTo(), typeText(cvc))
+
+        // assert tokenize is disabled
+        onView(withId(R.id.tokenize_button)).check(matches(not(isEnabled())))
     }
 }

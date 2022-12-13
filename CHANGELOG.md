@@ -1,3 +1,11 @@
+## [0.9.0](https://github.com/Basis-Theory/basistheory-android/compare/0.8.0...0.9.0) (2022-12-13)
+
+
+### Features
+
+* Saves and restores instance state on elements ([#16](https://github.com/Basis-Theory/basistheory-android/issues/16)) ([783f153](https://github.com/Basis-Theory/basistheory-android/commit/783f153bcca190befbbd124856f6dd7aa9040245))
+
+
 ## [0.8.0](https://github.com/Basis-Theory/basistheory-android/compare/0.7.0...0.8.0) (2022-12-12)
 
 

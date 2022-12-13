@@ -13,7 +13,8 @@ import com.basistheory.android.view.validation.LuhnValidator
 class CardNumberElement @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0) : TextElement(context, attrs, defStyleAttr) {
+    defStyleAttr: Int = 0
+) : TextElement(context, attrs, defStyleAttr) {
 
     private val cardBrandEnricher: CardBrandEnricher = CardBrandEnricher()
 

@@ -22,17 +22,6 @@ class CardExpirationDateElement @JvmOverloads constructor(
         super.validator = FutureDateValidator()
     }
 
-    private fun getMonthValue(): String? =
-        getText()
-            ?.split("/")
-            ?.elementAtOrNull(0)
-
-    private fun getYearValue(): String? =
-        getText()
-            ?.split("/")
-            ?.elementAtOrNull(1)
-            ?.let { "20$it" }
-
     /**
      * If the user entered a leading digit > 1, auto insert a leading 0
      */
@@ -44,6 +33,17 @@ class CardExpirationDateElement @JvmOverloads constructor(
         val firstDigit = firstChar.digitToInt()
         return if (firstDigit > 1) "0$value" else value
     }
+
+    private fun getMonthValue(): String? =
+        getText()
+            ?.split("/")
+            ?.elementAtOrNull(0)
+
+    private fun getYearValue(): String? =
+        getText()
+            ?.split("/")
+            ?.elementAtOrNull(1)
+            ?.let { "20$it" }
 
     companion object {
         private val digit = Regex("""\d""")

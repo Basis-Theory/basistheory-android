@@ -122,6 +122,22 @@ open class TextElement @JvmOverloads constructor(
         return editText.onCreateInputConnection(outAttrs)
     }
 
+    override fun onSaveInstanceState(): Parcelable {
+        return bundleOf(
+            STATE_SUPER to super.onSaveInstanceState(),
+            STATE_INPUT to editText.onSaveInstanceState()
+        )
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable) {
+        if (state is Bundle) {
+            editText.onRestoreInstanceState(state.getParcelable(STATE_INPUT))
+            super.onRestoreInstanceState(state.getParcelable(STATE_SUPER))
+        } else {
+            super.onRestoreInstanceState(state)
+        }
+    }
+
     protected open fun beforeTextChanged(value: String?): String? = value
 
     protected open fun createElementChangeEvent(
@@ -210,22 +226,6 @@ open class TextElement @JvmOverloads constructor(
 
         eventListeners.change.forEach {
             it(event)
-        }
-    }
-
-    override fun onSaveInstanceState(): Parcelable {
-        return bundleOf(
-            STATE_SUPER to super.onSaveInstanceState(),
-            STATE_INPUT to editText.onSaveInstanceState()
-        )
-    }
-
-    override fun onRestoreInstanceState(state: Parcelable) {
-        if (state is Bundle) {
-            editText.onRestoreInstanceState(state.getParcelable(STATE_INPUT))
-            super.onRestoreInstanceState(state.getParcelable(STATE_SUPER))
-        } else {
-            super.onRestoreInstanceState(state)
         }
     }
 

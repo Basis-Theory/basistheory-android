@@ -23,7 +23,6 @@ import com.basistheory.android.model.InputAction
 import com.basistheory.android.model.KeyboardType
 import com.basistheory.android.view.mask.Mask
 
-
 open class TextElement @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,

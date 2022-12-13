@@ -2,11 +2,16 @@ package com.basistheory.android.service
 
 import com.basistheory.android.constants.CardBrands
 
-internal class CardBrandEnricher {
+class CardBrandEnricher {
 
     object CardMasks {
         const val MASK_4_8_12GAPS_19LENGTH = "#### #### #### #######"
         const val MASK_4_8_12GAPS_16LENGTH = "#### #### #### ####"
+    }
+
+    object CvcMasks {
+        const val THREE_DIGIT = "###"
+        const val FOUR_DIGIT = "####"
     }
 
     class CardDetails(
@@ -31,7 +36,7 @@ internal class CardBrandEnricher {
             CardBrands.VISA.label,
             listOf("4" to null),
             intArrayOf(16, 18, 19),
-            "###",
+            CvcMasks.THREE_DIGIT,
             CardMasks.MASK_4_8_12GAPS_19LENGTH
         ),
 
@@ -43,14 +48,14 @@ internal class CardBrandEnricher {
                 "23" to "26",
                 "270" to "271",
                 "2720" to null
-            ), intArrayOf(16), "###", CardMasks.MASK_4_8_12GAPS_16LENGTH
+            ), intArrayOf(16), CvcMasks.THREE_DIGIT, CardMasks.MASK_4_8_12GAPS_16LENGTH
         ),
 
         CardDetails(
             CardBrands.AMERICAN_EXPRESS.label, listOf(
                 "34" to null,
                 "37" to null
-            ), intArrayOf(15), "####", "#### ###### #####"
+            ), intArrayOf(15), CvcMasks.FOUR_DIGIT, "#### ###### #####"
         ),
 
         CardDetails(
@@ -58,7 +63,7 @@ internal class CardBrandEnricher {
                 "36" to null,
                 "38" to "39",
                 "300" to "305"
-            ), intArrayOf(14, 16, 19), "###", "#### ###### #########"
+            ), intArrayOf(14, 16, 19), CvcMasks.THREE_DIGIT, "#### ###### #########"
         ),
 
         CardDetails(
@@ -66,7 +71,7 @@ internal class CardBrandEnricher {
                 "65" to null,
                 "6011" to "39",
                 "644" to "649"
-            ), intArrayOf(16, 19), "###", CardMasks.MASK_4_8_12GAPS_19LENGTH
+            ), intArrayOf(16, 19), CvcMasks.THREE_DIGIT, CardMasks.MASK_4_8_12GAPS_19LENGTH
         ),
 
         CardDetails(
@@ -74,7 +79,7 @@ internal class CardBrandEnricher {
                 "2131" to null,
                 "1800" to "39",
                 "3528" to "3589"
-            ), intArrayOf(16, 17, 18, 19), "###", CardMasks.MASK_4_8_12GAPS_19LENGTH
+            ), intArrayOf(16, 17, 18, 19), CvcMasks.THREE_DIGIT, CardMasks.MASK_4_8_12GAPS_19LENGTH
         ),
 
         CardDetails(
@@ -95,7 +100,7 @@ internal class CardBrandEnricher {
                 "627781" to "627799",
                 "6282" to "6289",
                 "8110" to "8171",
-            ), intArrayOf(14, 15, 16, 17, 18, 19), "###", CardMasks.MASK_4_8_12GAPS_19LENGTH
+            ), intArrayOf(14, 15, 16, 17, 18, 19), CvcMasks.THREE_DIGIT, CardMasks.MASK_4_8_12GAPS_19LENGTH
         ),
 
         CardDetails(
@@ -108,7 +113,7 @@ internal class CardBrandEnricher {
                 "504176" to "506698",
                 "506779" to "508999",
                 "56" to "59",
-            ), intArrayOf(12, 13, 14, 15, 16, 17, 18, 19), "###", CardMasks.MASK_4_8_12GAPS_19LENGTH
+            ), intArrayOf(12, 13, 14, 15, 16, 17, 18, 19), CvcMasks.THREE_DIGIT, CardMasks.MASK_4_8_12GAPS_19LENGTH
         ),
 
         CardDetails(
@@ -138,14 +143,14 @@ internal class CardBrandEnricher {
                 "651652" to "651679",
                 "655000" to "655019",
                 "655021" to "655058",
-            ), intArrayOf(16), "###", CardMasks.MASK_4_8_12GAPS_16LENGTH
+            ), intArrayOf(16), CvcMasks.THREE_DIGIT, CardMasks.MASK_4_8_12GAPS_16LENGTH
         ),
 
         CardDetails(
             CardBrands.MIR.label,
             listOf("2200" to "2204"),
             intArrayOf(16, 17, 18, 19),
-            "###",
+            CvcMasks.THREE_DIGIT,
             CardMasks.MASK_4_8_12GAPS_19LENGTH
         ),
 
@@ -158,13 +163,13 @@ internal class CardBrandEnricher {
                 "637599" to null,
                 "637609" to null,
                 "637612" to null,
-            ), intArrayOf(16), "###", CardMasks.MASK_4_8_12GAPS_16LENGTH
+            ), intArrayOf(16), CvcMasks.THREE_DIGIT, CardMasks.MASK_4_8_12GAPS_16LENGTH
         ),
 
         CardDetails(
             CardBrands.HIPERCARD.label, listOf(
                 "606282" to null,
-            ), intArrayOf(16), "###", CardMasks.MASK_4_8_12GAPS_16LENGTH
+            ), intArrayOf(16), CvcMasks.THREE_DIGIT, CardMasks.MASK_4_8_12GAPS_16LENGTH
         )
     )
 

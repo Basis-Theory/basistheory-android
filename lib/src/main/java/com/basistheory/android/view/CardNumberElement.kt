@@ -14,6 +14,8 @@ class CardNumberElement @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0) : TextElement(context, attrs, defStyleAttr) {
 
+    var cardDetails: CardBrandEnricher.CardDetails? = null
+
     private val cardBrandEnricher: CardBrandEnricher = CardBrandEnricher()
 
     init {
@@ -25,6 +27,8 @@ class CardNumberElement @JvmOverloads constructor(
 
     override fun beforeTextChanged(value: String?): String? {
         val cardResult = cardBrandEnricher.evaluateCard(getDigitsOnly(value))
+        cardDetails = cardResult.cardDetails
+
         if (cardResult.cardDetails?.cardMask != null)
             mask = cardResult.cardDetails!!.cardMask.toList()
 
@@ -38,6 +42,8 @@ class CardNumberElement @JvmOverloads constructor(
         isValid: Boolean
     ): ChangeEvent {
         val cardResult = cardBrandEnricher.evaluateCard(getDigitsOnly(value))
+        cardDetails = cardResult.cardDetails
+
         val eventDetails = cardResult.cardDetails?.brand?.let { brand ->
             mutableListOf(
                 EventDetails(

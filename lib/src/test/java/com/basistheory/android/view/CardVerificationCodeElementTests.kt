@@ -17,10 +17,13 @@ import strikt.assertions.single
 class CardVerificationCodeElementTests {
     private lateinit var cvcElement: CardVerificationCodeElement
 
+    private lateinit var cardNumberElement: CardNumberElement
+
     @Before
     fun setUp() {
         val activity = Robolectric.buildActivity(Activity::class.java).get()
         cvcElement = CardVerificationCodeElement(activity)
+        cardNumberElement = CardNumberElement(activity)
     }
 
     @Test
@@ -33,9 +36,24 @@ class CardVerificationCodeElementTests {
     }
 
     @Test
-    fun `applies mask when setting the value`() {
+    fun `applies default mask when setting the value and no card number element is attached`() {
+        cvcElement.cardNumberElement = null
+
         cvcElement.setText("1a2b3c")
         expectThat(cvcElement.getText()).isEqualTo("123")
+    }
+
+    @Test
+    fun `updates mask depending on card brand`() {
+        cvcElement.cardNumberElement = cardNumberElement
+
+        cardNumberElement.setText("42")
+        cvcElement.setText("1a2b3c4d5e")
+        expectThat(cvcElement.getText()).isEqualTo("123")
+
+        cardNumberElement.setText("34")
+        cvcElement.setText("1a2b3c4d5e")
+        expectThat(cvcElement.getText()).isEqualTo("1234")
     }
 
     @Test

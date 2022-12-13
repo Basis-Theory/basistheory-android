@@ -9,6 +9,16 @@ class CardVerificationCodeElement @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0) : TextElement(context, attrs, defStyleAttr) {
 
+    var cardNumberElement: CardNumberElement? = null
+        set(value) {
+            field = value
+
+            if (value != null) {
+                super.mask = field?.cardDetails?.cvcMask?.toList() ?: defaultMask
+                field?.addChangeEventListener { updateMask() }
+            }
+        }
+
     init {
         super.keyboardType = KeyboardType.NUMBER
         super.mask = defaultMask
@@ -20,5 +30,9 @@ class CardVerificationCodeElement @JvmOverloads constructor(
 
         val defaultMask: List<Any> =
             listOf(digit, digit, digit)
+    }
+
+    private fun updateMask() {
+        super.mask = cardNumberElement?.cardDetails?.cvcMask?.toList() ?: defaultMask
     }
 }

@@ -73,8 +73,27 @@ class CollectCardTests {
     }
 
     @Test
-    fun cannotTokenizeWithInvalidData() {
+    fun cannotTokenizeWithInvalidCardNumber() {
         val cardNumber = "4242424242424243" // luhn invalid
+        val expMonth = "11"
+        val expYear = "99"
+        val cvc = "123"
+
+        // type values into elements
+        onView(withId(R.id.cardNumber)).perform(scrollTo(), typeText(cardNumber))
+        onView(withId(R.id.cardExpiration)).perform(
+            scrollTo(),
+            typeText("$expMonth/${expYear}")
+        )
+        onView(withId(R.id.cvc)).perform(scrollTo(), typeText(cvc))
+
+        // assert tokenize is disabled
+        onView(withId(R.id.tokenize_button)).check(matches(not(isEnabled())))
+    }
+
+    @Test
+    fun cannotTokenizeWithInvalidExpirationDate() {
+        val cardNumber = "4242424242424242"
         val expMonth = "11"
         val expYear = "20" // invalid exp year in the past
         val cvc = "123"
@@ -83,7 +102,7 @@ class CollectCardTests {
         onView(withId(R.id.cardNumber)).perform(scrollTo(), typeText(cardNumber))
         onView(withId(R.id.cardExpiration)).perform(
             scrollTo(),
-            typeText("$expMonth/${expYear.takeLast(2)}")
+            typeText("$expMonth/${expYear}")
         )
         onView(withId(R.id.cvc)).perform(scrollTo(), typeText(cvc))
 

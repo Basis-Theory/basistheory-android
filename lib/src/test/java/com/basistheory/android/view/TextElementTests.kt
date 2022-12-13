@@ -1,6 +1,7 @@
 package com.basistheory.android.view
 
 import android.app.Activity
+import com.basistheory.android.event.ChangeEvent
 import com.basistheory.android.view.mask.ElementMask
 import com.basistheory.android.view.transform.RegexReplaceElementTransform
 import org.junit.Before
@@ -9,7 +10,7 @@ import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import strikt.api.expectThat
-import strikt.assertions.isEqualTo
+import strikt.assertions.*
 
 @RunWith(RobolectricTestRunner::class)
 class TextElementTests {
@@ -63,5 +64,20 @@ class TextElementTests {
         )
         textElement.setText("2345678900")
         expectThat(textElement.getText()).isEqualTo("+1(234) 567-8900")
+    }
+
+    @Test
+    fun `can use TextElement without a mask, transform, or validator`() {
+        val changeEvents = mutableListOf<ChangeEvent>()
+
+        textElement.addChangeEventListener { changeEvents.add(it) }
+
+        textElement.setText("123")
+        expectThat(textElement.getText()).isEqualTo("123")
+
+        expectThat(changeEvents).single().and {
+            get { isComplete }.isFalse()
+            get { isValid }.isTrue()
+        }
     }
 }

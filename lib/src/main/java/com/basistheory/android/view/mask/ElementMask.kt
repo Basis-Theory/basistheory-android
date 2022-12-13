@@ -84,4 +84,30 @@ class ElementMask {
 
         return if (maskChar.matches(nextInputChar.toString())) nextInputChar else null
     }
+
+    override fun equals(other: Any?): Boolean =
+        (other is ElementMask) && ElementMaskComparer(this) == ElementMaskComparer(other)
+
+    override fun hashCode(): Int =
+        ElementMaskComparer(this).hashCode()
+
+    /**
+     * Utility class to assist in comparing two ElementMask instances since
+     * Regex objects are not comparable within the list of character masks
+     */
+    private data class ElementMaskComparer(val characterMaskPatterns: List<String>) {
+        constructor(mask: ElementMask) : this(mask.toComparablePatterns())
+
+        companion object {
+            private fun ElementMask.toComparablePatterns(): List<String> =
+                this.characterMasks.map {
+                    when (it) {
+                        is Regex -> it.pattern
+                        else -> it.toString()
+                    }
+                }
+        }
+    }
 }
+
+

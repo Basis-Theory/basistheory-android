@@ -21,16 +21,12 @@ class CardBrandEnricher {
         var identifierRanges: List<Pair<String, String?>>,
         var validLengths: IntArray,
         var cvcMask: String,
-        var cardMask: String
-    )
-
-    class CardResult(
-        var cardDetails: CardDetails?,
+        var cardMask: String,
         var cardLength: Int = -1,
         var identifierLength: Int = -1,
     ) {
         val complete: Boolean
-            get() = cardDetails?.validLengths?.contains(cardLength) ?: false
+            get() = validLengths.contains(cardLength)
     }
 
     class CardMetadata(
@@ -215,7 +211,7 @@ class CardBrandEnricher {
     fun evaluateCard(number: String?): CardMetadata? {
         if (number.isNullOrBlank()) return null
 
-        var bestMatch = CardResult(null)
+        var bestMatch: CardDetails? = null
 
         cardBrands.forEach { cardDetails ->
             cardDetails.identifierRanges.forEach { range ->
@@ -231,24 +227,30 @@ class CardBrandEnricher {
 
         return with(bestMatch) {
             CardMetadata(
-                this.cardDetails?.brand,
-                this.cardDetails?.cvcMask,
-                this.cardDetails?.cardMask,
-                this.complete
+                this?.brand,
+                this?.cvcMask,
+                this?.cardMask,
+                this?.complete ?: false
             )
         }
     }
 
     private fun chooseBestMatch(
-        currentBestMatch: CardResult,
+        currentBestMatch: CardDetails?,
         cardDetails: CardDetails,
         identifierMatch: String,
         number: String
-    ): CardResult =
-        if (currentBestMatch.identifierLength < identifierMatch.length) CardResult(
-            cardDetails,
-            number.length,
-            identifierMatch.length
-        )
+    ): CardDetails? =
+        if ((currentBestMatch?.identifierLength ?: -1) < identifierMatch.length) with(cardDetails) {
+            CardDetails(
+                this.brand,
+                this.identifierRanges,
+                this.validLengths,
+                this.cvcMask,
+                this.cardMask,
+                number.length,
+                identifierMatch.length
+            )
+        }
         else currentBestMatch
 }

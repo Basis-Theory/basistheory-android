@@ -8,32 +8,32 @@ import strikt.api.expectCatching
 import strikt.api.expectThat
 import strikt.assertions.*
 
-class MaskTests {
+class ElementMaskTests {
 
     @Test
     fun `throws IllegalArgumentException when mask contains strings longer than 1 char`() {
-        expectCatching { Mask(listOf("foo")) }
+        expectCatching { ElementMask(listOf("foo")) }
             .isFailure()
             .isA<IllegalArgumentException>()
     }
 
     @Test
     fun `throws IllegalArgumentException when mask contains illegal mask input`() {
-        expectCatching { Mask(listOf('f', Regex("."), object {})) }
+        expectCatching { ElementMask(listOf('f', Regex("."), object {})) }
             .isFailure()
             .isA<IllegalArgumentException>()
     }
 
     @Test
     fun `throws IllegalArgumentException when mask contains empty string`() {
-        expectCatching { Mask(listOf("")) }
+        expectCatching { ElementMask(listOf("")) }
             .isFailure()
             .isA<IllegalArgumentException>()
     }
 
     @Test
     fun `throws IllegalArgumentException when mask is empty`() {
-        expectCatching { Mask(emptyList()) }
+        expectCatching { ElementMask(emptyList()) }
             .isFailure()
             .isA<IllegalArgumentException>()
     }
@@ -59,7 +59,7 @@ class MaskTests {
             digitRegex,
             digitRegex
         )
-        val mask = Mask(maskPattern)
+        val mask = ElementMask(maskPattern)
         val maskedValue = mask.evaluate("2345678900", InputAction.INSERT)
 
         expect {
@@ -75,7 +75,7 @@ class MaskTests {
             digitRegex,
             digitRegex
         )
-        val mask = Mask(maskPattern)
+        val mask = ElementMask(maskPattern)
 
         expect {
             that(mask.isComplete("2")).isFalse()
@@ -98,7 +98,7 @@ class MaskTests {
             "-",
             charRegex,
         )
-        val mask = Mask(maskPattern)
+        val mask = ElementMask(maskPattern)
 
         expectThat(mask.evaluate("e2e2e", InputAction.INSERT)).isEqualTo("e-2-e-2-e")
     }
@@ -111,7 +111,7 @@ class MaskTests {
             "_",
             charRegex
         )
-        val mask = Mask(maskPattern)
+        val mask = ElementMask(maskPattern)
 
         expect {
             that(mask.evaluate("AB", InputAction.INSERT)).isEqualTo("A_B")
@@ -131,7 +131,7 @@ class MaskTests {
             digitRegex,
             ")"
         )
-        val mask = Mask(maskPattern)
+        val mask = ElementMask(maskPattern)
 
         expect {
             that(mask.evaluate("+1(1", InputAction.INSERT)).isEqualTo("+1(1")
@@ -147,7 +147,7 @@ class MaskTests {
             "-",
             anyRegex
         )
-        val mask = Mask(maskPattern)
+        val mask = ElementMask(maskPattern)
 
         expect {
             that(mask.evaluate("12", InputAction.INSERT)).isEqualTo("1-2")
@@ -170,7 +170,7 @@ class MaskTests {
             "-",
             charRegex
         )
-        val mask = Mask(maskPattern)
+        val mask = ElementMask(maskPattern)
 
         expect {
             that(mask.evaluate("ee23dd", InputAction.INSERT)).isEqualTo("e-2-d")
@@ -182,7 +182,7 @@ class MaskTests {
     @Test
     fun `mask with numeric placeholders is applied correctly`() {
         val maskPattern = listOf("#", "#", "#", "-", '#', '#', "-", "#", "#", "#", "#")
-        val mask = Mask(maskPattern)
+        val mask = ElementMask(maskPattern)
 
         expectThat(
             mask.evaluate(
@@ -195,7 +195,7 @@ class MaskTests {
     @Test
     fun `mask with mixed placeholders is applied correctly`() {
         val maskPattern = listOf("#", "#", "#", "-", "x", "x", "-", "*", "*", "*", "*")
-        val mask = Mask(maskPattern)
+        val mask = ElementMask(maskPattern)
 
         expect {
             that(
@@ -226,7 +226,7 @@ class MaskTests {
             Regex("""\d"""),
             ")"
         )
-        val mask = Mask(maskPattern)
+        val mask = ElementMask(maskPattern)
 
         expect {
             that(mask.evaluate("", InputAction.INSERT)).isEqualTo("")

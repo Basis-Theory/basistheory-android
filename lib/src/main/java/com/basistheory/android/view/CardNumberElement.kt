@@ -6,13 +6,15 @@ import com.basistheory.android.event.ChangeEvent
 import com.basistheory.android.event.EventDetails
 import com.basistheory.android.model.KeyboardType
 import com.basistheory.android.service.CardBrandEnricher
-import com.basistheory.android.view.transform.regexReplaceElementTransform
-import com.basistheory.android.view.validation.luhnValidator
+import com.basistheory.android.view.mask.ElementMask
+import com.basistheory.android.view.transform.RegexReplaceElementTransform
+import com.basistheory.android.view.validation.LuhnValidator
 
 class CardNumberElement @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0) : TextElement(context, attrs, defStyleAttr) {
+    defStyleAttr: Int = 0
+) : TextElement(context, attrs, defStyleAttr) {
 
     var cardDetails: CardBrandEnricher.CardDetails? = null
         private set
@@ -22,8 +24,8 @@ class CardNumberElement @JvmOverloads constructor(
     init {
         super.keyboardType = KeyboardType.NUMBER
         super.mask = defaultMask
-        super.transform = regexReplaceElementTransform(Regex("""\s"""), "")
-        super.validate = ::luhnValidator
+        super.transform = RegexReplaceElementTransform(Regex("""\s"""), "")
+        super.validator = LuhnValidator()
     }
 
     override fun beforeTextChanged(value: String?): String? {
@@ -31,7 +33,7 @@ class CardNumberElement @JvmOverloads constructor(
         cardDetails = cardResult.cardDetails
 
         if (cardResult.cardDetails?.cardMask != null)
-            mask = cardResult.cardDetails!!.cardMask.toList()
+            mask = ElementMask(cardResult.cardDetails!!.cardMask)
 
         return value
     }
@@ -63,16 +65,17 @@ class CardNumberElement @JvmOverloads constructor(
     }
 
     private fun getDigitsOnly(text: String?): String? {
-        val maskedValue = maskValue?.evaluate(text, inputAction)
-        return transform(maskedValue)
+        val maskedValue = mask?.evaluate(text, inputAction)
+        return transform?.apply(maskedValue) ?: maskedValue
     }
 
     companion object {
         private val digit = Regex("""\d""")
 
-        val defaultMask: List<Any> =
+        val defaultMask = ElementMask(
             (1..19).map {
                 if (it % 5 == 0 && it > 0) " " else digit
             }
+        )
     }
 }

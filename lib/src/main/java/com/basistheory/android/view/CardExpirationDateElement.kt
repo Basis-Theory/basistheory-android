@@ -1,11 +1,11 @@
 package com.basistheory.android.view
 
 import android.content.Context
-import android.text.Editable
 import android.util.AttributeSet
 import com.basistheory.android.model.ElementValueReference
 import com.basistheory.android.model.KeyboardType
-import com.basistheory.android.view.validation.futureDateValidator
+import com.basistheory.android.view.mask.ElementMask
+import com.basistheory.android.view.validation.FutureDateValidator
 
 class CardExpirationDateElement @JvmOverloads constructor(
     context: Context,
@@ -19,19 +19,8 @@ class CardExpirationDateElement @JvmOverloads constructor(
     init {
         super.keyboardType = KeyboardType.NUMBER
         super.mask = defaultMask
-        super.validate = { futureDateValidator(it) }
+        super.validator = FutureDateValidator()
     }
-
-    private fun getMonthValue(): String? =
-        getText()
-            ?.split("/")
-            ?.elementAtOrNull(0)
-
-    private fun getYearValue(): String? =
-        getText()
-            ?.split("/")
-            ?.elementAtOrNull(1)
-            ?.let { "20$it" }
 
     /**
      * If the user entered a leading digit > 1, auto insert a leading 0
@@ -45,10 +34,22 @@ class CardExpirationDateElement @JvmOverloads constructor(
         return if (firstDigit > 1) "0$value" else value
     }
 
+    private fun getMonthValue(): String? =
+        getText()
+            ?.split("/")
+            ?.elementAtOrNull(0)
+
+    private fun getYearValue(): String? =
+        getText()
+            ?.split("/")
+            ?.elementAtOrNull(1)
+            ?.let { "20$it" }
+
     companion object {
         private val digit = Regex("""\d""")
 
-        val defaultMask: List<Any> =
+        val defaultMask = ElementMask(
             listOf(digit, digit, "/", digit, digit)
+        )
     }
 }

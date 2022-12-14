@@ -11,9 +11,6 @@ calls, enabling you to tokenize this data without needing to directly marshall o
 sensitive data. Your application code will only receive access to the created tokens, which can 
 safely be sent to your backend systems and persisted for later use.
 
-Get started with our [integration guides](https://developers.basistheory.com/) or browse the 
-[SDK docs](https://docs.basistheory.com/elements).
-
 ## Installation
 
 ### Requirements
@@ -47,24 +44,27 @@ Add this dependency to your project's build file:
 
 ## Example Usage
 
-A full example Android app can be viewed within the [example](example) module within this repo.
-
-For example, the following code collects and tokenizes a credit card:
+First, include one or more elements within your app's views:
 
 ```xml
 <com.basistheory.android.view.CardNumberElement
     android:id="@+id/card_number"
-    ...
-/>
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
+
 <com.basistheory.android.view.CardExpirationDateElement
     android:id="@+id/expiration_date"
-    ...
-/>
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
+
 <com.basistheory.android.view.CardVerificationCodeElement
     android:id="@+id/cvc"
-    ...
-/>
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
 ```
+
+Then tokenize the user input by referencing these elements. This can be wired up in response to a 
+button click, or any other user action. 
 
 ```kotlin
 val cardNumberElement = findViewById(R.id.card_number)
@@ -72,8 +72,7 @@ val cardExpirationDateElement = findViewById(R.id.expiration_date)
 val cardVerificationCodeElement = findViewById(R.id.cvc)
 
 val bt = BasisTheoryElements.builder()
-    .apiUrl(BuildConfig.BASIS_THEORY_API_URL)
-    .apiKey(BuildConfig.BASIS_THEORY_API_KEY)
+    .apiKey(myPublicApiKey)
     .build()
 
 runBlocking {
@@ -89,4 +88,9 @@ runBlocking {
 }
 ```
 
-For more detailed usage examples, please refer to the [example app](example).
+Note that the Android SDK requires the use of a public API key during initialization 
+(an API key issued to a `public` [Application](https://developers.basistheory.com/concepts/access-controls/#what-are-applications)).
+Click [here](https://portal.basistheory.com/applications/create?permissions=token%3Acreate&type=public.) 
+to create one in the Basis Theory portal.
+
+A full example Android app can be viewed within the [example](example) module within this repo.

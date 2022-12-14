@@ -20,15 +20,19 @@ as well as several additional styling customizations typically available to a na
     bt:textColor="@color/purple_200" />
 ```
 
+See [TextElement](/docs/TextElement.md/#xml-attributes) for an exhaustive list of supported XML attributes.
+
 ## Styling Programmatically
 
-```swift
-val textElement = findViewById<TextElement>(R.id.myTextElement)
+```kotlin
+val textElement = binding.myTextElement // or findViewById<TextElement>(R.id.myTextElement)
 textElement.setPadding(5, 5, 5, 5)
 textElement.hint = "Placeholder"
 textElement.textColor = Color.CYAN
 textElement.background = Color.WHITE.toDrawable()
 ```
+
+See [TextElement](/docs/TextElement.md/#properties) for an exhaustive list of supported properties.
 
 ## Examples
 
@@ -39,3 +43,6 @@ textElement.background = Color.WHITE.toDrawable()
 ### Custom Background
 
 ![Styled Text Element](/docs/img/text_element_styled.png)
+
+
+![Default Text Element](/docs/img/text_element_default.png)

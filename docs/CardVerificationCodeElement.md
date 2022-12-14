@@ -1,6 +1,6 @@
-# TextElement
+# CardVerificationCodeElement
 
-The `TextElement` view can be used to collect any text data within your mobile app.
+The `CardVerificationCodeElement` view can be used to collect any text data within your mobile app.
 This component allows you to fully customize the look and feel to match your brand, but it does 
 not allow direct access the underlying values entered by a user, keeping your mobile application 
 out of compliance scope.
@@ -10,8 +10,8 @@ out of compliance scope.
 To use the `TextElement` within your Android application, simply include the view within one of your
 Android application’s layouts.
 
-```xml
-<com.basistheory.android.view.TextElement
+```kotlin
+<com.basistheory.android.TextElement
     android:id="@+id/name"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" />

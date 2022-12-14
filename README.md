@@ -51,6 +51,21 @@ A full example Android app can be viewed within the [example](example) module wi
 
 For example, the following code collects and tokenizes a credit card:
 
+```xml
+<com.basistheory.android.view.CardNumberElement
+    android:id="@+id/card_number"
+    ...
+/>
+<com.basistheory.android.view.CardExpirationDateElement
+    android:id="@+id/expiration_date"
+    ...
+/>
+<com.basistheory.android.view.CardVerificationCodeElement
+    android:id="@+id/cvc"
+    ...
+/>
+```
+
 ```kotlin
 val cardNumberElement = findViewById(R.id.card_number)
 val cardExpirationDateElement = findViewById(R.id.expiration_date)

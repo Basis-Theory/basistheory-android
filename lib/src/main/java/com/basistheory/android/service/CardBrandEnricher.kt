@@ -12,8 +12,8 @@ internal class CardBrandEnricher {
     }
 
     object CvcMasks {
-        const val MASK_3LENGTH = "###"
-        const val MASK_4LENGTH = "####"
+        const val THREE_DIGIT = "###"
+        const val FOUR_DIGIT = "####"
     }
 
     class CardDetails(
@@ -38,7 +38,7 @@ internal class CardBrandEnricher {
             CardBrands.VISA.label,
             listOf("4" to null),
             intArrayOf(16, 18, 19),
-            CvcMasks.MASK_3LENGTH,
+            CvcMasks.THREE_DIGIT,
             CardMasks.MASK_4_8_12GAPS_19LENGTH
         ),
 
@@ -52,7 +52,7 @@ internal class CardBrandEnricher {
                 "2720" to null
             ),
             intArrayOf(16),
-            CvcMasks.MASK_3LENGTH,
+            CvcMasks.THREE_DIGIT,
             CardMasks.MASK_4_8_12GAPS_16LENGTH
         ),
 
@@ -62,7 +62,7 @@ internal class CardBrandEnricher {
                 "37" to null
             ),
             intArrayOf(15),
-            CvcMasks.MASK_4LENGTH,
+            CvcMasks.FOUR_DIGIT,
             CardMasks.MASK_4_10GAPS_15LENGTH
         ),
 
@@ -73,7 +73,7 @@ internal class CardBrandEnricher {
                 "300" to "305"
             ),
             intArrayOf(14, 16, 19),
-            CvcMasks.MASK_3LENGTH,
+            CvcMasks.THREE_DIGIT,
             CardMasks.MASK_4_10GAPS_19LENGTH
         ),
 
@@ -84,7 +84,7 @@ internal class CardBrandEnricher {
                 "644" to "649"
             ),
             intArrayOf(16, 19),
-            CvcMasks.MASK_3LENGTH,
+            CvcMasks.THREE_DIGIT,
             CardMasks.MASK_4_8_12GAPS_19LENGTH
         ),
 
@@ -95,7 +95,7 @@ internal class CardBrandEnricher {
                 "3528" to "3589"
             ),
             intArrayOf(16, 17, 18, 19),
-            CvcMasks.MASK_3LENGTH,
+            CvcMasks.THREE_DIGIT,
             CardMasks.MASK_4_8_12GAPS_19LENGTH
         ),
 
@@ -119,7 +119,7 @@ internal class CardBrandEnricher {
                 "8110" to "8171",
             ),
             intArrayOf(14, 15, 16, 17, 18, 19),
-            CvcMasks.MASK_3LENGTH,
+            CvcMasks.THREE_DIGIT,
             CardMasks.MASK_4_8_12GAPS_19LENGTH
         ),
 
@@ -135,7 +135,7 @@ internal class CardBrandEnricher {
                 "56" to "59",
             ),
             intArrayOf(12, 13, 14, 15, 16, 17, 18, 19),
-            CvcMasks.MASK_3LENGTH,
+            CvcMasks.THREE_DIGIT,
             CardMasks.MASK_4_8_12GAPS_19LENGTH
         ),
 
@@ -168,7 +168,7 @@ internal class CardBrandEnricher {
                 "655021" to "655058",
             ),
             intArrayOf(16),
-            CvcMasks.MASK_3LENGTH,
+            CvcMasks.THREE_DIGIT,
             CardMasks.MASK_4_8_12GAPS_16LENGTH
         ),
 
@@ -176,7 +176,7 @@ internal class CardBrandEnricher {
             CardBrands.MIR.label,
             listOf("2200" to "2204"),
             intArrayOf(16, 17, 18, 19),
-            CvcMasks.MASK_3LENGTH,
+            CvcMasks.THREE_DIGIT,
             CardMasks.MASK_4_8_12GAPS_19LENGTH
         ),
 
@@ -191,7 +191,7 @@ internal class CardBrandEnricher {
                 "637612" to null,
             ),
             intArrayOf(16),
-            CvcMasks.MASK_3LENGTH,
+            CvcMasks.THREE_DIGIT,
             CardMasks.MASK_4_8_12GAPS_16LENGTH
         ),
 
@@ -200,7 +200,7 @@ internal class CardBrandEnricher {
                 "606282" to null,
             ),
             intArrayOf(16),
-            CvcMasks.MASK_3LENGTH,
+            CvcMasks.THREE_DIGIT,
             CardMasks.MASK_4_8_12GAPS_16LENGTH
         )
     )

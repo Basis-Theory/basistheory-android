@@ -43,9 +43,6 @@ class CardNumberElement @JvmOverloads constructor(
         isEmpty: Boolean,
         isValid: Boolean
     ): ChangeEvent {
-        val cardMetadata = cardBrandEnricher.evaluateCard(getDigitsOnly(value))
-        this.cardMetadata = cardMetadata
-
         val eventDetails = this.cardMetadata?.brand?.let { brand ->
             mutableListOf(
                 EventDetails(

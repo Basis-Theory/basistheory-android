@@ -1,6 +1,6 @@
 # Elements Events
 
-Each Element type supports a standard set of events that can be subscribed to in order to receive
+Each element type supports a standard set of events that can be subscribed to in order to receive
 callbacks within your app.
 
 ## ChangeEvent
@@ -9,12 +9,12 @@ Raised whenever the element's value is changed.
 
 ### Schema
 
-| Property   | Type                 | Description                                                               |
-|------------|----------------------|---------------------------------------------------------------------------|
-| isComplete | `Boolean`            | Whether the element has been completely filled (as specified by the mask) |
-| isEmpty    | `Boolean`            | Whether the element is empty.                                             |
-| isValid    | `Boolean`            | This an array of error objects that are emitted for any set validations.  |
-| details    | `List<EventDetails>` |                                                                           |
+| Property   | Type                 | Description                                                                                                   |
+|------------|----------------------|---------------------------------------------------------------------------------------------------------------|
+| isComplete | `Boolean`            | Whether the element has been completely filled (as specified by the [mask](/docs/TextElement.md/#valdiators)) |
+| isEmpty    | `Boolean`            | Whether the element is empty                                                                                  |
+| isValid    | `Boolean`            | The result of the [validator](/docs/TextElement.md/#valdiators), or `true` if no validator is specified       |
+| details    | `List<EventDetails>` | A list of [EventDetails](#eventdetails) included with this event                                              |
 
 ### EventDetails
 

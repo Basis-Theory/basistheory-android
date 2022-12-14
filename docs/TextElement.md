@@ -1,8 +1,8 @@
 # TextElement
 
-The `TextElement` view can be used to collect any text data within your mobile app.
-This component allows you to fully customize the look and feel to match your brand, but it does 
-not allow direct access the underlying values entered by a user, keeping your mobile application 
+The `TextElement` can be used to collect any text data within your mobile app.
+This component allows you to fully customize the look and feel to match your brand, and it does 
+not allow direct access the underlying plaintext values entered by a user, keeping your mobile application 
 out of compliance scope.
 
 ## Basic Usage
@@ -51,8 +51,8 @@ The following additional XML attributes are also supported when defining a `Text
 | text                | `string`                 | Sets the text value for the element. Note that a getter is not exposed on the TextElement to retrieve the underlying text value.                                                                                                                           |
 | textColor           | `reference`&vert;`color` | The text color. <br/><br/>May be a reference to another resource, in the form "@[+][package:]type/name" or a theme attribute in the form "?[package:]type/name". <br/><br/>May be a color value, in the form of "#rgb", "#argb", "#rrggbb", or "#aarrggbb" |
 | hint                | `string`                 | Placeholder text to display within the Element.                                                                                                                                                                                                            |
-| mask                | `string`                 | A string defining the [mask](#masks) applied to this Element, e.g. (`###-##-####`).                                                                                                                                                                        |
 | removeDefaultStyles | `boolean`                | Removes the default Android styling on the underlying EditText.                                                                                                                                                                                            |
+| mask                | `string`                 | A string defining the [mask](#masks) applied to this Element, e.g. (`###-##-####`).                                                                                                                                                                        |
 
 ### Masks
 
@@ -65,29 +65,28 @@ The `ElementMask` class supports two constructors:
 Each character position either defines a static value in the mask (specified as a `Char` or single 
 character `String`) or a range of allowable characters (specified as a `Regex` object).
 
-For example, to support US Social Security Numbers of the form `123-45-6789`, you can specify the
-mask as:
+    For example, to support US Social Security Numbers of the form `123-45-6789`, you can specify the mask as:
 
-```kotlin
-val digit = Regex("""\d""")
-element.mask = ElementMask(listOf(digit, digit, digit, "-", digit, digit, "-", digit, digit, digit, digit))
-```
+    ```kotlin
+    val digit = Regex("""\d""")
+    element.mask = ElementMask(listOf(digit, digit, digit, "-", digit, digit, "-", digit, digit, digit, digit))
+    ```
 
 2. `ElementMask(pattern: String)`: specifies a range of allowable characters using the wildcard characters:
 - `#`: numeric value, equivalent to `Regex("""\d""")`
 - `x`: alphabetic value, equivalent to `Regex("[A-Za-z]")`
 - `*`: any value, equivalent to `Regex(".")`
 
-For example, to support US Social Security Numbers of the form `123-45-6789`, you can specify the
-mask as:
-
-```kotlin
-element.mask = ElementMask("###-##-####")
-```
+    For example, to support US Social Security Numbers of the form `123-45-6789`, you can specify the
+    mask as:
+    
+    ```kotlin
+    element.mask = ElementMask("###-##-####")
+    ```
 
 ### Transforms
 
-Element transforms define functions to mutate the value of the Element prior to tokenization and 
+Element transforms define functions that mutate the value of the element prior to tokenization and 
 when computing properties published within [ChangeEvents](/docs/Events.md).
 
 The following types of transforms are supported:
@@ -109,10 +108,10 @@ element.transform = RegexReplaceElementTransform(
 Element validators define functions to determine whether the value of the Element is considered valid.
 Validators are executed on the [transformed](#transforms) Element value.
 
-The validation state of an Element is only used when computing an [ChangeEvents](/docs/Events.md)
-and all actions taken in response to an invalid state (e.g. styling changes, 
-displaying validation errors, disabling submit buttons) are expected to be implemented within your 
-app in response to `ChangeEvents`. See [this example](/example/src/main/java/com/basistheory/android/example/viewmodel/CardFragmentViewModel.kt)
+The validation state of an Element is only used when computing [ChangeEvents](/docs/Events.md)
+and all invalid state behavior (e.g. styling changes, displaying validation errors, 
+disabling submit buttons) are expected to be implemented within your app in response to `ChangeEvents`. 
+See [this example](/example/src/main/java/com/basistheory/android/example/viewmodel/CardFragmentViewModel.kt)
 for one potential pattern for implementing validation within your app.
 
 The following types of validators are supported:
@@ -139,8 +138,8 @@ element.validator = LuhnValidator()
 
 #### FutureDateValidator
 
-Validates that the input value is a future date of the form `MM/yy`. The default
-credit card number. This is the default validator for the [CardExpirationDateElement](/docs/CardExpirationDateElement.md).
+Validates that the input value is a future date of the form `MM/yy`. This is the default 
+validator for the [CardExpirationDateElement](/docs/CardExpirationDateElement.md).
 
 ```kotlin
 element.validator = FutureDateValidator()

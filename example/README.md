@@ -1,6 +1,6 @@
 # Android SDK Example App
 
-This example Android app demonstrates how Elements can be integrated into your Android applications.
+This example Android app demonstrates how Basis Theory Elements can be integrated into your Android app.
 
 
 ## Setup
@@ -20,14 +20,14 @@ This example Android app demonstrates how Elements can be integrated into your A
 
 ## Examples
 
-### [Collect Cards](example/src/main/java/com/basistheory/android/example/view/card/CardFragment.kt)
+### [Collect Cards](/example/src/main/java/com/basistheory/android/example/view/card/CardFragment.kt)
 
 <img width="384" height="384" src="https://raw.githubusercontent.com/basis-theory/basistheory-android/master/docs/img/example_app_collect_cards.png" />
 
-### [Collect Social Security Numbers](example/src/main/java/com/basistheory/android/example/view/social_security_number/SocialSecurityNumberFragment.kt)
+### [Collect Social Security Numbers](/example/src/main/java/com/basistheory/android/example/view/social_security_number/SocialSecurityNumberFragment.kt)
 
 <img width="358" height="272" src="https://raw.githubusercontent.com/basis-theory/basistheory-android/master/docs/img/example_app_collect_ssns.png" />
 
-### [Custom Forms](example/src/main/java/com/basistheory/android/example/view/custom_form/CustomFormFragment.kt)
+### [Custom Forms](/example/src/main/java/com/basistheory/android/example/view/custom_form/CustomFormFragment.kt)
 
 <img width="358" height="385" src="https://raw.githubusercontent.com/basis-theory/basistheory-android/master/docs/img/example_app_custom_forms.png" />

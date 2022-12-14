@@ -1,7 +1,7 @@
 # CardNumberElement
 
 The `CardNumberElement` can be used to securely collect credit card numbers within your app.
-This element will render a text input within your view to accept the card number entered by your 
+This element will render a text input within your view to accept a card number entered by your 
 end users.
 
 This element was designed to be used in conjunction with the [CardExpirationDateElement](/docs/CardExpirationDateElement.md)
@@ -50,16 +50,16 @@ properties and attributes supported by [TextElement](/docs/TextElement.md) are a
 By default, this element is configured with:
 
 - The keyboard is configured to only allow numeric input
-- A [mask](/docs/TextElement.md/#masks) is applied to format input values according to the card brand
-- The [FutureDateValidator](/docs/TextElement.md/#validators) is applied to restrict input to future dates
+- A [mask](/docs/TextElement.md/#masks) is applied to format input values according to the [card brand](#card-brands)
+- The [LuhnValidator](/docs/TextElement.md/#validators) is applied to restrict input to [Luhn-valid](https://en.wikipedia.org/wiki/Luhn_algorithm) cards
 
-This component fully supports the same [style customizations](/docs/Styling.md) to match your brand
+This component fully supports the same [style customizations](/docs/Styling.md) to match your branding
 that are supported on the base [TextElement](/docs/TextElement.md).
 
 ## Card Brands
 
-The first digits of the card are analyzed to determine the card brand, which is made available 
-to your application on the property:
+The first digits of the card number are analyzed to determine the card brand, which is made available 
+to your application via the property:
 
 | Name        | Type          | Description                                        |
 |-------------|---------------|----------------------------------------------------|

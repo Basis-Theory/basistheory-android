@@ -1,8 +1,8 @@
 # CardVerificationCodeElement
 
-The `CardVerificationCodeElement` can be used to securely collect credit card CVC within
+The `CardVerificationCodeElement` can be used to securely collect credit card CVC values within
 your app. This element will render a text input within your view that accepts either a 3 or 4 
-digit CVC (length is determined by the [card brand](/docs/CardNumberElement.md/#card-brands)).
+digit CVC (the length is determined by the [card brand](/docs/CardNumberElement.md/#card-brands)).
 
 This element was designed to be used in conjunction with the [CardNumberElement](/docs/CardNumberElement.md)
 and [CardExpirationDateElement](/docs/CardExpirationDateElement.md) to collect and tokenize a
@@ -58,5 +58,5 @@ By default, this element is configured with:
 - The keyboard is configured to only allow numeric input
 - A 3 digit [mask](/docs/TextElement.md/#masks) is applied by default, but this may be automatically changed to a 4 digit mask based on the card brand
 
-This component fully supports the same [style customizations](/docs/Styling.md) to match your brand
+This component fully supports the same [style customizations](/docs/Styling.md) to match your branding
 that are supported on the base [TextElement](/docs/TextElement.md).

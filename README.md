@@ -6,8 +6,8 @@ data within your Android applications while keeping your mobile app out of compl
 sensitive data within your app and securely store this data within Basis Theory’s certified 
 token vault.
 
-Sensitive data entered by your end users into Elements can be indirectly referenced within API
-calls, enabling you to tokenize this data without needing to directly marshall or access the raw
+Sensitive data entered into elements by your end users can be indirectly referenced within API
+calls, enabling you to tokenize this data without needing to directly marshall or access raw
 sensitive data. Your application code will only receive access to the created tokens, which can 
 safely be sent to your backend systems and persisted for later use.
 
@@ -37,14 +37,14 @@ Add this dependency to your project's build file:
 - [TextElement](docs/TextElement.md) to securely collect text input
 - [CardNumberElement](docs/CardNumberElement.md) to securely collect credit card numbers
 - [CardExpirationDateElement](docs/CardExpirationDateElement.md) to securely collect card expiration dates
-- [CardVerificationCodeElement](docs/CardVerificationCode.md) to securely collect card verification codes
+- [CardVerificationCodeElement](docs/CardVerificationCodeElement.md) to securely collect card verification codes
 - [BasisTheoryElements](docs/BasisTheoryElements.md) service to tokenize sensitive data entered into Elements
 - [Styling](docs/Styling.md) - custom styles and branding are fully supported
 - [Events](docs/Events.md) - subscribe to events raised by Elements
 
 ## Example Usage
 
-First, include one or more elements within your app's views:
+Simply include one or more elements within your app's views:
 
 ```xml
 <com.basistheory.android.view.CardNumberElement
@@ -85,6 +85,8 @@ runBlocking {
             val cvc = cardVerificationCodeElement
         }
     })
+    
+    // send the tokens within tokenizeResponse to your backend
 }
 ```
 
@@ -93,4 +95,4 @@ Note that the Android SDK requires the use of a public API key during initializa
 Click [here](https://portal.basistheory.com/applications/create?permissions=token%3Acreate&type=public.) 
 to create one in the Basis Theory portal.
 
-A full example Android app can be viewed within the [example](example) module within this repo.
+A full example Android app is included within the [example](example) module within this repo.

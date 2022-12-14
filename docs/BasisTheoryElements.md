@@ -1,11 +1,11 @@
 # BasisTheoryElements
 
-This class contains functions to pass Element references when calling the Basis Theory API.
+This class contains functions to interact with the Basis Theory API using element references.
 
 ## Instantiation
 
 A new instance of the `BasisTheoryElements` service can be instantiated and configured using the
-builder pattern, for example:
+builder pattern:
 
 ```kotlin
 val bt = BasisTheoryElements.builder()
@@ -29,8 +29,8 @@ to create one in the Basis Theory portal.
 
 ### tokenize
 
-This function wraps the **`[tokenize API endpoint](https://docs.basistheory.com/#tokenize)`** 
-providing added support for referencing instances of Elements within your request payload. 
+This function wraps the [tokenize API endpoint](https://docs.basistheory.com/#tokenize) 
+providing added support for referencing instances of elements within your request payload. 
 
 ```kotlin
 val tokenizeResponse = bt.tokenize(object {

@@ -19,7 +19,7 @@ within one of your Android application’s layouts.
     android:layout_height="wrap_content" />
 ```
 
-The `month()` and `year()` values can be referenced separately when tokenizing through the 
+The month and year values can be referenced separately when tokenizing through the 
 [BasisTheoryElements](/docs/BasisTheoryElements.md) service class:
 
 ```kotlin
@@ -49,5 +49,5 @@ By default, this element is configured with:
 - A [mask](/docs/TextElement.md/#masks) is applied to format input values as `MM/yy`
 - The [FutureDateValidator](/docs/TextElement.md/#validators) is applied to restrict input to future dates
 
-This component fully supports the same [style customizations](/docs/Styling.md) to match your brand
+This component fully supports the same [style customizations](/docs/Styling.md) to match your branding
 that are supported on the base [TextElement](/docs/TextElement.md).

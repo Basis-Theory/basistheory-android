@@ -15,6 +15,7 @@ class CardNumberElement @JvmOverloads constructor(
     defStyleAttr: Int = 0) : TextElement(context, attrs, defStyleAttr) {
 
     var cardDetails: CardBrandEnricher.CardDetails? = null
+        private set
 
     private val cardBrandEnricher: CardBrandEnricher = CardBrandEnricher()
 

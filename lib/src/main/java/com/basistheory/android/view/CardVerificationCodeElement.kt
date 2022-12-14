@@ -13,7 +13,7 @@ class CardVerificationCodeElement @JvmOverloads constructor(
         set(value) {
             field = value
 
-            if (value != null) {
+            if (value != null && cardNumberElement != value) {
                 super.mask = field?.cardDetails?.cvcMask?.toList() ?: defaultMask
                 field?.addChangeEventListener { updateMask() }
             }

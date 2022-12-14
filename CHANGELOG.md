@@ -1,3 +1,11 @@
+## [0.10.0](https://github.com/Basis-Theory/basistheory-android/compare/0.9.0...0.10.0) (2022-12-14)
+
+
+### Features
+
+* Allows custom masks, transforms, and validators on TextElement ([#19](https://github.com/Basis-Theory/basistheory-android/issues/19)) ([ceaf62c](https://github.com/Basis-Theory/basistheory-android/commit/ceaf62c48249df94be7f4b3ec850c965d46af0b2))
+
+
 ## [0.9.0](https://github.com/Basis-Theory/basistheory-android/compare/0.8.0...0.9.0) (2022-12-13)
 
 

@@ -33,6 +33,13 @@ class CardBrandEnricher {
             get() = cardDetails?.validLengths?.contains(cardLength) ?: false
     }
 
+    class CardMetadata(
+        val brand: String?,
+        val cvcMask: String?,
+        val cardMask: String?,
+        val complete: Boolean
+    )
+
     private val cardBrands = listOf(
         CardDetails(
             CardBrands.VISA.label,
@@ -205,8 +212,8 @@ class CardBrandEnricher {
         )
     )
 
-    fun evaluateCard(number: String?): CardResult {
-        if (number.isNullOrBlank()) return CardResult(null)
+    fun evaluateCard(number: String?): CardMetadata? {
+        if (number.isNullOrBlank()) return null
 
         var bestMatch = CardResult(null)
 
@@ -222,7 +229,14 @@ class CardBrandEnricher {
             }
         }
 
-        return bestMatch
+        return with(bestMatch) {
+            CardMetadata(
+                this.cardDetails?.brand,
+                this.cardDetails?.cvcMask,
+                this.cardDetails?.cardMask,
+                this.complete
+            )
+        }
     }
 
     private fun chooseBestMatch(

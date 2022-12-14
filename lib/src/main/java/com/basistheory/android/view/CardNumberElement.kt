@@ -16,7 +16,7 @@ class CardNumberElement @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : TextElement(context, attrs, defStyleAttr) {
 
-    var cardDetails: CardBrandEnricher.CardDetails? = null
+    var cardMetadata: CardBrandEnricher.CardMetadata? = null
         private set
 
     private val cardBrandEnricher: CardBrandEnricher = CardBrandEnricher()
@@ -29,11 +29,10 @@ class CardNumberElement @JvmOverloads constructor(
     }
 
     override fun beforeTextChanged(value: String?): String? {
-        val cardResult = cardBrandEnricher.evaluateCard(getDigitsOnly(value))
-        cardDetails = cardResult.cardDetails
+        cardMetadata = cardBrandEnricher.evaluateCard(getDigitsOnly(value))
 
-        if (cardResult.cardDetails?.cardMask != null)
-            mask = ElementMask(cardResult.cardDetails!!.cardMask)
+        if (cardMetadata?.cardMask != null)
+            mask = ElementMask(cardMetadata!!.cardMask!!)
 
         return value
     }
@@ -44,10 +43,10 @@ class CardNumberElement @JvmOverloads constructor(
         isEmpty: Boolean,
         isValid: Boolean
     ): ChangeEvent {
-        val cardResult = cardBrandEnricher.evaluateCard(getDigitsOnly(value))
-        cardDetails = cardResult.cardDetails
+        val cardMetadata = cardBrandEnricher.evaluateCard(getDigitsOnly(value))
+        this.cardMetadata = cardMetadata
 
-        val eventDetails = cardResult.cardDetails?.brand?.let { brand ->
+        val eventDetails = this.cardMetadata?.brand?.let { brand ->
             mutableListOf(
                 EventDetails(
                     "cardBrand",
@@ -57,7 +56,7 @@ class CardNumberElement @JvmOverloads constructor(
         } ?: mutableListOf()
 
         return ChangeEvent(
-            cardResult.complete,
+            cardMetadata?.complete ?: false,
             isEmpty,
             isValid,
             eventDetails

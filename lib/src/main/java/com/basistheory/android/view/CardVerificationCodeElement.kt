@@ -14,12 +14,13 @@ class CardVerificationCodeElement @JvmOverloads constructor(
 
     var cardNumberElement: CardNumberElement? = null
         set(value) {
-            field = value
-
-            if (value != null && cardNumberElement != value) {
+            if (value != null && cardNumberElement !== value) {
+                field = value
                 super.mask =
-                    cardNumberElement?.cardDetails?.cvcMask?.let { ElementMask(it) } ?: defaultMask
+                    cardNumberElement?.cardMetadata?.cvcMask?.let { ElementMask(it) } ?: defaultMask
                 field?.addChangeEventListener { updateMask() }
+            } else {
+                field = value
             }
         }
 
@@ -38,6 +39,7 @@ class CardVerificationCodeElement @JvmOverloads constructor(
     }
 
     private fun updateMask() {
-        super.mask = cardNumberElement?.cardDetails?.cvcMask?.let { ElementMask(it) } ?: defaultMask
+        super.mask =
+            cardNumberElement?.cardMetadata?.cvcMask?.let { ElementMask(it) } ?: defaultMask
     }
 }

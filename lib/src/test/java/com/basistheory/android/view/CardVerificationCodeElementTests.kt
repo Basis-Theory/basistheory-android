@@ -2,7 +2,13 @@ package com.basistheory.android.view
 
 import android.app.Activity
 import com.basistheory.android.event.ChangeEvent
+import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.impl.annotations.SpyK
+import io.mockk.junit4.MockKRule
+import io.mockk.spyk
+import io.mockk.verify
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
@@ -80,5 +86,14 @@ class CardVerificationCodeElementTests {
             get { isEmpty }.isFalse()
             get { isComplete }.isTrue()
         }
+    }
+
+    @Test
+    fun `setting card number element multiple times does not duplicate listeners`() {
+        val cardNumberElement = spyk(CardNumberElement(Robolectric.buildActivity(Activity::class.java).get()))
+        cvcElement.cardNumberElement = cardNumberElement
+        cvcElement.cardNumberElement = cardNumberElement
+
+        verify(exactly = 1) { cardNumberElement.addChangeEventListener(any()) }
     }
 }

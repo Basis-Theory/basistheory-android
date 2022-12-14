@@ -59,6 +59,7 @@ class CardFragment : Fragment() {
      */
     private fun setValidationListeners() {
         binding.cardNumber.addChangeEventListener {
+            println(it)
             viewModel.cardNumber.observe(it)
         }
         binding.cardExpiration.addChangeEventListener {

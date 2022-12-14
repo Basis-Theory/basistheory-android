@@ -13,6 +13,6 @@ dependencyResolutionManagement {
         maven { url 'https://jitpack.io' }
     }
 }
-rootProject.name = "Mobile Elements"
+rootProject.name = "basistheory-android"
 include ':example'
 include ':lib'

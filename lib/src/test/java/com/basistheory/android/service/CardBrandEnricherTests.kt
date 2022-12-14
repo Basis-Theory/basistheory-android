@@ -20,8 +20,8 @@ class CardBrandEnricherTests {
         value = [
             "4242424242424242, visa, ${CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_19LENGTH}",
             "5555555555555555, mastercard, ${CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_16LENGTH}",
-            "378282246310005, americanExpress, #### ###### #####",
-            "36227206271667, dinersClub, #### ###### #########",
+            "378282246310005, americanExpress, ${CardBrandEnricher.CardMasks.MASK_4_10GAPS_15LENGTH}",
+            "36227206271667, dinersClub, ${CardBrandEnricher.CardMasks.MASK_4_10GAPS_19LENGTH}",
             "6011000990139424, discover, ${CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_19LENGTH}",
             "3566495867324859, jcb, ${CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_19LENGTH}",
             "620000000000000, unionPay, ${CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_19LENGTH}",

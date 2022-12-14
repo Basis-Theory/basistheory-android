@@ -3,6 +3,7 @@ package com.basistheory.android.view
 import android.app.Activity
 import com.basistheory.android.event.ChangeEvent
 import com.basistheory.android.service.CardBrandEnricher
+import com.basistheory.android.view.mask.ElementMask
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -38,9 +39,17 @@ class CardNumberElementTests {
 
     @Test
     fun `applies mask based on card brand`() {
-        cardNumberElement.setText("4242abc4242def4242geh4242")
-        expectThat(cardNumberElement.mask?.joinToString(""))
-            .isEqualTo(CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_19LENGTH)
+        cardNumberElement.setText("4242424242424242")
+        expectThat(cardNumberElement.mask)
+            .isEqualTo(ElementMask(CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_19LENGTH))
+
+        cardNumberElement.setText("5555555555554444")
+        expectThat(cardNumberElement.mask)
+            .isEqualTo(ElementMask(CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_16LENGTH))
+
+        cardNumberElement.setText("371449635398431")
+        expectThat(cardNumberElement.mask)
+            .isEqualTo(ElementMask(CardBrandEnricher.CardMasks.MASK_4_10GAPS_15LENGTH))
     }
 
     @Test

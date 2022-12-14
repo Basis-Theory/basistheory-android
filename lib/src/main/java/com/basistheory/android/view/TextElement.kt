@@ -21,7 +21,9 @@ import com.basistheory.android.event.ElementEventListeners
 import com.basistheory.android.event.FocusEvent
 import com.basistheory.android.model.InputAction
 import com.basistheory.android.model.KeyboardType
-import com.basistheory.android.view.mask.Mask
+import com.basistheory.android.view.mask.ElementMask
+import com.basistheory.android.view.transform.ElementTransform
+import com.basistheory.android.view.validation.ElementValidator
 
 
 open class TextElement @JvmOverloads constructor(
@@ -34,7 +36,6 @@ open class TextElement @JvmOverloads constructor(
     private val eventListeners = ElementEventListeners()
     private var isInternalChange: Boolean = false
 
-    internal var maskValue: Mask? = null
     internal var inputAction: InputAction = InputAction.INSERT
 
     init {
@@ -52,8 +53,7 @@ open class TextElement @JvmOverloads constructor(
                     hint = getString(R.styleable.TextElement_hint)
                     removeDefaultStyles =
                         getBoolean(R.styleable.TextElement_removeDefaultStyles, false)
-                    mask = getString(R.styleable.TextElement_mask)?.split("")
-                        ?.filter { it.isNotEmpty() }
+                    mask = getString(R.styleable.TextElement_mask)?.let { ElementMask(it) }
                     keyboardType = KeyboardType.fromInt(
                         getInt(
                             R.styleable.TextElement_keyboardType,
@@ -71,16 +71,18 @@ open class TextElement @JvmOverloads constructor(
 
     // this MUST be internal to prevent host apps from accessing the raw input values
     internal fun getText(): String? =
-        transform(editText.text?.toString())
+        editText.text?.toString().let {
+            transform?.apply(it) ?: it
+        }
 
     fun setText(value: String?) =
         editText.setText(value)
 
-    internal var validate: (value: String?) -> Boolean =
-        { _ -> true }
+    var mask: ElementMask? = null
 
-    internal var transform: (value: String?) -> String? =
-        { value -> value }
+    var transform: ElementTransform? = null
+
+    var validator: ElementValidator? = null
 
     var textColor: Int
         get() = editText.currentTextColor
@@ -96,12 +98,6 @@ open class TextElement @JvmOverloads constructor(
         get() = KeyboardType.fromInt(editText.inputType)
         set(value) {
             editText.inputType = value.inputType
-        }
-
-    var mask: List<Any>? = null
-        set(value) {
-            field = value
-            maskValue = value?.let { Mask(it) }
         }
 
     var removeDefaultStyles: Boolean
@@ -124,6 +120,22 @@ open class TextElement @JvmOverloads constructor(
 
     override fun onCreateInputConnection(outAttrs: EditorInfo): InputConnection? {
         return editText.onCreateInputConnection(outAttrs)
+    }
+
+    override fun onSaveInstanceState(): Parcelable {
+        return bundleOf(
+            STATE_SUPER to super.onSaveInstanceState(),
+            STATE_INPUT to editText.onSaveInstanceState()
+        )
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable) {
+        if (state is Bundle) {
+            editText.onRestoreInstanceState(state.getParcelable(STATE_INPUT))
+            super.onRestoreInstanceState(state.getParcelable(STATE_SUPER))
+        } else {
+            super.onRestoreInstanceState(state)
+        }
     }
 
     protected open fun beforeTextChanged(value: String?): String? = value
@@ -182,7 +194,7 @@ open class TextElement @JvmOverloads constructor(
 
         val originalValue = editable?.toString()
         val transformedValue = beforeTextChanged(originalValue)
-            .let { maskValue?.evaluate(it, inputAction) ?: it }
+            .let { mask?.evaluate(it, inputAction) ?: it }
 
         if (originalValue != transformedValue)
             applyInternalChange(transformedValue)
@@ -207,29 +219,13 @@ open class TextElement @JvmOverloads constructor(
     private fun publishChangeEvent(editable: Editable?) {
         val event = createElementChangeEvent(
             getText(),
-            maskValue?.isComplete(editable?.toString()) ?: false,
+            mask?.isComplete(editable?.toString()) ?: false,
             editable?.isEmpty() ?: false,
-            validate(getText())
+            validator?.validate(getText()) ?: true
         )
 
         eventListeners.change.forEach {
             it(event)
-        }
-    }
-
-    override fun onSaveInstanceState(): Parcelable {
-        return bundleOf(
-            STATE_SUPER to super.onSaveInstanceState(),
-            STATE_INPUT to editText.onSaveInstanceState()
-        )
-    }
-
-    override fun onRestoreInstanceState(state: Parcelable) {
-        if (state is Bundle) {
-            editText.onRestoreInstanceState(state.getParcelable(STATE_INPUT))
-            super.onRestoreInstanceState(state.getParcelable(STATE_SUPER))
-        } else {
-            super.onRestoreInstanceState(state)
         }
     }
 

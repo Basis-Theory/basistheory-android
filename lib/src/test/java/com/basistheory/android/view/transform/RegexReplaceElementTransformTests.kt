@@ -11,30 +11,30 @@ import strikt.assertions.isNull
 class regexReplaceElementTransformTests {
     @Test
     fun `null values are not transformed`() {
-        val transform = regexReplaceElementTransform(Regex("[\\s]"))
+        val transform = RegexReplaceElementTransform(Regex("[\\s]"))
 
-        expectThat(transform(null)).isNull()
+        expectThat(transform.apply(null)).isNull()
     }
 
     @Test
     fun `empty values are not transformed`() {
-        val transform = regexReplaceElementTransform(Regex("[\\s]"))
+        val transform = RegexReplaceElementTransform(Regex("[\\s]"))
 
-        expectThat(transform("")).isEqualTo("")
+        expectThat(transform.apply("")).isEqualTo("")
     }
 
     @Test
     fun `text is not transformed when transform regex has no match`() {
-        val transform = regexReplaceElementTransform(Regex("[\\s]"))
+        val transform = RegexReplaceElementTransform(Regex("[\\s]"))
 
-        expectThat(transform("foo123")).isEqualTo("foo123")
+        expectThat(transform.apply("foo123")).isEqualTo("foo123")
     }
 
     @Test
     fun `text is transformed when transform regex has matches`() {
-        val transform = regexReplaceElementTransform(Regex("[^\\d]"))
+        val transform = RegexReplaceElementTransform(Regex("[^\\d]"))
 
-        expectThat(transform("(123) 456-7890")).isEqualTo("1234567890")
+        expectThat(transform.apply("(123) 456-7890")).isEqualTo("1234567890")
     }
 
     @Test
@@ -44,7 +44,7 @@ class regexReplaceElementTransformTests {
         // design/compile-time validation
         val invalidRegex = "*".plus("[")
 
-        expectCatching { regexReplaceElementTransform(Regex(invalidRegex)) }
+        expectCatching { RegexReplaceElementTransform(Regex(invalidRegex)) }
             .isFailure()
             .isA<IllegalArgumentException>()
     }

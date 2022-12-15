@@ -67,12 +67,12 @@ to your application via the property:
 
 ### CardMetadata
 
-| Name         | Type       | Description                                           |
-|--------------|------------|-------------------------------------------------------|
-| brand        | `String`   | The card [brand identifier](#brand-identifiers)       |
-| cardMask     | `string`   | The card number mask corresponding to this card brand |
-| cvcMask      | `string`   | The CVC mask corresponding to this card brand         |
-| complete     | `Boolean`  | Whether this card number is complete for this brand   |
+| Name       | Type      | Description                                           |
+|------------|-----------|-------------------------------------------------------|
+| brand      | `String`  | The card [brand identifier](#brand-identifiers)       |
+| cardMask   | `string`  | The card number mask corresponding to this card brand |
+| cvcMask    | `string`  | The CVC mask corresponding to this card brand         |
+| isComplete | `Boolean` | Whether this card number is complete for this brand   |
 
 ### ChangeEvent
 

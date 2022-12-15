@@ -61,19 +61,18 @@ that are supported on the base [TextElement](/docs/TextElement.md).
 The first digits of the card number are analyzed to determine the card brand, which is made available 
 to your application via the property:
 
-| Name        | Type          | Description                                        |
-|-------------|---------------|----------------------------------------------------|
-| cardDetails | `CardDetails` | Gets the card details derived from the user input. |
+| Name         | Type           | Description                                            |
+|--------------|----------------|--------------------------------------------------------|
+| cardMetadata | `CardMetadata` | Gets metadata about the card, derived from user input. |
 
-### CardDetails
+### CardMetadata
 
-| Name             | Type                          | Description                                           |
-|------------------|-------------------------------|-------------------------------------------------------|
-| brand            | `String`                      | The card [brand identifier](#brand-identifiers)       |
-| identifierRanges | `List<Pair<String, String?>>` | Ranges of valid bin digits for this card brand        |
-| validLengths     | `IntArray`                    | Ranges of valid card lengths for this card brand      |
-| cvcMask          | `string`                      | The CVC mask corresponding to this card brand         |
-| cardMask         | `string`                      | The card number mask corresponding to this card brand |
+| Name         | Type       | Description                                           |
+|--------------|------------|-------------------------------------------------------|
+| brand        | `String`   | The card [brand identifier](#brand-identifiers)       |
+| cardMask     | `string`   | The card number mask corresponding to this card brand |
+| cvcMask      | `string`   | The CVC mask corresponding to this card brand         |
+| complete     | `Boolean`  | Whether this card number is complete for this brand   |
 
 ### ChangeEvent
 

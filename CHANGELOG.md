@@ -1,3 +1,11 @@
+## [0.11.0](https://github.com/Basis-Theory/basistheory-android/compare/0.10.0...0.11.0) (2022-12-15)
+
+
+### Features
+
+* computing cvc mask based on card brand ([#20](https://github.com/Basis-Theory/basistheory-android/issues/20)) ([86fe06f](https://github.com/Basis-Theory/basistheory-android/commit/86fe06f57530cc99ce33b64dc290f6972f70a1e9))
+
+
 ## [0.10.0](https://github.com/Basis-Theory/basistheory-android/compare/0.9.0...0.10.0) (2022-12-14)
 
 

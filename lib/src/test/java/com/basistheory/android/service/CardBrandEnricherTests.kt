@@ -37,7 +37,7 @@ class CardBrandEnricherTests {
         expectedBrand: String,
         expectedCardMask: String
     ) {
-        with(cardBrandEnricher.evaluateCard(cardNumber).cardDetails) {
+        with(cardBrandEnricher.evaluateCard(cardNumber)) {
             expectThat(this?.brand).isEqualTo(expectedBrand)
             expectThat(this?.cardMask).isEqualTo(expectedCardMask)
         }
@@ -45,32 +45,28 @@ class CardBrandEnricherTests {
 
     @Test
     fun `should pick best match based on identifier length`() {
-        expectThat(cardBrandEnricher.evaluateCard("4011784867543859").cardDetails?.brand).isEqualTo(
+        expectThat(cardBrandEnricher.evaluateCard("4011784867543859")?.brand).isEqualTo(
             "elo"
         )
     }
 
     @Test
-    fun `should set complete for best match card lengths`() {
+    fun `should set isComplete for best match card lengths`() {
         // discover valid lengths are 16 or 19
         val sixteenDigitsDiscoverCardNumber = "6582937163058334"
 
-        expectThat(cardBrandEnricher.evaluateCard(sixteenDigitsDiscoverCardNumber).complete).isTrue()
-        expectThat(cardBrandEnricher.evaluateCard("${sixteenDigitsDiscoverCardNumber}1").complete).isFalse()
-        expectThat(cardBrandEnricher.evaluateCard("${sixteenDigitsDiscoverCardNumber}12").complete).isFalse()
-        expectThat(cardBrandEnricher.evaluateCard("${sixteenDigitsDiscoverCardNumber}123").complete).isTrue()
+        expectThat(cardBrandEnricher.evaluateCard(sixteenDigitsDiscoverCardNumber)?.isComplete).isTrue()
+        expectThat(cardBrandEnricher.evaluateCard("${sixteenDigitsDiscoverCardNumber}1")?.isComplete).isFalse()
+        expectThat(cardBrandEnricher.evaluateCard("${sixteenDigitsDiscoverCardNumber}12")?.isComplete).isFalse()
+        expectThat(cardBrandEnricher.evaluateCard("${sixteenDigitsDiscoverCardNumber}123")?.isComplete).isTrue()
     }
 
     @Test
     fun `should handle null or empty card number`() {
         val nullCard = cardBrandEnricher.evaluateCard(null)
-
-        expectThat(nullCard.cardDetails).isNull()
-        expectThat(nullCard.complete).isFalse()
+        expectThat(nullCard).isNull()
 
         val emptyCard = cardBrandEnricher.evaluateCard("")
-
-        expectThat(emptyCard.cardDetails).isNull()
-        expectThat(emptyCard.complete).isFalse()
+        expectThat(emptyCard).isNull()
     }
 }

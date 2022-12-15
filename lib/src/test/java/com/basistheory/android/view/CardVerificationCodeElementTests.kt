@@ -2,7 +2,13 @@ package com.basistheory.android.view
 
 import android.app.Activity
 import com.basistheory.android.event.ChangeEvent
+import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.impl.annotations.SpyK
+import io.mockk.junit4.MockKRule
+import io.mockk.spyk
+import io.mockk.verify
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
@@ -17,10 +23,13 @@ import strikt.assertions.single
 class CardVerificationCodeElementTests {
     private lateinit var cvcElement: CardVerificationCodeElement
 
+    private lateinit var cardNumberElement: CardNumberElement
+
     @Before
     fun setUp() {
         val activity = Robolectric.buildActivity(Activity::class.java).get()
         cvcElement = CardVerificationCodeElement(activity)
+        cardNumberElement = CardNumberElement(activity)
     }
 
     @Test
@@ -33,9 +42,24 @@ class CardVerificationCodeElementTests {
     }
 
     @Test
-    fun `applies mask when setting the value`() {
+    fun `applies default mask when setting the value and no card number element is attached`() {
+        cvcElement.cardNumberElement = null
+
         cvcElement.setText("1a2b3c")
         expectThat(cvcElement.getText()).isEqualTo("123")
+    }
+
+    @Test
+    fun `updates mask depending on card brand`() {
+        cvcElement.cardNumberElement = cardNumberElement
+
+        cardNumberElement.setText("42")
+        cvcElement.setText("1a2b3c4d5e")
+        expectThat(cvcElement.getText()).isEqualTo("123")
+
+        cardNumberElement.setText("34")
+        cvcElement.setText("1a2b3c4d5e")
+        expectThat(cvcElement.getText()).isEqualTo("1234")
     }
 
     @Test
@@ -62,5 +86,14 @@ class CardVerificationCodeElementTests {
             get { isEmpty }.isFalse()
             get { isComplete }.isTrue()
         }
+    }
+
+    @Test
+    fun `setting card number element multiple times does not duplicate listeners`() {
+        val cardNumberElement = spyk(CardNumberElement(Robolectric.buildActivity(Activity::class.java).get()))
+        cvcElement.cardNumberElement = cardNumberElement
+        cvcElement.cardNumberElement = cardNumberElement
+
+        verify(exactly = 1) { cardNumberElement.addChangeEventListener(any()) }
     }
 }

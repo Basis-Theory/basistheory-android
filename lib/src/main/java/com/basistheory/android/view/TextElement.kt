@@ -25,7 +25,6 @@ import com.basistheory.android.view.mask.ElementMask
 import com.basistheory.android.view.transform.ElementTransform
 import com.basistheory.android.view.validation.ElementValidator
 
-
 open class TextElement @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,

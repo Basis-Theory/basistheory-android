@@ -2,7 +2,7 @@ package com.basistheory.android.service
 
 import com.basistheory.android.constants.CardBrands
 
-internal class CardBrandEnricher {
+class CardBrandEnricher {
 
     object CardMasks {
         const val MASK_4_8_12GAPS_19LENGTH = "#### #### #### #######"
@@ -21,17 +21,20 @@ internal class CardBrandEnricher {
         var identifierRanges: List<Pair<String, String?>>,
         var validLengths: IntArray,
         var cvcMask: String,
-        var cardMask: String
-    )
-
-    class CardResult(
-        var cardDetails: CardDetails?,
+        var cardMask: String,
         var cardLength: Int = -1,
         var identifierLength: Int = -1,
     ) {
-        val complete: Boolean
-            get() = cardDetails?.validLengths?.contains(cardLength) ?: false
+        val isComplete: Boolean
+            get() = validLengths.contains(cardLength)
     }
+
+    class CardMetadata(
+        val brand: String?,
+        val cvcMask: String?,
+        val cardMask: String?,
+        val isComplete: Boolean
+    )
 
     private val cardBrands = listOf(
         CardDetails(
@@ -205,10 +208,10 @@ internal class CardBrandEnricher {
         )
     )
 
-    fun evaluateCard(number: String?): CardResult {
-        if (number.isNullOrBlank()) return CardResult(null)
+    fun evaluateCard(number: String?): CardMetadata? {
+        if (number.isNullOrBlank()) return null
 
-        var bestMatch = CardResult(null)
+        var bestMatch: CardDetails? = null
 
         cardBrands.forEach { cardDetails ->
             cardDetails.identifierRanges.forEach { range ->
@@ -222,19 +225,32 @@ internal class CardBrandEnricher {
             }
         }
 
-        return bestMatch
+        return with(bestMatch) {
+            CardMetadata(
+                this?.brand,
+                this?.cvcMask,
+                this?.cardMask,
+                this?.isComplete ?: false
+            )
+        }
     }
 
     private fun chooseBestMatch(
-        currentBestMatch: CardResult,
+        currentBestMatch: CardDetails?,
         cardDetails: CardDetails,
         identifierMatch: String,
         number: String
-    ): CardResult =
-        if (currentBestMatch.identifierLength < identifierMatch.length) CardResult(
-            cardDetails,
-            number.length,
-            identifierMatch.length
-        )
+    ): CardDetails? =
+        if ((currentBestMatch?.identifierLength ?: -1) < identifierMatch.length) with(cardDetails) {
+            CardDetails(
+                this.brand,
+                this.identifierRanges,
+                this.validLengths,
+                this.cvcMask,
+                this.cardMask,
+                number.length,
+                identifierMatch.length
+            )
+        }
         else currentBestMatch
 }

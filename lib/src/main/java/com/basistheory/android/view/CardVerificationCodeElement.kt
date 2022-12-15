@@ -9,7 +9,20 @@ import com.basistheory.android.view.validation.RegexValidator
 class CardVerificationCodeElement @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0) : TextElement(context, attrs, defStyleAttr) {
+    defStyleAttr: Int = 0
+) : TextElement(context, attrs, defStyleAttr) {
+
+    var cardNumberElement: CardNumberElement? = null
+        set(value) {
+            if (value != null && cardNumberElement !== value) {
+                field = value
+                super.mask =
+                    cardNumberElement?.cardMetadata?.cvcMask?.let { ElementMask(it) } ?: defaultMask
+                field?.addChangeEventListener { updateMask() }
+            } else {
+                field = value
+            }
+        }
 
     init {
         super.keyboardType = KeyboardType.NUMBER
@@ -23,5 +36,10 @@ class CardVerificationCodeElement @JvmOverloads constructor(
         val defaultMask = ElementMask(
             listOf(digit, digit, digit)
         )
+    }
+
+    private fun updateMask() {
+        super.mask =
+            cardNumberElement?.cardMetadata?.cvcMask?.let { ElementMask(it) } ?: defaultMask
     }
 }

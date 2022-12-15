@@ -53,7 +53,7 @@ class CardNumberElement @JvmOverloads constructor(
         } ?: mutableListOf()
 
         return ChangeEvent(
-            cardMetadata?.complete ?: false,
+            cardMetadata?.isComplete ?: false,
             isEmpty,
             isValid,
             eventDetails

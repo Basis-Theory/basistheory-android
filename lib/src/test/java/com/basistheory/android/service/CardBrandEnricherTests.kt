@@ -51,14 +51,14 @@ class CardBrandEnricherTests {
     }
 
     @Test
-    fun `should set complete for best match card lengths`() {
+    fun `should set isComplete for best match card lengths`() {
         // discover valid lengths are 16 or 19
         val sixteenDigitsDiscoverCardNumber = "6582937163058334"
 
-        expectThat(cardBrandEnricher.evaluateCard(sixteenDigitsDiscoverCardNumber)?.complete).isTrue()
-        expectThat(cardBrandEnricher.evaluateCard("${sixteenDigitsDiscoverCardNumber}1")?.complete).isFalse()
-        expectThat(cardBrandEnricher.evaluateCard("${sixteenDigitsDiscoverCardNumber}12")?.complete).isFalse()
-        expectThat(cardBrandEnricher.evaluateCard("${sixteenDigitsDiscoverCardNumber}123")?.complete).isTrue()
+        expectThat(cardBrandEnricher.evaluateCard(sixteenDigitsDiscoverCardNumber)?.isComplete).isTrue()
+        expectThat(cardBrandEnricher.evaluateCard("${sixteenDigitsDiscoverCardNumber}1")?.isComplete).isFalse()
+        expectThat(cardBrandEnricher.evaluateCard("${sixteenDigitsDiscoverCardNumber}12")?.isComplete).isFalse()
+        expectThat(cardBrandEnricher.evaluateCard("${sixteenDigitsDiscoverCardNumber}123")?.isComplete).isTrue()
     }
 
     @Test

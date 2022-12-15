@@ -25,7 +25,7 @@ class CardBrandEnricher {
         var cardLength: Int = -1,
         var identifierLength: Int = -1,
     ) {
-        val complete: Boolean
+        val isComplete: Boolean
             get() = validLengths.contains(cardLength)
     }
 
@@ -33,7 +33,7 @@ class CardBrandEnricher {
         val brand: String?,
         val cvcMask: String?,
         val cardMask: String?,
-        val complete: Boolean
+        val isComplete: Boolean
     )
 
     private val cardBrands = listOf(
@@ -230,7 +230,7 @@ class CardBrandEnricher {
                 this?.brand,
                 this?.cvcMask,
                 this?.cardMask,
-                this?.complete ?: false
+                this?.isComplete ?: false
             )
         }
     }

@@ -1,3 +1,11 @@
+## [0.12.0](https://github.com/Basis-Theory/basistheory-android/compare/0.11.0...0.12.0) (2022-12-16)
+
+
+### Features
+
+* Adding user-agent header to http requests ([#22](https://github.com/Basis-Theory/basistheory-android/issues/22)) ([9ee9593](https://github.com/Basis-Theory/basistheory-android/commit/9ee959335788faf5a223c0dd7f9542bd7aa75171))
+
+
 ## [0.11.0](https://github.com/Basis-Theory/basistheory-android/compare/0.10.0...0.11.0) (2022-12-15)
 
 

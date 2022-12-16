@@ -3,6 +3,7 @@ package com.basistheory.android.service
 import com.basistheory.ApiClient
 import com.basistheory.Configuration
 import com.basistheory.TokenizeApi
+import com.basistheory.android.BuildConfig
 import com.basistheory.auth.ApiKeyAuth
 
 internal class ApiClientProvider(
@@ -19,6 +20,9 @@ internal class ApiClientProvider(
 
         return Configuration.getDefaultApiClient().also { client ->
             client.basePath = apiUrl
+
+            val userAgent = "basistheory-android/${BuildConfig.VERSION_NAME} ${System.getProperty("http.agent") ?: ""}".trim()
+            client.setUserAgent(userAgent)
 
             (client.getAuthentication("ApiKey") as ApiKeyAuth).also { auth ->
                 auth.apiKey = apiKey

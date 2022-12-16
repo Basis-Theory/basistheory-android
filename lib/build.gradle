@@ -13,6 +13,8 @@ android {
         targetSdk 32
         versionName = '0.11.0'
 
+        buildConfigField 'String', 'VERSION_NAME', "\"${defaultConfig.versionName}\""
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }

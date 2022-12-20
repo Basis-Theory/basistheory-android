@@ -1,3 +1,15 @@
+## [1.0.0](https://github.com/Basis-Theory/basistheory-android/compare/0.12.0...1.0.0) (2022-12-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* releasing version 1.0.0
+
+### Features
+
+* Adds documentation for card elements ([#21](https://github.com/Basis-Theory/basistheory-android/issues/21)) ([ca82935](https://github.com/Basis-Theory/basistheory-android/commit/ca82935df420f39c371596b49f13327e9554c21c))
+
+
 ## [0.12.0](https://github.com/Basis-Theory/basistheory-android/compare/0.11.0...0.12.0) (2022-12-16)
 
 

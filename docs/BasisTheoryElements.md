@@ -45,5 +45,5 @@ val tokenizeResponse = bt.tokenize(object {
 ```
 
 As you can see from this example, the `tokenize` function is capable of resolving the raw data 
-from references to element inputs. This enables your app to tokenize sensitive data values without 
-needing to touch the raw data directly.
+from references to element inputs. This enables your application to tokenize sensitive data values 
+without needing to touch the raw data directly.

@@ -1,6 +1,6 @@
 # CardNumberElement
 
-The `CardNumberElement` can be used to securely collect credit card numbers within your app.
+The `CardNumberElement` can be used to securely collect credit card numbers within your application.
 This element will render a text input within your view to accept a card number entered by your 
 end users.
 
@@ -70,8 +70,8 @@ to your application via the property:
 | Name       | Type      | Description                                           |
 |------------|-----------|-------------------------------------------------------|
 | brand      | `String`  | The card [brand identifier](#brand-identifiers)       |
-| cardMask   | `string`  | The card number mask corresponding to this card brand |
-| cvcMask    | `string`  | The CVC mask corresponding to this card brand         |
+| cardMask   | `String`  | The card number mask corresponding to this card brand |
+| cvcMask    | `String`  | The CVC mask corresponding to this card brand         |
 | isComplete | `Boolean` | Whether this card number is complete for this brand   |
 
 ### ChangeEvent

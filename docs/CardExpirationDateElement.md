@@ -1,7 +1,7 @@
 # CardExpirationDateElement
 
 The `CardExpirationDateElement` can be used to securely collect credit card expiration dates within
-your app. This element will render a text input within your view that accepts input in the form `MM/yy`.
+your application. This element will render a text input within your view that accepts input in the form `MM/yy`.
 
 This element was designed to be used in conjunction with the [CardNumberElement](/docs/CardNumberElement.md)
 and [CardVerificationCodeElement](/docs/CardVerificationCodeElement.md) to collect and tokenize a

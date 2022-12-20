@@ -1,6 +1,7 @@
 # Android SDK Example App
 
-This example Android app demonstrates how Basis Theory Elements can be integrated into your Android app.
+This example Android app demonstrates how Basis Theory Elements can be integrated into your Android 
+applications.
 
 
 ## Setup

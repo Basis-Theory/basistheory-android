@@ -1,7 +1,7 @@
 # Elements Events
 
 Each element type supports a standard set of events that can be subscribed to in order to receive
-callbacks within your app.
+callbacks within your application.
 
 ## ChangeEvent
 
@@ -11,9 +11,9 @@ Raised whenever the element's value is changed.
 
 | Property   | Type                 | Description                                                                                                   |
 |------------|----------------------|---------------------------------------------------------------------------------------------------------------|
-| isComplete | `Boolean`            | Whether the element has been completely filled (as specified by the [mask](/docs/TextElement.md/#valdiators)) |
+| isComplete | `Boolean`            | Whether the element has been completely filled (as specified by the [mask](/docs/TextElement.md/#validators)) |
 | isEmpty    | `Boolean`            | Whether the element is empty                                                                                  |
-| isValid    | `Boolean`            | The result of the [validator](/docs/TextElement.md/#valdiators), or `true` if no validator is specified       |
+| isValid    | `Boolean`            | The result of the [validator](/docs/TextElement.md/#validators), or `true` if no validator is specified       |
 | details    | `List<EventDetails>` | A list of [EventDetails](#eventdetails) included with this event                                              |
 
 ### EventDetails

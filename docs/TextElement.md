@@ -1,6 +1,6 @@
 # TextElement
 
-The `TextElement` can be used to collect any text data within your mobile app.
+The `TextElement` can be used to collect any text data within your mobile application.
 This component allows you to fully customize the look and feel to match your brand, and it does 
 not allow direct access the underlying plaintext values entered by a user, keeping your mobile application 
 out of compliance scope.
@@ -31,28 +31,28 @@ are supported by `TextElement`.
 
 The following additional properties are supported when programmatically interacting with a `TextElement`:
 
-| Name                | Type                     | Description                                                                                                                                                                                                                                                            |
-|---------------------|--------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| text                | `string`                 | Sets the text value for the element. Note that a getter is not exposed on the TextElement to retrieve the underlying text value.                                                                                                                                       |
-| textColor           | `reference`&vert;`color` | The text color. <br/><br/>May be a reference to another resource, in the form `"@[+][package:]type/name"` or a theme attribute in the form `"?[package:]type/name"`. <br/><br/>May be a color value, in the form of `"#rgb"`, `"#argb"`, `"#rrggbb"`, or `"#aarrggbb"` |
-| hint                | `string`                 | Placeholder text to display within the element when empty.                                                                                                                                                                                                             |
-| removeDefaultStyles | `boolean`                | Removes the default Android styling on the underlying EditText.                                                                                                                                                                                                        |
-| mask                | `ElementMask`            | Restricts and formats input entered into this Element. See [Masks](#masks) below for details.                                                                                                                                                                          |
-| transform           | `ElementTransform`       | Transforms the value of this Element prior to tokenization. See [Transforms](#transforms) below for details.                                                                                                                                                           |
-| validator           | `ElementValidator`       | Validates the value of this Element within ChangeEvents. See [Validators](#validators) below for details.                                                                                                                                                              |
+| Name                | Type               | Description                                                                                                                                                                                                               |
+|---------------------|--------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| text                | `String`           | Sets the text value for the element. Note that a getter is not exposed on the TextElement to retrieve the underlying text value.                                                                                          |
+| textColor           | `Int`              | A color value in the form `0xAARRGGBB`. Do not pass a resource ID. To get a color value from a resource ID, call [getColor](https://developer.android.com/reference/android/content/res/TypedArray#getColor(int,%20int)). |
+| hint                | `String`           | Placeholder text to display within the element when empty.                                                                                                                                                                |
+| removeDefaultStyles | `Boolean`          | Removes the default Android styling on the underlying EditText.                                                                                                                                                           |
+| mask                | `ElementMask`      | Restricts and formats input entered into this Element. See [Masks](#masks) below for details.                                                                                                                             |
+| transform           | `ElementTransform` | Transforms the value of this Element prior to tokenization. See [Transforms](#transforms) below for details.                                                                                                              |
+| validator           | `ElementValidator` | Validates the value of this Element within ChangeEvents. See [Validators](#validators) below for details.                                                                                                                 |
 
 
 ### XML Attributes
 
 The following additional XML attributes are also supported when defining a `TextElement` in a layout XML file:
 
-| Name                | Type                     | Description                                                                                                                                                                                                                                                |
-|---------------------|--------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| text                | `string`                 | Sets the text value for the element. Note that a getter is not exposed on the TextElement to retrieve the underlying text value.                                                                                                                           |
-| textColor           | `reference`&vert;`color` | The text color. <br/><br/>May be a reference to another resource, in the form "@[+][package:]type/name" or a theme attribute in the form "?[package:]type/name". <br/><br/>May be a color value, in the form of "#rgb", "#argb", "#rrggbb", or "#aarrggbb" |
-| hint                | `string`                 | Placeholder text to display within the Element.                                                                                                                                                                                                            |
-| removeDefaultStyles | `boolean`                | Removes the default Android styling on the underlying EditText.                                                                                                                                                                                            |
-| mask                | `string`                 | A string defining the [mask](#masks) applied to this Element, e.g. (`###-##-####`).                                                                                                                                                                        |
+| Name                | Type                     | Description                                                                                                                                                                                                                                                            |
+|---------------------|--------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| text                | `String`                 | Sets the text value for the element. Note that a getter is not exposed on the TextElement to retrieve the underlying text value.                                                                                                                                       |
+| textColor           | `reference`&vert;`color` | The text color. <br/><br/>May be a reference to another resource, in the form `"@[+][package:]type/name"` or a theme attribute in the form `"?[package:]type/name"`. <br/><br/>May be a color value, in the form of `"#rgb"`, `"#argb"`, `"#rrggbb"`, or `"#aarrggbb"` |
+| hint                | `String`                 | Placeholder text to display within the Element.                                                                                                                                                                                                                        |
+| removeDefaultStyles | `Boolean`                | Removes the default Android styling on the underlying EditText.                                                                                                                                                                                                        |
+| mask                | `String`                 | A string defining the [mask](#masks) applied to this Element, e.g. (`###-##-####`).                                                                                                                                                                                    |
 
 ### Masks
 
@@ -110,9 +110,9 @@ Validators are executed on the [transformed](#transforms) Element value.
 
 The validation state of an Element is only used when computing [ChangeEvents](/docs/Events.md)
 and all invalid state behavior (e.g. styling changes, displaying validation errors, 
-disabling submit buttons) are expected to be implemented within your app in response to `ChangeEvents`. 
+disabling submit buttons) are expected to be implemented within your application in response to `ChangeEvents`. 
 See [this example](/example/src/main/java/com/basistheory/android/example/viewmodel/CardFragmentViewModel.kt)
-for one potential pattern for implementing validation within your app.
+for one potential pattern for implementing validation within your application.
 
 The following types of validators are supported:
 

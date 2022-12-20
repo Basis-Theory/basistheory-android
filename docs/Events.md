@@ -1,8 +1,7 @@
 # Elements Events
 
-Each Element type supports a standard set of events that can be subscribed to in order to receive
-callbacks within your app.
-
+Each element type supports a standard set of events that can be subscribed to in order to receive
+callbacks within your application.
 
 ## ChangeEvent
 
@@ -10,11 +9,19 @@ Raised whenever the element's value is changed.
 
 ### Schema
 
-| Property | Description                                                              |
-|----------|--------------------------------------------------------------------------|
-| complete | If the element value is well-formed and is ready to be submitted.        |
-| empty    | Whether the element is empty.                                            |
-| errors   | This an array of error objects that are emitted for any set validations. |
+| Property   | Type                 | Description                                                                                                   |
+|------------|----------------------|---------------------------------------------------------------------------------------------------------------|
+| isComplete | `Boolean`            | Whether the element has been completely filled (as specified by the [mask](/docs/TextElement.md/#validators)) |
+| isEmpty    | `Boolean`            | Whether the element is empty                                                                                  |
+| isValid    | `Boolean`            | The result of the [validator](/docs/TextElement.md/#validators), or `true` if no validator is specified       |
+| details    | `List<EventDetails>` | A list of [EventDetails](#eventdetails) included with this event                                              |
+
+### EventDetails
+
+| Property | Type     | Description                                        |
+|----------|----------|----------------------------------------------------|
+| type     | `String` | The type of data represented by this detail object |
+| message  | `String` | The content of this detail object                  |
 
 ### Usage
 

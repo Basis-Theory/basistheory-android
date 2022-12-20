@@ -21,7 +21,7 @@ export PATH=~/Library/Android/sdk/platform-tools:$PATH
 
 The following properties are required at build time
 - `com.basistheory.android.example.apiUrl`: Either the dev (default) or production Basis Theory API URL
-- `com.basistheory.android.example.apiKey`: A Basis Theory API key with `token:create` permission on at least the `/general/` container
+- `com.basistheory.android.example.apiKey`: A Basis Theory API key with `token:create` permission and a `REVEAL` transform on the `/` container
 
 These properties can be set in many ways, in order of priority (see [this reference](https://tomgregory.com/gradle-project-properties-best-practices/#Why_do_we_need_project_properties_in_a_Gradle_build)):
 1. Within the `./local.properties` file (this is specific to our setup)

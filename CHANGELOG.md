@@ -1,3 +1,11 @@
+## [1.1.0](https://github.com/Basis-Theory/basistheory-android/compare/1.0.0...1.1.0) (2022-12-21)
+
+
+### Features
+
+* support create token endpoint ([#23](https://github.com/Basis-Theory/basistheory-android/issues/23)) ([f441a5c](https://github.com/Basis-Theory/basistheory-android/commit/f441a5c4e67ab2ebe17229a293779e8d5ace36a6))
+
+
 ## [1.0.0](https://github.com/Basis-Theory/basistheory-android/compare/0.12.0...1.0.0) (2022-12-20)
 
 

@@ -440,6 +440,7 @@ class BasisTheoryElementsTests {
 
     private fun createTokenRequest(data: Any): CreateTokenRequest =
         CreateTokenRequest().apply {
+            this.type = "token"
             this.data = data
         }
 }

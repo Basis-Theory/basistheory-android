@@ -43,7 +43,7 @@ Add this dependency to your project's build file:
 
 ## Example Usage
 
-A full example Android app can be viewed within the [example](example) module within this repo.
+A full example Android application can be viewed within the [example](example) module within this repository.
 
 ```kotlin
 val nameElement = findViewById(R.id.name)

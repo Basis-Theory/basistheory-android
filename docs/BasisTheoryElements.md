@@ -40,5 +40,27 @@ val tokenizeResponse = bt.tokenize(object {
 ```
 
 As you can see from this example, the `tokenize` function is capable of resolving the raw data 
-from references to Element inputs. This enables your app to tokenize sensitive data values without 
+from references to Element inputs. This enables your application to tokenize sensitive data values without 
+needing to touch the raw data directly.
+
+### createToken
+
+This function wraps our **`[create token API](https://docs.basistheory.com/#tokens-create-token)`** to
+be able to create a single strongly typed token. It also provides added support for referencing 
+instances of Elements within your request payload.
+
+```kotlin
+val createTokenResponse = bt.createToken(CreateTokenRequest().apply {
+    this.type = "token"
+    this.data = object {
+        val name = nameElement // an instance of TextElement
+        val phoneNumber = phoneNumberElement // an instance of TextElement
+        val note = "Non sensitive value" // plaintext strings can also be included in the token body
+    }
+    this.expires_at = "2022-11-03T19:14:21.4333333Z" // all standard token attributes are supported 
+})
+```
+
+As you can see from this example, the `createToken` function is capable of resolving the raw data
+from references to Element inputs. This enables your application to tokenize sensitive data values without
 needing to touch the raw data directly.

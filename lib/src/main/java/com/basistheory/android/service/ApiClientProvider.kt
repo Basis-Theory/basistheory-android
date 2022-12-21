@@ -3,6 +3,7 @@ package com.basistheory.android.service
 import com.basistheory.ApiClient
 import com.basistheory.Configuration
 import com.basistheory.TokenizeApi
+import com.basistheory.TokensApi
 import com.basistheory.android.BuildConfig
 import com.basistheory.auth.ApiKeyAuth
 
@@ -13,6 +14,9 @@ internal class ApiClientProvider(
 
     fun getTokenizeApi(apiKeyOverride: String? = null): TokenizeApi =
         TokenizeApi(getApiClient(apiKeyOverride))
+
+    fun getTokensApi(apiKeyOverride: String? = null): TokensApi =
+        TokensApi(getApiClient(apiKeyOverride))
 
     private fun getApiClient(apiKeyOverride: String? = null): ApiClient {
         val apiKey = apiKeyOverride ?: defaultApiKey

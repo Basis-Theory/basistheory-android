@@ -64,7 +64,7 @@ Simply include one or more elements within your application's views:
 ```
 
 Then tokenize the user input by referencing these elements. This can be wired up in response to a 
-button click, or any other user action. 
+button click, or any other user action.
 
 ```kotlin
 val cardNumberElement = findViewById(R.id.card_number)

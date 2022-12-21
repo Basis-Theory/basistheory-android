@@ -1,5 +1,7 @@
 package com.basistheory.android.service
 
+import com.basistheory.CreateTokenRequest
+import com.basistheory.CreateTokenResponse
 import com.basistheory.android.model.ElementValueReference
 import com.basistheory.android.util.isPrimitiveType
 import com.basistheory.android.util.toMap
@@ -26,20 +28,42 @@ class BasisTheoryElements internal constructor(
             tokenizeApiClient.tokenize(request)
         }
 
+    @JvmOverloads
+    suspend fun createToken(
+        createTokenRequest: CreateTokenRequest,
+        apiKeyOverride: String? = null
+    ): CreateTokenResponse =
+        withContext(ioDispatcher) {
+            val tokensApi = apiClientProvider.getTokensApi(apiKeyOverride)
+            val data =
+                if (createTokenRequest.data == null) null
+                else if (createTokenRequest.data!!::class.java.isPrimitiveType()) createTokenRequest.data
+                else if (createTokenRequest.data is TextElement) (createTokenRequest.data as TextElement).getText()
+                else if (createTokenRequest.data is ElementValueReference) (createTokenRequest.data as ElementValueReference).getValue()
+                else replaceElementRefs(createTokenRequest.data!!.toMap())
+
+            createTokenRequest.data = data
+
+            tokensApi.create(createTokenRequest)
+        }
+
     private fun replaceElementRefs(map: MutableMap<String, Any?>): MutableMap<String, Any?> {
         for ((key, value) in map) {
             if (value == null) continue
             val fieldType = value::class.java
             if (!fieldType.isPrimitiveType()) {
-                if (value is TextElement) {
-                    map[key] = value.getText()
-                }
-                else if (value is ElementValueReference) {
-                    map[key] = value.getValue()
-                } else {
-                    val children = value.toMap()
-                    map[key] = children
-                    replaceElementRefs(children)
+                when (value) {
+                    is TextElement -> {
+                        map[key] = value.getText()
+                    }
+                    is ElementValueReference -> {
+                        map[key] = value.getValue()
+                    }
+                    else -> {
+                        val children = value.toMap()
+                        map[key] = children
+                        replaceElementRefs(children)
+                    }
                 }
             }
         }

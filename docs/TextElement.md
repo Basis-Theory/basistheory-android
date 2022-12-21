@@ -1,77 +1,146 @@
 # TextElement
 
-The `basistheory-android` SDK contains the `TextElement` view to collect text data within your app.
-This component allows you to fully customize the look and feel to match your brand, but it does 
-not allow direct access the underlying values entered by a user, keeping your mobile application 
+The `TextElement` can be used to collect any text data within your mobile application.
+This component allows you to fully customize the look and feel to match your brand, and it does 
+not allow direct access the underlying plaintext values entered by a user, keeping your mobile application 
 out of compliance scope.
-
-## Supported XML Attributes
-
-The `TextElement` extends the native [FrameLayout](https://developer.android.com/reference/android/widget/FrameLayout) 
-view, so all standard layout-related XML attributes supported by 
-[FrameLayout](https://developer.android.com/reference/android/widget/FrameLayout#xml-attributes) 
-are supported. 
-
-The following additional attributes are also supported:
-
-| Fields              | Type                     | Description                                                                                                                                                                                                                                                |
-|---------------------|--------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| text                | `string`                 | Sets the text value for the element. Note that a getter is not exposed on the TextElement to retrieve the underlying text value.                                                                                                                           |
-| textColor           | `reference`&vert;`color` | The text color. <br/><br/>May be a reference to another resource, in the form "@[+][package:]type/name" or a theme attribute in the form "?[package:]type/name". <br/><br/>May be a color value, in the form of "#rgb", "#argb", "#rrggbb", or "#aarrggbb" |
-| hint                | `string`                 | Placeholder text to display within the element.                                                                                                                                                                                                            |
-| removeDefaultStyles | `boolean`                | Removes the default Android styling on the underlying EditText.                                                                                                                                                                                            |
 
 ## Basic Usage
 
-To use the `TextElement` within your Android application, simply include the view within one of your 
+To use the `TextElement` within your Android application, simply include the view within one of your
 Android application’s layouts.
 
-```kotlin
-<LinearFLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <com.basistheory.android.TextElement
-        android:id="@+id/name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-</LinearLayout>
-```
-
-![Default Text Element](/docs/img/text_element_default.png)
-
-## Styling Customization
-
-The `TextElement` has been designed to take advantage of all pre-existing native layout properties
-available on a [FrameLayout](https://developer.android.com/reference/android/widget/FrameLayout), 
-as well as several additional styling customizations typically available to a native
-[EditText](https://developer.android.com/reference/android/widget/EditText) view.
-
-### Styling in XML
-
-```kotlin
-<com.basistheory.android.TextElement
+```xml
+<com.basistheory.android.view.TextElement
     android:id="@+id/name"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/my_custom_background"
-    android:padding="5dp"
-    bt:text="Initial Value"
-    bt:hint="Placeholder"
-    bt:removeDefaultStyles="true"
-    bt:textColor="@color/purple_200" />
+    android:layout_height="wrap_content" />
 ```
 
-### Styling Programmatically
+Properties can be programmatically initialized within your views within either the
+`onCreate` or `onCreateView` lifecycle methods.
 
-```swift
-val textElement = findViewById<TextElement>(R.id.myTextElement)
-textElement.setPadding(5, 5, 5, 5)
-textElement.hint = "Placeholder"
-textElement.textColor = Color.CYAN
-textElement.background = Color.WHITE.toDrawable()
+## Configuration
+
+The `TextElement` extends the native [FrameLayout](https://developer.android.com/reference/android/widget/FrameLayout)
+view, so all standard properties and attributes supported by
+[FrameLayout](https://developer.android.com/reference/android/widget/FrameLayout#xml-attributes)
+are supported by `TextElement`.
+
+### Properties
+
+The following additional properties are supported when programmatically interacting with a `TextElement`:
+
+| Name                | Type               | Description                                                                                                                                                                                                               |
+|---------------------|--------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| text                | `String`           | Sets the text value for the element. Note that a getter is not exposed on the TextElement to retrieve the underlying text value.                                                                                          |
+| textColor           | `Int`              | A color value in the form `0xAARRGGBB`. Do not pass a resource ID. To get a color value from a resource ID, call [getColor](https://developer.android.com/reference/android/content/res/TypedArray#getColor(int,%20int)). |
+| hint                | `String`           | Placeholder text to display within the element when empty.                                                                                                                                                                |
+| removeDefaultStyles | `Boolean`          | Removes the default Android styling on the underlying EditText.                                                                                                                                                           |
+| mask                | `ElementMask`      | Restricts and formats input entered into this Element. See [Masks](#masks) below for details.                                                                                                                             |
+| transform           | `ElementTransform` | Transforms the value of this Element prior to tokenization. See [Transforms](#transforms) below for details.                                                                                                              |
+| validator           | `ElementValidator` | Validates the value of this Element within ChangeEvents. See [Validators](#validators) below for details.                                                                                                                 |
+
+
+### XML Attributes
+
+The following additional XML attributes are also supported when defining a `TextElement` in a layout XML file:
+
+| Name                | Type                     | Description                                                                                                                                                                                                                                                            |
+|---------------------|--------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| text                | `String`                 | Sets the text value for the element. Note that a getter is not exposed on the TextElement to retrieve the underlying text value.                                                                                                                                       |
+| textColor           | `reference`&vert;`color` | The text color. <br/><br/>May be a reference to another resource, in the form `"@[+][package:]type/name"` or a theme attribute in the form `"?[package:]type/name"`. <br/><br/>May be a color value, in the form of `"#rgb"`, `"#argb"`, `"#rrggbb"`, or `"#aarrggbb"` |
+| hint                | `String`                 | Placeholder text to display within the Element.                                                                                                                                                                                                                        |
+| removeDefaultStyles | `Boolean`                | Removes the default Android styling on the underlying EditText.                                                                                                                                                                                                        |
+| mask                | `String`                 | A string defining the [mask](#masks) applied to this Element, e.g. (`###-##-####`).                                                                                                                                                                                    |
+
+### Masks
+
+Element masks enable user input to be restricted and formatted to meet a pre-defined format. A mask
+can be defined programmatically using the `ElementMask` class, or in an XML layout file as a pattern `String`.
+
+The `ElementMask` class supports two constructors:
+
+1. `ElementMask(characterMasks: List<Any>)`: a list of character-wise values defining the allowable input for each character position. 
+Each character position either defines a static value in the mask (specified as a `Char` or single 
+character `String`) or a range of allowable characters (specified as a `Regex` object).
+
+    For example, to support US Social Security Numbers of the form `123-45-6789`, you can specify the mask as:
+
+    ```kotlin
+    val digit = Regex("""\d""")
+    element.mask = ElementMask(listOf(digit, digit, digit, "-", digit, digit, "-", digit, digit, digit, digit))
+    ```
+
+2. `ElementMask(pattern: String)`: specifies a range of allowable characters using the wildcard characters:
+- `#`: numeric value, equivalent to `Regex("""\d""")`
+- `x`: alphabetic value, equivalent to `Regex("[A-Za-z]")`
+- `*`: any value, equivalent to `Regex(".")`
+
+    For example, to support US Social Security Numbers of the form `123-45-6789`, you can specify the
+    mask as:
+    
+    ```kotlin
+    element.mask = ElementMask("###-##-####")
+    ```
+
+### Transforms
+
+Element transforms define functions that mutate the value of the element prior to tokenization and 
+when computing properties published within [ChangeEvents](/docs/Events.md).
+
+The following types of transforms are supported:
+
+#### RegexReplaceElementTransform
+
+Replaces all matches of the given regular expression with the replacement text.
+
+```kotlin
+// removes all non-numeric characters
+element.transform = RegexReplaceElementTransform(
+    regex = Regex("[^\\d]"),
+    replacement = ""
+)
 ```
 
-![Styled Text Element](/docs/img/text_element_styled.png)
+### Validators
+
+Element validators define functions to determine whether the value of the Element is considered valid.
+Validators are executed on the [transformed](#transforms) Element value.
+
+The validation state of an Element is only used when computing [ChangeEvents](/docs/Events.md)
+and all invalid state behavior (e.g. styling changes, displaying validation errors, 
+disabling submit buttons) are expected to be implemented within your application in response to `ChangeEvents`. 
+See [this example](/example/src/main/java/com/basistheory/android/example/viewmodel/CardFragmentViewModel.kt)
+for one potential pattern for implementing validation within your application.
+
+The following types of validators are supported:
+
+#### RegexValidator
+
+Matches the input value against the given regular expression.
+
+```kotlin
+// validates that the value only contains 3-4 digits
+element.validator = RegexValidator(
+    regex = Regex("^\\d{3,4}$")
+)
+```
+
+#### LuhnValidator
+
+Validates that the input value is a [Luhn-valid](https://en.wikipedia.org/wiki/Luhn_algorithm)
+credit card number. This is the default validator for the [CardNumberElement](/docs/CardNumberElement.md).
+
+```kotlin
+element.validator = LuhnValidator()
+```
+
+#### FutureDateValidator
+
+Validates that the input value is a future date of the form `MM/yy`. This is the default 
+validator for the [CardExpirationDateElement](/docs/CardExpirationDateElement.md).
+
+```kotlin
+element.validator = FutureDateValidator()
+```

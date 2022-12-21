@@ -1,17 +1,17 @@
 # BasisTheoryElements
 
-This class contains functions to pass Element references when calling the Basis Theory API.
+This class contains functions to interact with the Basis Theory API using element references.
 
 ## Instantiation
 
 A new instance of the `BasisTheoryElements` service can be instantiated and configured using the
-builder pattern, for example:
+builder pattern:
 
 ```kotlin
 val bt = BasisTheoryElements.builder()
-    .apiUrl("https://api.basistheory.com")
+    .apiUrl("https://api.basistheory.com") // optional
     .apiKey(myApiKey)
-    .ioDispatcher(myDispatcher)
+    .ioDispatcher(myDispatcher) // optional
     .build()
 ```
 
@@ -20,12 +20,17 @@ The following values are used by default if not specified when constructing an i
 - `apiKey`: `null`
 - `ioDispatcher`: `Dispatchers.IO`
 
+Note that `BasisTheoryElements` requires the use of a public API key during initialization
+(an API key issued to a `public` [Application](https://developers.basistheory.com/concepts/access-controls/#what-are-applications)).
+Click [here](https://portal.basistheory.com/applications/create?permissions=token%3Acreate&type=public.)
+to create one in the Basis Theory portal.
+
 ## Usage
 
 ### tokenize
 
-This function wraps our **`[tokenize API](https://docs.basistheory.com/#tokenize)`** providing added
-support for referencing instances of Elements within your request payload. 
+This function wraps the [tokenize API endpoint](https://docs.basistheory.com/#tokenize) 
+providing added support for referencing instances of elements within your request payload. 
 
 ```kotlin
 val tokenizeResponse = bt.tokenize(object {
@@ -39,7 +44,7 @@ val tokenizeResponse = bt.tokenize(object {
 })
 ```
 
-As you can see from this example, the `tokenize` function is capable of resolving the raw data 
+As you can see from this example, the `tokenize` function is capable of resolving the raw data
 from references to Element inputs. This enables your application to tokenize sensitive data values without 
 needing to touch the raw data directly.
 

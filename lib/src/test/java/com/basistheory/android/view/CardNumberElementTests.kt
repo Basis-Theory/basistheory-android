@@ -1,7 +1,10 @@
 package com.basistheory.android.view
 
 import android.app.Activity
+import android.media.metrics.Event
+import com.basistheory.android.constants.CardBrands
 import com.basistheory.android.event.ChangeEvent
+import com.basistheory.android.event.EventDetails
 import com.basistheory.android.service.CardBrandEnricher
 import com.basistheory.android.view.mask.ElementMask
 import org.junit.Before
@@ -62,7 +65,7 @@ class CardNumberElementTests {
     }
 
     @Test
-    fun `ChangeEvent is computed properly for incomplete card numbers`() {
+    fun `ChangeEvent is computed properly for incomplete card numbers with invalid brand`() {
         val changeEvents = mutableListOf<ChangeEvent>()
         cardNumberElement.addChangeEventListener { changeEvents.add(it) }
 
@@ -76,18 +79,43 @@ class CardNumberElementTests {
     }
 
     @Test
+    fun `ChangeEvent is computed properly for incomplete card numbers with valid brand`() {
+        val changeEvents = mutableListOf<ChangeEvent>()
+        cardNumberElement.addChangeEventListener { changeEvents.add(it) }
+
+        cardNumberElement.setText("4123 45")
+        expectThat(changeEvents).single().and {
+            get { isValid }.isFalse()
+            get { isEmpty }.isFalse()
+            get { isComplete }.isFalse()
+            get { details }.single().and {
+                get { type }.isEqualTo(EventDetails.CardBrand)
+                get { message }.isEqualTo(CardBrands.VISA.label)
+            }
+        }
+    }
+
+    @Test
     fun `ChangeEvent is computed properly for valid complete card numbers`() {
         val changeEvents = mutableListOf<ChangeEvent>()
         cardNumberElement.addChangeEventListener { changeEvents.add(it) }
 
-        cardNumberElement.setText("4242 4242 4242 4242")
+        cardNumberElement.setText("4111 1111 1111 1111")
         expectThat(changeEvents).single().and {
             get { isValid }.isTrue()
             get { isEmpty }.isFalse()
             get { isComplete }.isTrue()
-            get { details.first() }.and {
-                get { type }.isEqualTo("cardBrand")
-                get { message }.isEqualTo("visa")
+            get { details }.any {
+                get { type }.isEqualTo(EventDetails.CardBrand)
+                get { message }.isEqualTo(CardBrands.VISA.label)
+            }
+            get { details }.any {
+                get { type }.isEqualTo(EventDetails.Bin)
+                get { message }.isEqualTo("411111")
+            }
+            get { details }.any {
+                get { type }.isEqualTo(EventDetails.Last4)
+                get { message }.isEqualTo("1111")
             }
         }
     }
@@ -102,9 +130,17 @@ class CardNumberElementTests {
             get { isValid }.isFalse()
             get { isEmpty }.isFalse()
             get { isComplete }.isTrue()
-            get { details.first() }.and {
-                get { type }.isEqualTo("cardBrand")
-                get { message }.isEqualTo("visa")
+            get { details }.any {
+                get { type }.isEqualTo(EventDetails.CardBrand)
+                get { message }.isEqualTo(CardBrands.VISA.label)
+            }
+            get { details }.any {
+                get { type }.isEqualTo(EventDetails.Bin)
+                get { message }.isEqualTo("424242")
+            }
+            get { details }.any {
+                get { type }.isEqualTo(EventDetails.Last4)
+                get { message }.isEqualTo("4243")
             }
         }
     }

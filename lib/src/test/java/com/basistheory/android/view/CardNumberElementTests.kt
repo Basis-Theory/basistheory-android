@@ -28,16 +28,16 @@ class CardNumberElementTests {
     @Test
     fun `can clear the value`() {
         cardNumberElement.setText(null)
-        expectThat(cardNumberElement.getText()).isEqualTo("") // note: EditText transforms nulls to ""
+        expectThat(cardNumberElement.getTransformedText()).isEqualTo("") // note: EditText transforms nulls to ""
 
         cardNumberElement.setText("")
-        expectThat(cardNumberElement.getText()).isEqualTo("")
+        expectThat(cardNumberElement.getTransformedText()).isEqualTo("")
     }
 
     @Test
     fun `applies mask when setting the value`() {
         cardNumberElement.setText("4242abc4242def4242geh4242")
-        expectThat(cardNumberElement.getText()).isEqualTo("4242424242424242")
+        expectThat(cardNumberElement.getTransformedText()).isEqualTo("4242424242424242")
     }
 
     @Test
@@ -58,10 +58,10 @@ class CardNumberElementTests {
     @Test
     fun `applies the transform when retrieving the value`() {
         cardNumberElement.setText("4242 4242 4242 4242")
-        expectThat(cardNumberElement.getText()).isEqualTo("4242424242424242")
+        expectThat(cardNumberElement.getTransformedText()).isEqualTo("4242424242424242")
 
         cardNumberElement.setText("4242-4242-4242-4242")
-        expectThat(cardNumberElement.getText()).isEqualTo("4242424242424242")
+        expectThat(cardNumberElement.getTransformedText()).isEqualTo("4242424242424242")
     }
 
     @Test

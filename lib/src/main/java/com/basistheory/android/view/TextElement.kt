@@ -68,8 +68,12 @@ open class TextElement @JvmOverloads constructor(
         subscribeToInputEvents()
     }
 
-    // this MUST be internal to prevent host apps from accessing the raw input values
+    // the following getters MUST be internal to prevent host apps from accessing the raw input values
+
     internal fun getText(): String? =
+        editText.text?.toString()
+
+    internal fun getTransformedText(): String? =
         editText.text?.toString().let {
             transform?.apply(it) ?: it
         }
@@ -220,10 +224,10 @@ open class TextElement @JvmOverloads constructor(
 
     private fun publishChangeEvent(editable: Editable?) {
         val event = createElementChangeEvent(
-            getText(),
+            getTransformedText(),
             mask?.isComplete(editable?.toString()) ?: false,
             editable?.isEmpty() ?: false,
-            validator?.validate(getText()) ?: true
+            validator?.validate(getTransformedText()) ?: true
         )
 
         eventListeners.change.forEach {

@@ -35,12 +35,12 @@ class CardExpirationDateElement @JvmOverloads constructor(
     }
 
     private fun getMonthValue(): String? =
-        getText()
+        getTransformedText()
             ?.split("/")
             ?.elementAtOrNull(0)
 
     private fun getYearValue(): String? =
-        getText()
+        getTransformedText()
             ?.split("/")
             ?.elementAtOrNull(1)
             ?.let { "20$it" }

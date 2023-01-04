@@ -27,35 +27,35 @@ class CardExpirationDateElementTests {
     @Test
     fun `can clear the value`() {
         cardExpirationDateElement.setText(null)
-        expectThat(cardExpirationDateElement.getText()).isEqualTo("") // note: EditText transforms nulls to ""
+        expectThat(cardExpirationDateElement.getTransformedText()).isEqualTo("") // note: EditText transforms nulls to ""
 
         cardExpirationDateElement.setText("")
-        expectThat(cardExpirationDateElement.getText()).isEqualTo("")
+        expectThat(cardExpirationDateElement.getTransformedText()).isEqualTo("")
     }
 
     @Test
     fun `applies mask when setting the value`() {
         cardExpirationDateElement.setText("1222")
-        expectThat(cardExpirationDateElement.getText()).isEqualTo("12/22")
+        expectThat(cardExpirationDateElement.getTransformedText()).isEqualTo("12/22")
     }
 
     @Test
     fun `can type single digit month without leading zero`() {
         cardExpirationDateElement.setText("2")
-        expectThat(cardExpirationDateElement.getText()).isEqualTo("02/")
+        expectThat(cardExpirationDateElement.getTransformedText()).isEqualTo("02/")
 
         val year = (LocalDate.now().year + 1).toString().takeLast(2)
         cardExpirationDateElement.setText("2$year")
-        expectThat(cardExpirationDateElement.getText()).isEqualTo("02/$year")
+        expectThat(cardExpirationDateElement.getTransformedText()).isEqualTo("02/$year")
     }
 
     @Test
     fun `does not add leading zero when first digit is 0 or 1`() {
         cardExpirationDateElement.setText("0")
-        expectThat(cardExpirationDateElement.getText()).isEqualTo("0")
+        expectThat(cardExpirationDateElement.getTransformedText()).isEqualTo("0")
 
         cardExpirationDateElement.setText("1")
-        expectThat(cardExpirationDateElement.getText()).isEqualTo("1")
+        expectThat(cardExpirationDateElement.getTransformedText()).isEqualTo("1")
     }
 
     @Test

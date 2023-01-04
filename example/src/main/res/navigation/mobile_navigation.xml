@@ -23,4 +23,10 @@
         android:label="@string/title_custom_form"
         tools:layout="@layout/fragment_custom_form" />
 
+    <fragment
+        android:id="@+id/nav_readonly_binding"
+        android:name="com.basistheory.android.example.view.readonly_binding.ReadonlyBindingFragment"
+        android:label="@string/title_readonly_binding"
+        tools:layout="@layout/fragment_readonly_binding" />
+
 </navigation>

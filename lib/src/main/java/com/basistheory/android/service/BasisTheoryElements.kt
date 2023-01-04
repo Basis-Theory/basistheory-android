@@ -21,7 +21,7 @@ class BasisTheoryElements internal constructor(
             val tokenizeApiClient = apiClientProvider.getTokenizeApi(apiKeyOverride)
             val request =
                 if (body::class.java.isPrimitiveType()) body
-                else if (body is TextElement) body.getText()
+                else if (body is TextElement) body.getTransformedText()
                 else if (body is ElementValueReference) body.getValue()
                 else replaceElementRefs(body.toMap())
 
@@ -38,7 +38,7 @@ class BasisTheoryElements internal constructor(
             val data =
                 if (createTokenRequest.data == null) null
                 else if (createTokenRequest.data!!::class.java.isPrimitiveType()) createTokenRequest.data
-                else if (createTokenRequest.data is TextElement) (createTokenRequest.data as TextElement).getText()
+                else if (createTokenRequest.data is TextElement) (createTokenRequest.data as TextElement).getTransformedText()
                 else if (createTokenRequest.data is ElementValueReference) (createTokenRequest.data as ElementValueReference).getValue()
                 else replaceElementRefs(createTokenRequest.data!!.toMap())
 
@@ -54,7 +54,7 @@ class BasisTheoryElements internal constructor(
             if (!fieldType.isPrimitiveType()) {
                 when (value) {
                     is TextElement -> {
-                        map[key] = value.getText()
+                        map[key] = value.getTransformedText()
                     }
                     is ElementValueReference -> {
                         map[key] = value.getValue()

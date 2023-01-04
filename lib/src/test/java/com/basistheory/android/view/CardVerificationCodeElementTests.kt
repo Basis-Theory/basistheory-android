@@ -2,13 +2,9 @@ package com.basistheory.android.view
 
 import android.app.Activity
 import com.basistheory.android.event.ChangeEvent
-import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.impl.annotations.SpyK
-import io.mockk.junit4.MockKRule
 import io.mockk.spyk
 import io.mockk.verify
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
@@ -35,10 +31,10 @@ class CardVerificationCodeElementTests {
     @Test
     fun `can clear the value`() {
         cvcElement.setText(null)
-        expectThat(cvcElement.getText()).isEqualTo("") // note: EditText transforms nulls to ""
+        expectThat(cvcElement.getTransformedText()).isEqualTo("") // note: EditText transforms nulls to ""
 
         cvcElement.setText("")
-        expectThat(cvcElement.getText()).isEqualTo("")
+        expectThat(cvcElement.getTransformedText()).isEqualTo("")
     }
 
     @Test
@@ -46,7 +42,7 @@ class CardVerificationCodeElementTests {
         cvcElement.cardNumberElement = null
 
         cvcElement.setText("1a2b3c")
-        expectThat(cvcElement.getText()).isEqualTo("123")
+        expectThat(cvcElement.getTransformedText()).isEqualTo("123")
     }
 
     @Test
@@ -55,11 +51,11 @@ class CardVerificationCodeElementTests {
 
         cardNumberElement.setText("42")
         cvcElement.setText("1a2b3c4d5e")
-        expectThat(cvcElement.getText()).isEqualTo("123")
+        expectThat(cvcElement.getTransformedText()).isEqualTo("123")
 
         cardNumberElement.setText("34")
         cvcElement.setText("1a2b3c4d5e")
-        expectThat(cvcElement.getText()).isEqualTo("1234")
+        expectThat(cvcElement.getTransformedText()).isEqualTo("1234")
     }
 
     @Test

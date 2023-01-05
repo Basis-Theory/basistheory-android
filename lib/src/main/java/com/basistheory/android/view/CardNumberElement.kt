@@ -43,14 +43,32 @@ class CardNumberElement @JvmOverloads constructor(
         isEmpty: Boolean,
         isValid: Boolean
     ): ChangeEvent {
-        val eventDetails = this.cardMetadata?.brand?.let { brand ->
-            mutableListOf(
+        val eventDetails = mutableListOf<EventDetails>()
+
+        this.cardMetadata?.brand?.let {
+            eventDetails.add(
                 EventDetails(
-                    "cardBrand",
-                    brand
+                    EventDetails.CardBrand,
+                    it
                 )
             )
-        } ?: mutableListOf()
+        }
+
+        if (value != null && cardMetadata?.isComplete == true) {
+            eventDetails.add(
+                EventDetails(
+                    EventDetails.Bin,
+                    value.take(6)
+                )
+            )
+
+            eventDetails.add(
+                EventDetails(
+                    EventDetails.Last4,
+                    value.takeLast(4)
+                )
+            )
+        }
 
         return ChangeEvent(
             cardMetadata?.isComplete ?: false,

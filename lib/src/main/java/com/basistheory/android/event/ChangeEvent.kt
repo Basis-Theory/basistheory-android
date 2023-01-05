@@ -10,4 +10,10 @@ data class ChangeEvent(
 data class EventDetails(
     val type: String,
     val message: String
-)
+) {
+    companion object {
+        const val CardBrand = "cardBrand"
+        const val Bin = "bin"
+        const val Last4 = "last4"
+    }
+}

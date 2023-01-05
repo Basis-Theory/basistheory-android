@@ -33,7 +33,9 @@ class CardBrandEnricher {
         val brand: String?,
         val cvcMask: String?,
         val cardMask: String?,
-        val isComplete: Boolean
+        val isComplete: Boolean,
+        val bin: String?,
+        val last4: String?
     )
 
     private val cardBrands = listOf(
@@ -226,11 +228,14 @@ class CardBrandEnricher {
         }
 
         return with(bestMatch) {
+            val isComplete = this?.isComplete ?: false
             CardMetadata(
                 this?.brand,
                 this?.cvcMask,
                 this?.cardMask,
-                this?.isComplete ?: false
+                isComplete,
+                number.take(6).takeIf { isComplete },
+                number.takeLast(4).takeIf { isComplete },
             )
         }
     }

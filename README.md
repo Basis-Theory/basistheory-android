@@ -2,7 +2,7 @@
 
 The [Basis Theory](https://basistheory.com) Android SDK makes it easy to securely collect sensitive 
 data within your Android applications while keeping your mobile application out of compliance scope. 
-[Elements](https://docs.basistheory.com/elements) are secure inputs that enable you to collect
+[Elements](https://developers.basistheory.com/docs/sdks/mobile/android/) are secure inputs that enable you to collect
 sensitive data within your application and securely store this data within Basis Theory’s certified 
 token vault.
 
@@ -28,19 +28,19 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-      implementation 'com.github.basis-theory:basistheory-android:1.1.0'
+      implementation 'com.github.basis-theory:basistheory-android:1.2.0'
   }
 ```
 
 ## Features
 
-- [TextElement](docs/TextElement.md) to securely collect text input
-- [CardNumberElement](docs/CardNumberElement.md) to securely collect credit card numbers
-- [CardExpirationDateElement](docs/CardExpirationDateElement.md) to securely collect card expiration dates
-- [CardVerificationCodeElement](docs/CardVerificationCodeElement.md) to securely collect card verification codes
-- [BasisTheoryElements](docs/BasisTheoryElements.md) service to tokenize sensitive data entered into Elements
-- [Styling](docs/Styling.md) - custom styles and branding are fully supported
-- [Events](docs/Events.md) - subscribe to events raised by Elements
+- [TextElement](https://developers.basistheory.com/docs/sdks/mobile/android/types#textelement) to securely collect text input
+- [CardNumberElement](https://developers.basistheory.com/docs/sdks/mobile/android/types#cardnumberelement) to securely collect credit card numbers
+- [CardExpirationDateElement](https://developers.basistheory.com/docs/sdks/mobile/android/types#cardexpirationdateelement) to securely collect card expiration dates
+- [CardVerificationCodeElement](https://developers.basistheory.com/docs/sdks/mobile/android/types#cardverificationcodeelement) to securely collect card verification codes
+- [Services](https://developers.basistheory.com/docs/sdks/mobile/android/services) to tokenize sensitive data entered into Elements
+- [Styling](https://developers.basistheory.com/docs/sdks/mobile/android/options#styling) - custom styles and branding are fully supported
+- [Events](https://developers.basistheory.com/docs/sdks/mobile/android/events) - subscribe to events raised by Elements
 
 ## Example Usage
 
@@ -91,7 +91,7 @@ runBlocking {
 ```
 
 Note that the Android SDK requires the use of a public API key during initialization 
-(an API key issued to a `public` [Application](https://developers.basistheory.com/concepts/access-controls/#what-are-applications)).
+(an API key issued to a `public` [Application](https://developers.basistheory.com/docs/concepts/access-controls#what-are-applications)).
 Click [here](https://portal.basistheory.com/applications/create?permissions=token%3Acreate&type=public.) 
 to create one in the Basis Theory portal.
 

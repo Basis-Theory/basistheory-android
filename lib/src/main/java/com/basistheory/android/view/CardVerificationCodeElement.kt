@@ -16,9 +16,8 @@ class CardVerificationCodeElement @JvmOverloads constructor(
         set(value) {
             if (value != null && cardNumberElement !== value) {
                 field = value
-                super.mask =
-                    cardNumberElement?.cardMetadata?.cvcMask?.let { ElementMask(it) } ?: defaultMask
-                field?.addChangeEventListener { updateMask() }
+                onCardNumberChanged(true)
+                field?.addChangeEventListener { onCardNumberChanged() }
             } else {
                 field = value
             }
@@ -27,7 +26,7 @@ class CardVerificationCodeElement @JvmOverloads constructor(
     init {
         super.keyboardType = KeyboardType.NUMBER
         super.mask = defaultMask
-        super.validator = RegexValidator("""^\d{3,4}$""")
+        super.validator = validatorForLength(defaultMask.length)
     }
 
     companion object {
@@ -36,10 +35,27 @@ class CardVerificationCodeElement @JvmOverloads constructor(
         val defaultMask = ElementMask(
             listOf(digit, digit, digit)
         )
+
+        fun validatorForLength(length: Int) =
+            RegexValidator("""^\d{$length}$""")
     }
 
-    private fun updateMask() {
-        super.mask =
-            cardNumberElement?.cardMetadata?.cvcMask?.let { ElementMask(it) } ?: defaultMask
+    private fun onCardNumberChanged(isInitialConfiguration: Boolean = false) {
+        val oldMaskLength = super.mask?.length
+
+        val updatedMask = cardNumberElement
+            ?.cardMetadata
+            ?.cvcMask
+            ?.let { ElementMask(it) }
+            ?: defaultMask
+
+        super.mask = updatedMask
+        super.validator = validatorForLength(updatedMask.length)
+
+        val updatedMaskLength = super.mask?.length
+
+        // publish a change event if the mask length changed
+        if (!isInitialConfiguration && oldMaskLength != updatedMaskLength)
+            super.publishChangeEvent()
     }
 }

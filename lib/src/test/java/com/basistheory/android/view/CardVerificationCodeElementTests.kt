@@ -100,8 +100,8 @@ class CardVerificationCodeElementTests {
         val changeEvents = mutableListOf<ChangeEvent>()
         cvcElement.addChangeEventListener { changeEvents.add(it) }
 
-        cvcElement.cardNumberElement = cardNumberElement
         cardNumberElement.setText("4242424242424242")
+        cvcElement.cardNumberElement = cardNumberElement
         cvcElement.setText("123")
 
         expectThat(changeEvents).single().and {
@@ -126,8 +126,8 @@ class CardVerificationCodeElementTests {
         val changeEvents = mutableListOf<ChangeEvent>()
         cvcElement.addChangeEventListener { changeEvents.add(it) }
 
-        cvcElement.cardNumberElement = cardNumberElement
         cardNumberElement.setText("378282246310005")
+        cvcElement.cardNumberElement = cardNumberElement
         cvcElement.setText("1234")
 
         expectThat(changeEvents).single().and {
@@ -152,8 +152,8 @@ class CardVerificationCodeElementTests {
         val changeEvents = mutableListOf<ChangeEvent>()
         cvcElement.addChangeEventListener { changeEvents.add(it) }
 
-        cvcElement.cardNumberElement = cardNumberElement
         cardNumberElement.setText("4242424242424242")
+        cvcElement.cardNumberElement = cardNumberElement
         cvcElement.setText("1234")
 
         expectThat(changeEvents).single().and {

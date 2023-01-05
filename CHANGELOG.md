@@ -1,3 +1,11 @@
+## [1.3.0](https://github.com/Basis-Theory/basistheory-android/compare/1.2.0...1.3.0) (2023-01-05)
+
+
+### Features
+
+* Publishes change event from CardVerificationCodeElement on brand changes ([#30](https://github.com/Basis-Theory/basistheory-android/issues/30)) ([6e8072a](https://github.com/Basis-Theory/basistheory-android/commit/6e8072a7c09e1c7388bd23b3834b0e519fa50f97))
+
+
 ## [1.2.0](https://github.com/Basis-Theory/basistheory-android/compare/1.1.0...1.2.0) (2023-01-05)
 
 

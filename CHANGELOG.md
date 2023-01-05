@@ -1,3 +1,11 @@
+## [1.2.0](https://github.com/Basis-Theory/basistheory-android/compare/1.1.0...1.2.0) (2023-01-05)
+
+
+### Features
+
+* Adds bin and last4 to change event details ([#29](https://github.com/Basis-Theory/basistheory-android/issues/29)) ([67c1ced](https://github.com/Basis-Theory/basistheory-android/commit/67c1ced6f2f007e9394533c40a8d27ff2e5a4c53))
+
+
 ## [1.1.0](https://github.com/Basis-Theory/basistheory-android/compare/1.0.0...1.1.0) (2022-12-21)
 
 

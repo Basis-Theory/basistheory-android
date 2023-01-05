@@ -14,10 +14,8 @@ import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import strikt.api.expectThat
-import strikt.assertions.isEqualTo
-import strikt.assertions.isFalse
-import strikt.assertions.isTrue
-import strikt.assertions.single
+import strikt.assertions.*
+import kotlin.text.get
 
 @RunWith(RobolectricTestRunner::class)
 class CardVerificationCodeElementTests {
@@ -95,5 +93,79 @@ class CardVerificationCodeElementTests {
         cvcElement.cardNumberElement = cardNumberElement
 
         verify(exactly = 1) { cardNumberElement.addChangeEventListener(any()) }
+    }
+
+    @Test
+    fun `emits a change event when mask increases from 3 to 4 chars`() {
+        val changeEvents = mutableListOf<ChangeEvent>()
+        cvcElement.addChangeEventListener { changeEvents.add(it) }
+
+        cvcElement.cardNumberElement = cardNumberElement
+        cardNumberElement.setText("4242424242424242")
+        cvcElement.setText("123")
+
+        expectThat(changeEvents).single().and {
+            get { isValid }.isTrue()
+            get { isEmpty }.isFalse()
+            get { isComplete }.isTrue()
+        }
+
+        // change the card brand from visa to american-express
+        cardNumberElement.setText("378282246310005")
+
+        expectThat(cvcElement.getText()).isEqualTo("123") // value does not change
+        expectThat(changeEvents).hasSize(2).last().and {
+            get { isValid }.isFalse()
+            get { isEmpty }.isFalse()
+            get { isComplete }.isFalse()
+        }
+    }
+
+    @Test
+    fun `emits a change event when mask increases from 4 to 3 chars`() {
+        val changeEvents = mutableListOf<ChangeEvent>()
+        cvcElement.addChangeEventListener { changeEvents.add(it) }
+
+        cvcElement.cardNumberElement = cardNumberElement
+        cardNumberElement.setText("378282246310005")
+        cvcElement.setText("1234")
+
+        expectThat(changeEvents).single().and {
+            get { isValid }.isTrue()
+            get { isEmpty }.isFalse()
+            get { isComplete }.isTrue()
+        }
+
+        // change the card brand from visa to american-express
+        cardNumberElement.setText("4242424242424242")
+
+        expectThat(cvcElement.getText()).isEqualTo("1234") // value does not change
+        expectThat(changeEvents).hasSize(2).last().and {
+            get { isValid }.isFalse()
+            get { isEmpty }.isFalse()
+            get { isComplete }.isFalse()
+        }
+    }
+
+    @Test
+    fun `does NOT emit a change event when card brand changes without impacting cvc mask`() {
+        val changeEvents = mutableListOf<ChangeEvent>()
+        cvcElement.addChangeEventListener { changeEvents.add(it) }
+
+        cvcElement.cardNumberElement = cardNumberElement
+        cardNumberElement.setText("4242424242424242")
+        cvcElement.setText("1234")
+
+        expectThat(changeEvents).single().and {
+            get { isValid }.isTrue()
+            get { isEmpty }.isFalse()
+            get { isComplete }.isTrue()
+        }
+
+        // change the card brand from visa to mastercard
+        cardNumberElement.setText("5555555555554444")
+
+        expectThat(cvcElement.getText()).isEqualTo("123") // value does not change
+        expectThat(changeEvents).single() // no new change events were published
     }
 }

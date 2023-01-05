@@ -144,4 +144,32 @@ class CardNumberElementTests {
             }
         }
     }
+
+    @Test
+    fun `exposes card metadata for complete cards`() {
+        cardNumberElement.setText("4123 4567 8901 2345")
+
+        expectThat(cardNumberElement.cardMetadata).isNotNull().and {
+            get { brand }.isEqualTo(CardBrands.VISA.label)
+            get { cardMask }.isEqualTo(CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_19LENGTH)
+            get { cvcMask }.isEqualTo(CardBrandEnricher.CvcMasks.THREE_DIGIT)
+            get { isComplete }.isTrue()
+            get { bin }.isEqualTo("412345")
+            get { last4 }.isEqualTo("2345")
+        }
+    }
+
+    @Test
+    fun `exposes card metadata for partial cards`() {
+        cardNumberElement.setText("4123")
+
+        expectThat(cardNumberElement.cardMetadata).isNotNull().and {
+            get { brand }.isEqualTo(CardBrands.VISA.label)
+            get { cardMask }.isEqualTo(CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_19LENGTH)
+            get { cvcMask }.isEqualTo(CardBrandEnricher.CvcMasks.THREE_DIGIT)
+            get { isComplete }.isFalse()
+            get { bin }.isNull()
+            get { last4 }.isNull()
+        }
+    }
 }

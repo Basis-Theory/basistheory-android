@@ -16,6 +16,9 @@ class ElementMask {
         )
     }
 
+    val length: Int
+        get() = characterMasks.size
+
     internal fun evaluate(text: String?, action: InputAction): String? {
         if (text.isNullOrEmpty())
             return ""

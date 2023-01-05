@@ -122,7 +122,7 @@ class CardVerificationCodeElementTests {
     }
 
     @Test
-    fun `emits a change event when mask increases from 4 to 3 chars`() {
+    fun `emits a change event when mask decreases from 4 to 3 chars`() {
         val changeEvents = mutableListOf<ChangeEvent>()
         cvcElement.addChangeEventListener { changeEvents.add(it) }
 

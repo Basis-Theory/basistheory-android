@@ -29,7 +29,7 @@
                 android:orientation="vertical">
 
                 <com.basistheory.android.view.CardNumberElement
-                    android:id="@+id/cardNumber"
+                    android:id="@+id/card_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/rounded_edit_text"
@@ -39,7 +39,7 @@
                     bt:textColor="@{ viewModel.cardNumber.isInvalid ? @color/red : @color/gray_800 }" />
 
                 <com.basistheory.android.view.CardExpirationDateElement
-                    android:id="@+id/cardExpiration"
+                    android:id="@+id/expiration_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"

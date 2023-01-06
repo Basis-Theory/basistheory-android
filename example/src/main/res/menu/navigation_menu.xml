@@ -13,7 +13,7 @@
             android:id="@+id/nav_custom_form"
             android:title="@string/title_custom_form" />
         <item
-            android:id="@+id/nav_readonly_binding"
-            android:title="@string/title_readonly_binding" />
+            android:id="@+id/nav_virtual_card"
+            android:title="@string/title_virtual_card" />
     </group>
 </menu>

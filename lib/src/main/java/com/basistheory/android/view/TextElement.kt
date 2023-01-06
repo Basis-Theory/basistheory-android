@@ -7,6 +7,7 @@ import android.os.Parcelable
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -40,7 +41,7 @@ open class TextElement @JvmOverloads constructor(
     init {
         editText.layoutParams = ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
+            ViewGroup.LayoutParams.MATCH_PARENT
         )
         super.addView(editText)
 
@@ -48,18 +49,20 @@ open class TextElement @JvmOverloads constructor(
         context.theme.obtainStyledAttributes(attrs, R.styleable.TextElement, defStyleAttr, 0)
             .apply {
                 try {
-                    textColor = getColor(R.styleable.TextElement_textColor, Color.BLACK)
                     hint = getString(R.styleable.TextElement_hint)
-                    removeDefaultStyles =
-                        getBoolean(R.styleable.TextElement_removeDefaultStyles, false)
-                    mask = getString(R.styleable.TextElement_mask)?.let { ElementMask(it) }
                     keyboardType = KeyboardType.fromInt(
                         getInt(
                             R.styleable.TextElement_keyboardType,
                             KeyboardType.TEXT.inputType
                         )
                     )
+                    mask = getString(R.styleable.TextElement_mask)?.let { ElementMask(it) }
+                    removeDefaultStyles = getBoolean(R.styleable.TextElement_removeDefaultStyles, true)
                     setText(getString(R.styleable.TextElement_text))
+                    textColor = getColor(R.styleable.TextElement_textColor, Color.BLACK)
+                    textSize = getDimension(R.styleable.TextElement_textSize,
+                        16f * resources.displayMetrics.scaledDensity)
+                    readonly = getBoolean(R.styleable.TextElement_readonly, false)
                 } finally {
                     recycle()
                 }
@@ -81,6 +84,16 @@ open class TextElement @JvmOverloads constructor(
     fun setText(value: String?) =
         editText.setText(value)
 
+    private var valueRef: TextElement? = null
+    fun setValueRef(element: TextElement) {
+        if (element !== valueRef) {
+            valueRef = element
+            element.addChangeEventListener { setText(element.getText()) }
+        } else {
+            valueRef = element
+        }
+    }
+
     var mask: ElementMask? = null
 
     var transform: ElementTransform? = null
@@ -90,6 +103,10 @@ open class TextElement @JvmOverloads constructor(
     var textColor: Int
         get() = editText.currentTextColor
         set(value) = editText.setTextColor(value)
+
+    var textSize: Float
+        get() = editText.textSize
+        set(value) = editText.setTextSize(TypedValue.COMPLEX_UNIT_PX, value)
 
     var hint: CharSequence?
         get() = editText.hint
@@ -107,6 +124,12 @@ open class TextElement @JvmOverloads constructor(
         get() = editText.background == null
         set(value) {
             editText.background = if (value) null else defaultBackground
+        }
+
+    var readonly: Boolean
+        get() = editText.isEnabled
+        set(value) {
+            editText.isEnabled = !value
         }
 
     fun addChangeEventListener(listener: (ChangeEvent) -> Unit) {

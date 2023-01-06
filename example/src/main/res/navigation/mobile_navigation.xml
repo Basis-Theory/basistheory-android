@@ -24,9 +24,9 @@
         tools:layout="@layout/fragment_custom_form" />
 
     <fragment
-        android:id="@+id/nav_readonly_binding"
-        android:name="com.basistheory.android.example.view.readonly_binding.ReadonlyBindingFragment"
-        android:label="@string/title_readonly_binding"
-        tools:layout="@layout/fragment_readonly_binding" />
+        android:id="@+id/nav_virtual_card"
+        android:name="com.basistheory.android.example.view.virtual_card.VirtualCardFragment"
+        android:label="@string/title_virtual_card"
+        tools:layout="@layout/fragment_virtual_card" />
 
 </navigation>

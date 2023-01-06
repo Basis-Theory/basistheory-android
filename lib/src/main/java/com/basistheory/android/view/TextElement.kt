@@ -112,6 +112,7 @@ open class TextElement @JvmOverloads constructor(
     var isEditable: Boolean
         get() = editText.isEnabled
         set(value) {
+            isEnabled = value
             editText.isEnabled = value
         }
 

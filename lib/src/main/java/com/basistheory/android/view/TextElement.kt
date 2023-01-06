@@ -242,6 +242,9 @@ open class TextElement @JvmOverloads constructor(
         isInternalChange = false
     }
 
+    protected fun publishChangeEvent()
+        = publishChangeEvent(editText.editableText)
+
     private fun publishChangeEvent(editable: Editable?) {
         val event = createElementChangeEvent(
             getTransformedText(),

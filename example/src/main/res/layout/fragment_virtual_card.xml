@@ -36,7 +36,7 @@
                         bt:text="0000 0000 0000 0000"
                         bt:textColor="@color/white"
                         bt:textSize="20sp"
-                        bt:readonly="true"
+                        bt:editable="false"
                         bt:removeDefaultStyles="true" />
 
                     <com.basistheory.android.view.TextElement
@@ -47,7 +47,7 @@
                         bt:text="**/**"
                         bt:textColor="@color/white"
                         bt:textSize="14sp"
-                        bt:readonly="true"
+                        bt:editable="false"
                         bt:removeDefaultStyles="true" />
 
                 </LinearLayout>

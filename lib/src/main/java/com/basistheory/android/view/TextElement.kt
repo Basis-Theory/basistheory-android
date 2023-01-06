@@ -49,20 +49,38 @@ open class TextElement @JvmOverloads constructor(
         context.theme.obtainStyledAttributes(attrs, R.styleable.TextElement, defStyleAttr, 0)
             .apply {
                 try {
+                    isEditable = getBoolean(
+                        R.styleable.TextElement_editable,
+                        true
+                    )
+
                     hint = getString(R.styleable.TextElement_hint)
+
                     keyboardType = KeyboardType.fromInt(
                         getInt(
                             R.styleable.TextElement_keyboardType,
                             KeyboardType.TEXT.inputType
                         )
                     )
+
                     mask = getString(R.styleable.TextElement_mask)?.let { ElementMask(it) }
-                    removeDefaultStyles = getBoolean(R.styleable.TextElement_removeDefaultStyles, true)
+
+                    removeDefaultStyles = getBoolean(
+                        R.styleable.TextElement_removeDefaultStyles,
+                        true
+                    )
+
                     setText(getString(R.styleable.TextElement_text))
-                    textColor = getColor(R.styleable.TextElement_textColor, Color.BLACK)
-                    textSize = getDimension(R.styleable.TextElement_textSize,
-                        16f * resources.displayMetrics.scaledDensity)
-                    readonly = getBoolean(R.styleable.TextElement_readonly, false)
+
+                    textColor = getColor(
+                        R.styleable.TextElement_textColor,
+                        Color.BLACK
+                    )
+
+                    textSize = getDimension(
+                        R.styleable.TextElement_textSize,
+                        16f * resources.displayMetrics.scaledDensity
+                    )
                 } finally {
                     recycle()
                 }
@@ -84,15 +102,18 @@ open class TextElement @JvmOverloads constructor(
     fun setText(value: String?) =
         editText.setText(value)
 
-    private var valueRef: TextElement? = null
     fun setValueRef(element: TextElement) {
-        if (element !== valueRef) {
-            valueRef = element
-            element.addChangeEventListener { setText(element.getText()) }
-        } else {
-            valueRef = element
+        element.addChangeEventListener {
+            setText(element.getText())
+            editText.requestLayout()
         }
     }
+
+    var isEditable: Boolean
+        get() = editText.isEnabled
+        set(value) {
+            editText.isEnabled = value
+        }
 
     var mask: ElementMask? = null
 
@@ -124,12 +145,6 @@ open class TextElement @JvmOverloads constructor(
         get() = editText.background == null
         set(value) {
             editText.background = if (value) null else defaultBackground
-        }
-
-    var readonly: Boolean
-        get() = editText.isEnabled
-        set(value) {
-            editText.isEnabled = !value
         }
 
     fun addChangeEventListener(listener: (ChangeEvent) -> Unit) {

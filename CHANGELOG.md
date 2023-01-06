@@ -1,3 +1,11 @@
+## [1.4.0](https://github.com/Basis-Theory/basistheory-android/compare/1.3.0...1.4.0) (2023-01-06)
+
+
+### Features
+
+* adds support for readonly text elements and value references ([#31](https://github.com/Basis-Theory/basistheory-android/issues/31)) ([f5901d8](https://github.com/Basis-Theory/basistheory-android/commit/f5901d897d4b7de787f10b4fab55a76fe2061889))
+
+
 ## [1.3.0](https://github.com/Basis-Theory/basistheory-android/compare/1.2.0...1.3.0) (2023-01-05)
 
 

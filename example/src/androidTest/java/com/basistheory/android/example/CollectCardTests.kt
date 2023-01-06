@@ -47,8 +47,8 @@ class CollectCardTests {
         val cvc = "123"
 
         // type values into elements
-        onView(withId(R.id.cardNumber)).perform(scrollTo(), typeText(cardNumber))
-        onView(withId(R.id.cardExpiration)).perform(
+        onView(withId(R.id.card_number)).perform(scrollTo(), typeText(cardNumber))
+        onView(withId(R.id.expiration_date)).perform(
             scrollTo(),
             typeText("$expMonth/${expYear.takeLast(2)}")
         )
@@ -80,8 +80,8 @@ class CollectCardTests {
         val cvc = "123"
 
         // type values into elements
-        onView(withId(R.id.cardNumber)).perform(scrollTo(), typeText(cardNumber))
-        onView(withId(R.id.cardExpiration)).perform(
+        onView(withId(R.id.card_number)).perform(scrollTo(), typeText(cardNumber))
+        onView(withId(R.id.expiration_date)).perform(
             scrollTo(),
             typeText("$expMonth/${expYear}")
         )
@@ -99,8 +99,8 @@ class CollectCardTests {
         val cvc = "123"
 
         // type values into elements
-        onView(withId(R.id.cardNumber)).perform(scrollTo(), typeText(cardNumber))
-        onView(withId(R.id.cardExpiration)).perform(
+        onView(withId(R.id.card_number)).perform(scrollTo(), typeText(cardNumber))
+        onView(withId(R.id.expiration_date)).perform(
             scrollTo(),
             typeText("$expMonth/${expYear}")
         )

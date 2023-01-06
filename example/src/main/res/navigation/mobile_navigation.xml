@@ -23,4 +23,10 @@
         android:label="@string/title_custom_form"
         tools:layout="@layout/fragment_custom_form" />
 
+    <fragment
+        android:id="@+id/nav_virtual_card"
+        android:name="com.basistheory.android.example.view.virtual_card.VirtualCardFragment"
+        android:label="@string/title_virtual_card"
+        tools:layout="@layout/fragment_virtual_card" />
+
 </navigation>

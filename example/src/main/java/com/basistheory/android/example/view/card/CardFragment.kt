@@ -37,7 +37,7 @@ class CardFragment : Fragment() {
 
     private fun autofill() {
         binding.cardNumber.setText("4242424242424242")
-        binding.cardExpiration.setText("12/25")
+        binding.expirationDate.setText("12/25")
         binding.cvc.setText("123")
     }
 
@@ -47,8 +47,8 @@ class CardFragment : Fragment() {
                 val type = "card"
                 val data = object {
                     val number = binding.cardNumber
-                    val expiration_month = binding.cardExpiration.month()
-                    val expiration_year = binding.cardExpiration.year()
+                    val expiration_month = binding.expirationDate.month()
+                    val expiration_year = binding.expirationDate.year()
                     val cvc = binding.cvc
                 }
                 val expires_at = tokenExpirationTimestamp()
@@ -61,7 +61,7 @@ class CardFragment : Fragment() {
         binding.cardNumber.addChangeEventListener {
             viewModel.cardNumber.observe(it)
         }
-        binding.cardExpiration.addChangeEventListener {
+        binding.expirationDate.addChangeEventListener {
             viewModel.cardExpiration.observe(it)
         }
         binding.cvc.addChangeEventListener {

@@ -4,6 +4,7 @@
     <string name="title_card">Collect Cards</string>
     <string name="title_social_security_number">Collect SSNs</string>
     <string name="title_custom_form">Custom Forms</string>
+    <string name="title_virtual_card">Virtual Card</string>
 
     <string name="autofill">Autofill</string>
     <string name="tokenize">Tokenize</string>

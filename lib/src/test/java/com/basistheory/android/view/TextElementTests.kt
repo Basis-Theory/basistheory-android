@@ -15,11 +15,13 @@ import strikt.assertions.*
 @RunWith(RobolectricTestRunner::class)
 class TextElementTests {
     private lateinit var textElement: TextElement
+    private lateinit var otherTextElement: TextElement
 
     @Before
     fun setUp() {
         val activity = Robolectric.buildActivity(Activity::class.java).get()
         textElement = TextElement(activity)
+        otherTextElement = TextElement(activity)
     }
 
     @Test
@@ -28,9 +30,11 @@ class TextElementTests {
 
         textElement.setText(null)
         expectThat(textElement.getText()).isEqualTo("") // note: EditText transforms nulls to ""
+        expectThat(textElement.getTransformedText()).isEqualTo("") // note: EditText transforms nulls to ""
 
         textElement.setText("")
         expectThat(textElement.getText()).isEqualTo("")
+        expectThat(textElement.getTransformedText()).isEqualTo("")
     }
 
     @Test
@@ -38,22 +42,37 @@ class TextElementTests {
         textElement.transform = RegexReplaceElementTransform(Regex("[()\\-\\s]"))
         textElement.setText("(123) 456-7890")
 
-        expectThat(textElement.getText()).isEqualTo("1234567890")
+        expectThat(textElement.getTransformedText()).isEqualTo("1234567890")
     }
 
     @Test
     fun `transform can be updated and text is transformed just in time`() {
         textElement.transform = RegexReplaceElementTransform(Regex("[^\\d]"))
         textElement.setText("(1")
-        expectThat(textElement.getText()).isEqualTo("1")
+        expectThat(textElement.getTransformedText()).isEqualTo("1")
 
         textElement.transform = RegexReplaceElementTransform(Regex("[()\\s2]"))
         textElement.setText("(123) 4")
-        expectThat(textElement.getText()).isEqualTo("134")
+        expectThat(textElement.getTransformedText()).isEqualTo("134")
 
         textElement.transform = RegexReplaceElementTransform(Regex("[()]"))
         textElement.setText("(123) 456-7890")
-        expectThat(textElement.getText()).isEqualTo("123 456-7890")
+        expectThat(textElement.getTransformedText()).isEqualTo("123 456-7890")
+    }
+
+    @Test
+    fun `untransformed text value is internally accessible`() {
+        textElement.transform = RegexReplaceElementTransform(Regex("[^\\d]"))
+        textElement.setText("(1")
+        expectThat(textElement.getText()).isEqualTo("(1")
+
+        textElement.transform = RegexReplaceElementTransform(Regex("[()\\s2]"))
+        textElement.setText("(123) 4")
+        expectThat(textElement.getText()).isEqualTo("(123) 4")
+
+        textElement.transform = RegexReplaceElementTransform(Regex("[()]"))
+        textElement.setText("(123) 456-7890")
+        expectThat(textElement.getText()).isEqualTo("(123) 456-7890")
     }
 
     @Test
@@ -79,5 +98,16 @@ class TextElementTests {
             get { isComplete }.isFalse()
             get { isValid }.isTrue()
         }
+    }
+
+    @Test
+    fun `can reference the value of another TextElement`() {
+        textElement.setValueRef(otherTextElement)
+
+        otherTextElement.setText("123")
+        expectThat(textElement.getText()).isEqualTo("123")
+
+        otherTextElement.setText("(123) 456-7890")
+        expectThat(textElement.getText()).isEqualTo("(123) 456-7890")
     }
 }

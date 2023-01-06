@@ -7,6 +7,7 @@ import android.os.Parcelable
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -40,7 +41,7 @@ open class TextElement @JvmOverloads constructor(
     init {
         editText.layoutParams = ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
+            ViewGroup.LayoutParams.MATCH_PARENT
         )
         super.addView(editText)
 
@@ -48,18 +49,38 @@ open class TextElement @JvmOverloads constructor(
         context.theme.obtainStyledAttributes(attrs, R.styleable.TextElement, defStyleAttr, 0)
             .apply {
                 try {
-                    textColor = getColor(R.styleable.TextElement_textColor, Color.BLACK)
+                    isEditable = getBoolean(
+                        R.styleable.TextElement_editable,
+                        true
+                    )
+
                     hint = getString(R.styleable.TextElement_hint)
-                    removeDefaultStyles =
-                        getBoolean(R.styleable.TextElement_removeDefaultStyles, false)
-                    mask = getString(R.styleable.TextElement_mask)?.let { ElementMask(it) }
+
                     keyboardType = KeyboardType.fromInt(
                         getInt(
                             R.styleable.TextElement_keyboardType,
                             KeyboardType.TEXT.inputType
                         )
                     )
+
+                    mask = getString(R.styleable.TextElement_mask)?.let { ElementMask(it) }
+
+                    removeDefaultStyles = getBoolean(
+                        R.styleable.TextElement_removeDefaultStyles,
+                        true
+                    )
+
                     setText(getString(R.styleable.TextElement_text))
+
+                    textColor = getColor(
+                        R.styleable.TextElement_textColor,
+                        Color.BLACK
+                    )
+
+                    textSize = getDimension(
+                        R.styleable.TextElement_textSize,
+                        16f * resources.displayMetrics.scaledDensity
+                    )
                 } finally {
                     recycle()
                 }
@@ -68,14 +89,32 @@ open class TextElement @JvmOverloads constructor(
         subscribeToInputEvents()
     }
 
-    // this MUST be internal to prevent host apps from accessing the raw input values
+    // the following getters MUST be internal to prevent host apps from accessing the raw input values
+
     internal fun getText(): String? =
+        editText.text?.toString()
+
+    internal fun getTransformedText(): String? =
         editText.text?.toString().let {
             transform?.apply(it) ?: it
         }
 
     fun setText(value: String?) =
         editText.setText(value)
+
+    fun setValueRef(element: TextElement) {
+        element.addChangeEventListener {
+            setText(element.getText())
+            editText.requestLayout()
+        }
+    }
+
+    var isEditable: Boolean
+        get() = editText.isEnabled
+        set(value) {
+            isEnabled = value
+            editText.isEnabled = value
+        }
 
     var mask: ElementMask? = null
 
@@ -86,6 +125,10 @@ open class TextElement @JvmOverloads constructor(
     var textColor: Int
         get() = editText.currentTextColor
         set(value) = editText.setTextColor(value)
+
+    var textSize: Float
+        get() = editText.textSize
+        set(value) = editText.setTextSize(TypedValue.COMPLEX_UNIT_PX, value)
 
     var hint: CharSequence?
         get() = editText.hint
@@ -220,10 +263,10 @@ open class TextElement @JvmOverloads constructor(
 
     private fun publishChangeEvent(editable: Editable?) {
         val event = createElementChangeEvent(
-            getText(),
+            getTransformedText(),
             mask?.isComplete(editable?.toString()) ?: false,
             editable?.isEmpty() ?: false,
-            validator?.validate(getText()) ?: true
+            validator?.validate(getTransformedText()) ?: true
         )
 
         eventListeners.change.forEach {

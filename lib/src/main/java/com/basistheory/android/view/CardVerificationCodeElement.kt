@@ -44,7 +44,6 @@ class CardVerificationCodeElement @JvmOverloads constructor(
         val oldMaskLength = super.mask?.length
 
         val updatedMask = cardNumberElement
-            ?.cardMetadata
             ?.cvcMask
             ?.let { ElementMask(it) }
             ?: defaultMask

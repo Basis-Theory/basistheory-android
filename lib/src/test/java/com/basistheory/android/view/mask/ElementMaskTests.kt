@@ -64,7 +64,7 @@ class ElementMaskTests {
 
         expect {
             that(maskedValue).isEqualTo("+1(234) 567-8900")
-            that(mask.isComplete(maskedValue)).isTrue()
+            that(mask.isSatisfied(maskedValue)).isTrue()
         }
     }
 
@@ -78,8 +78,8 @@ class ElementMaskTests {
         val mask = ElementMask(maskPattern)
 
         expect {
-            that(mask.isComplete("2")).isFalse()
-            that(mask.isComplete("23")).isTrue()
+            that(mask.isSatisfied("2")).isFalse()
+            that(mask.isSatisfied("23")).isTrue()
         }
     }
 

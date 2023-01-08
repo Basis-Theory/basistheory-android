@@ -31,19 +31,22 @@ open class TextElement @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
-    private val editText = AppCompatEditText(context, null, androidx.appcompat.R.attr.editTextStyle)
-    private var defaultBackground = editText.background
-    private val eventListeners = ElementEventListeners()
-    private var isInternalChange: Boolean = false
+    private val _editText = AppCompatEditText(context, null, androidx.appcompat.R.attr.editTextStyle)
+    private var _defaultBackground = _editText.background
+    private val _eventListeners = ElementEventListeners()
+    private var _isInternalChange: Boolean = false
+    private var _isValid: Boolean = true
+    private var _isMaskSatisfied: Boolean = true
+    private var _isEmpty: Boolean = true
 
     internal var inputAction: InputAction = InputAction.INSERT
 
     init {
-        editText.layoutParams = ViewGroup.LayoutParams(
+        _editText.layoutParams = ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT
         )
-        super.addView(editText)
+        super.addView(_editText)
 
         // wires up attributes declared in the xml layout with properties on this element
         context.theme.obtainStyledAttributes(attrs, R.styleable.TextElement, defStyleAttr, 0)
@@ -92,88 +95,108 @@ open class TextElement @JvmOverloads constructor(
     // the following getters MUST be internal to prevent host apps from accessing the raw input values
 
     internal fun getText(): String? =
-        editText.text?.toString()
+        _editText.text?.toString()
 
     internal fun getTransformedText(): String? =
-        editText.text?.toString().let {
+        _editText.text?.toString().let {
             transform?.apply(it) ?: it
         }
 
     fun setText(value: String?) =
-        editText.setText(value)
+        _editText.setText(value)
 
     fun setValueRef(element: TextElement) {
         element.addChangeEventListener {
             setText(element.getText())
-            editText.requestLayout()
+            _editText.requestLayout()
         }
     }
 
+    val isComplete: Boolean
+        get() = _isMaskSatisfied && _isValid
+
+    val isValid: Boolean
+        get() = _isValid
+
+    val isMaskSatisfied: Boolean
+        get() = _isMaskSatisfied
+
+    val isEmpty: Boolean
+        get() = _isEmpty
+
     var isEditable: Boolean
-        get() = editText.isEnabled
+        get() = _editText.isEnabled
         set(value) {
             isEnabled = value
-            editText.isEnabled = value
+            _editText.isEnabled = value
         }
 
     var mask: ElementMask? = null
+        set(value) {
+            field = value
+            _isMaskSatisfied = mask == null
+        }
 
     var transform: ElementTransform? = null
 
     var validator: ElementValidator? = null
+        set(value) {
+            field = value
+            _isValid = validator == null
+        }
 
     var textColor: Int
-        get() = editText.currentTextColor
-        set(value) = editText.setTextColor(value)
+        get() = _editText.currentTextColor
+        set(value) = _editText.setTextColor(value)
 
     var textSize: Float
-        get() = editText.textSize
-        set(value) = editText.setTextSize(TypedValue.COMPLEX_UNIT_PX, value)
+        get() = _editText.textSize
+        set(value) = _editText.setTextSize(TypedValue.COMPLEX_UNIT_PX, value)
 
     var hint: CharSequence?
-        get() = editText.hint
+        get() = _editText.hint
         set(value) {
-            editText.hint = value
+            _editText.hint = value
         }
 
     var keyboardType: KeyboardType
-        get() = KeyboardType.fromInt(editText.inputType)
+        get() = KeyboardType.fromInt(_editText.inputType)
         set(value) {
-            editText.inputType = value.inputType
+            _editText.inputType = value.inputType
         }
 
     var removeDefaultStyles: Boolean
-        get() = editText.background == null
+        get() = _editText.background == null
         set(value) {
-            editText.background = if (value) null else defaultBackground
+            _editText.background = if (value) null else _defaultBackground
         }
 
     fun addChangeEventListener(listener: (ChangeEvent) -> Unit) {
-        eventListeners.change.add(listener)
+        _eventListeners.change.add(listener)
     }
 
     fun addFocusEventListener(listener: (FocusEvent) -> Unit) {
-        eventListeners.focus.add(listener)
+        _eventListeners.focus.add(listener)
     }
 
     fun addBlurEventListener(listener: (BlurEvent) -> Unit) {
-        eventListeners.blur.add(listener)
+        _eventListeners.blur.add(listener)
     }
 
     override fun onCreateInputConnection(outAttrs: EditorInfo): InputConnection? {
-        return editText.onCreateInputConnection(outAttrs)
+        return _editText.onCreateInputConnection(outAttrs)
     }
 
     override fun onSaveInstanceState(): Parcelable {
         return bundleOf(
             STATE_SUPER to super.onSaveInstanceState(),
-            STATE_INPUT to editText.onSaveInstanceState()
+            STATE_INPUT to _editText.onSaveInstanceState()
         )
     }
 
     override fun onRestoreInstanceState(state: Parcelable) {
         if (state is Bundle) {
-            editText.onRestoreInstanceState(state.getParcelable(STATE_INPUT))
+            _editText.onRestoreInstanceState(state.getParcelable(STATE_INPUT))
             super.onRestoreInstanceState(state.getParcelable(STATE_SUPER))
         } else {
             super.onRestoreInstanceState(state)
@@ -182,21 +205,17 @@ open class TextElement @JvmOverloads constructor(
 
     protected open fun beforeTextChanged(value: String?): String? = value
 
-    protected open fun createElementChangeEvent(
-        value: String?,
-        isComplete: Boolean,
-        isEmpty: Boolean,
-        isValid: Boolean
-    ): ChangeEvent =
+    protected open fun createElementChangeEvent(): ChangeEvent =
         ChangeEvent(
             isComplete,
             isEmpty,
             isValid,
+            isMaskSatisfied,
             mutableListOf()
         )
 
     private fun subscribeToInputEvents() {
-        editText.addTextChangedListener(object : TextWatcher {
+        _editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(
                 value: CharSequence?,
                 start: Int,
@@ -211,7 +230,7 @@ open class TextElement @JvmOverloads constructor(
                 before: Int,
                 count: Int
             ) {
-                if (isInternalChange) return
+                if (_isInternalChange) return
 
                 inputAction =
                     if (before > 0 && count == 0) InputAction.DELETE
@@ -223,16 +242,16 @@ open class TextElement @JvmOverloads constructor(
             }
         })
 
-        editText.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
+        _editText.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
             if (hasFocus)
-                eventListeners.focus.forEach { it(FocusEvent()) }
+                _eventListeners.focus.forEach { it(FocusEvent()) }
             else
-                eventListeners.blur.forEach { it(BlurEvent()) }
+                _eventListeners.blur.forEach { it(BlurEvent()) }
         }
     }
 
     private fun afterTextChangedHandler(editable: Editable?) {
-        if (isInternalChange) return
+        if (_isInternalChange) return
 
         val originalValue = editable?.toString()
         val transformedValue = beforeTextChanged(originalValue)
@@ -241,35 +260,31 @@ open class TextElement @JvmOverloads constructor(
         if (originalValue != transformedValue)
             applyInternalChange(transformedValue)
 
-        publishChangeEvent(editable)
+        _isValid = validator?.validate(getTransformedText()) ?: true
+        _isMaskSatisfied = mask?.isSatisfied(editable?.toString()) ?: true
+        _isEmpty = editable?.toString()?.isEmpty() ?: true
+
+        publishChangeEvent()
     }
 
     private fun applyInternalChange(value: String?) {
-        val editable = editText.editableText
+        val editable = _editText.editableText
         val originalFilters = editable.filters
 
-        isInternalChange = true
+        _isInternalChange = true
 
         // disable filters on the underlying input applied by the input/keyboard type
         editable.filters = emptyArray()
         editable.replace(0, editable.length, value)
         editable.filters = originalFilters
 
-        isInternalChange = false
+        _isInternalChange = false
     }
 
-    protected fun publishChangeEvent()
-        = publishChangeEvent(editText.editableText)
+    protected fun publishChangeEvent() {
+        val event = createElementChangeEvent()
 
-    private fun publishChangeEvent(editable: Editable?) {
-        val event = createElementChangeEvent(
-            getTransformedText(),
-            mask?.isComplete(editable?.toString()) ?: false,
-            editable?.isEmpty() ?: false,
-            validator?.validate(getTransformedText()) ?: true
-        )
-
-        eventListeners.change.forEach {
+        _eventListeners.change.forEach {
             it(event)
         }
     }

@@ -4,6 +4,7 @@ import android.app.Activity
 import com.basistheory.android.event.ChangeEvent
 import com.basistheory.android.view.mask.ElementMask
 import com.basistheory.android.view.transform.RegexReplaceElementTransform
+import com.basistheory.android.view.validation.RegexValidator
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -86,6 +87,56 @@ class TextElementTests {
     }
 
     @Test
+    fun `computes isValid`() {
+        expectThat(textElement.isValid).isTrue()
+
+        textElement.validator = RegexValidator("""\d{3}""")
+        expectThat(textElement.isValid).isFalse()
+
+        textElement.setText("123")
+        expectThat(textElement.isValid).isTrue()
+
+        textElement.setText("12")
+        expectThat(textElement.isValid).isFalse()
+    }
+
+    @Test
+    fun `computes isMaskSatisfied`() {
+        expectThat(textElement.isMaskSatisfied).isTrue()
+
+        textElement.mask = ElementMask("###")
+        expectThat(textElement.isMaskSatisfied).isFalse()
+
+        textElement.setText("123")
+        expectThat(textElement.isMaskSatisfied).isTrue()
+
+        textElement.setText("12")
+        expectThat(textElement.isMaskSatisfied).isFalse()
+    }
+
+    @Test
+    fun `computes isComplete`() {
+        expectThat(textElement.isComplete).isTrue()
+
+        textElement.mask = ElementMask("***")
+        textElement.validator = RegexValidator("""\d{3}""")
+
+        textElement.setText("abc")
+        expectThat(textElement.isComplete).isFalse()
+
+        textElement.setText("123")
+        expectThat(textElement.isComplete).isTrue()
+    }
+
+    @Test
+    fun `computes isEmpty`() {
+        expectThat(textElement.isEmpty).isTrue()
+
+        textElement.setText("foo")
+        expectThat(textElement.isEmpty).isFalse()
+    }
+
+    @Test
     fun `can use TextElement without a mask, transform, or validator`() {
         val changeEvents = mutableListOf<ChangeEvent>()
 
@@ -95,8 +146,17 @@ class TextElementTests {
         expectThat(textElement.getText()).isEqualTo("123")
 
         expectThat(changeEvents).single().and {
-            get { isComplete }.isFalse()
+            get { isComplete }.isTrue()
             get { isValid }.isTrue()
+            get { isMaskSatisfied }.isTrue()
+            get { isEmpty }.isFalse()
+        }
+
+        expectThat(textElement) {
+            get { isComplete }.isTrue()
+            get { isValid }.isTrue()
+            get { isMaskSatisfied }.isTrue()
+            get { isEmpty }.isFalse()
         }
     }
 

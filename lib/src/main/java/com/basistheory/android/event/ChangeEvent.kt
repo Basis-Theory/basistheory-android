@@ -4,6 +4,7 @@ data class ChangeEvent(
     val isComplete: Boolean,
     val isEmpty: Boolean,
     val isValid: Boolean,
+    val isMaskSatisfied: Boolean,
     val details: List<EventDetails> = mutableListOf()
 )
 

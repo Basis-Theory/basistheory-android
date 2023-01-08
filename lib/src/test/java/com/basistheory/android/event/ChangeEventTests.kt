@@ -75,18 +75,18 @@ class ChangeEventTests {
     }
 
     @Test
-    fun `ChangeEvent sets isComplete to false when mask is undefined`() {
+    fun `ChangeEvent sets isMaskSatisfied to true when mask is undefined`() {
         val changeEvents = mutableListOf<ChangeEvent>()
 
         textElement.addChangeEventListener { changeEvents.add(it) }
         textElement.setText("1")
 
         expectThat(changeEvents).single()
-            .get { isComplete }.isFalse()
+            .get { isMaskSatisfied }.isTrue()
     }
 
     @Test
-    fun `ChangeEvent computes isComplete based on mask`() {
+    fun `ChangeEvent computes isMaskSatisfied based on mask`() {
         val changeEvents = mutableListOf<ChangeEvent>()
 
         textElement.mask = ElementMask(listOf(Regex("""\d"""), Regex("""\d""")))
@@ -95,8 +95,8 @@ class ChangeEventTests {
         textElement.setText("12")
 
         expectThat(changeEvents).hasSize(2).and {
-            get { elementAt(0).isComplete }.isFalse()
-            get { elementAt(1).isComplete }.isTrue()
+            get { elementAt(0).isMaskSatisfied }.isFalse()
+            get { elementAt(1).isMaskSatisfied }.isTrue()
         }
     }
 
@@ -123,6 +123,23 @@ class ChangeEventTests {
         expectThat(changeEvents).hasSize(2).and {
             get { elementAt(0).isValid }.isFalse()
             get { elementAt(1).isValid }.isTrue()
+        }
+    }
+
+    @Test
+    fun `ChangeEvent computes isComplete`() {
+        val changeEvents = mutableListOf<ChangeEvent>()
+
+        textElement.mask = ElementMask(listOf(Regex("""\d"""), Regex("""\d""")))
+        textElement.validator = RegexValidator("""\d{2}""")
+
+        textElement.addChangeEventListener { changeEvents.add(it) }
+        textElement.setText("1")
+        textElement.setText("12")
+
+        expectThat(changeEvents).hasSize(2).and {
+            get { elementAt(0).isComplete }.isFalse()
+            get { elementAt(1).isComplete }.isTrue()
         }
     }
 }

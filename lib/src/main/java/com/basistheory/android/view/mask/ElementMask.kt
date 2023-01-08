@@ -23,12 +23,6 @@ class ElementMask {
 
     val validLengths: IntArray
 
-    /**
-     * todo: delete this and replace with looking at validLengths
-     */
-    val length: Int
-        get() = validLengths.max() // characterMasks.size
-
     internal fun evaluate(text: String?, action: InputAction): String? {
         if (text.isNullOrEmpty())
             return ""

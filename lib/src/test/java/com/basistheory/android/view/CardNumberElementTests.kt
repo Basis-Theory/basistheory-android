@@ -134,11 +134,11 @@ class CardNumberElementTests {
                 get { message }.isEqualTo(CardBrands.VISA.label)
             }
             get { details }.any {
-                get { type }.isEqualTo(EventDetails.Bin)
+                get { type }.isEqualTo(EventDetails.CardBin)
                 get { message }.isEqualTo("411111")
             }
             get { details }.any {
-                get { type }.isEqualTo(EventDetails.Last4)
+                get { type }.isEqualTo(EventDetails.CardLast4)
                 get { message }.isEqualTo("1111")
             }
         }
@@ -160,11 +160,11 @@ class CardNumberElementTests {
                 get { message }.isEqualTo(CardBrands.VISA.label)
             }
             get { details }.any {
-                get { type }.isEqualTo(EventDetails.Bin)
+                get { type }.isEqualTo(EventDetails.CardBin)
                 get { message }.isEqualTo("424242")
             }
             get { details }.any {
-                get { type }.isEqualTo(EventDetails.Last4)
+                get { type }.isEqualTo(EventDetails.CardLast4)
                 get { message }.isEqualTo("4243")
             }
         }

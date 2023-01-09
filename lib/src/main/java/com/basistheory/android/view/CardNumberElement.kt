@@ -71,14 +71,14 @@ class CardNumberElement @JvmOverloads constructor(
         if (value != null && isMaskSatisfied) {
             eventDetails.add(
                 EventDetails(
-                    EventDetails.Bin,
+                    EventDetails.CardBin,
                     value.take(6)
                 )
             )
 
             eventDetails.add(
                 EventDetails(
-                    EventDetails.Last4,
+                    EventDetails.CardLast4,
                     value.takeLast(4)
                 )
             )

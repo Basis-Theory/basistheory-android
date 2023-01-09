@@ -14,7 +14,7 @@ data class EventDetails(
 ) {
     companion object {
         const val CardBrand = "cardBrand"
-        const val Bin = "bin"
-        const val Last4 = "last4"
+        const val CardBin = "cardBin"
+        const val CardLast4 = "cardLast4"
     }
 }

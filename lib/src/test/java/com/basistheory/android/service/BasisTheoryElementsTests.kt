@@ -1,14 +1,17 @@
 package com.basistheory.android.service
 
 import android.app.Activity
+import android.view.View
 import com.basistheory.CreateTokenRequest
 import com.basistheory.TokenizeApi
 import com.basistheory.TokensApi
+import com.basistheory.android.model.exceptions.IncompleteElementException
 import com.basistheory.android.view.CardExpirationDateElement
 import com.basistheory.android.view.CardNumberElement
 import com.basistheory.android.view.CardVerificationCodeElement
 import com.basistheory.android.view.TextElement
 import com.github.javafaker.Faker
+import io.mockk.Called
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.RelaxedMockK
@@ -22,6 +25,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
+import strikt.api.expectCatching
+import strikt.assertions.isA
+import strikt.assertions.isEqualTo
+import strikt.assertions.isFailure
 import java.time.Instant
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -36,6 +43,24 @@ class BasisTheoryElementsTests {
     private lateinit var cardNumberElement: CardNumberElement
     private lateinit var cardExpElement: CardExpirationDateElement
     private lateinit var cvcElement: CardVerificationCodeElement
+
+    // faker's test card numbers are not all considered complete by our elements; use these in tests below
+    private val testCardNumbers = listOf(
+        "4242424242424242",
+        "4000056655665556",
+        "5555555555554444",
+        "2223003122003222",
+        "5200828282828210",
+        "5105105105105100",
+        "378282246310005",
+        "371449635398431",
+        "6011111111111117",
+        "6011000990139424",
+        "3056930009020004",
+        "36227206271667",
+        "3566002020360505",
+        "6200000000000005"
+    )
 
     @get:Rule
     val mockkRule = MockKRule(this)
@@ -59,11 +84,11 @@ class BasisTheoryElementsTests {
     fun setUp() {
         val activity = Robolectric.buildActivity(Activity::class.java).get()
 
-        nameElement = TextElement(activity)
-        phoneNumberElement = TextElement(activity)
-        cardNumberElement = CardNumberElement(activity)
-        cardExpElement = CardExpirationDateElement(activity)
-        cvcElement = CardVerificationCodeElement(activity)
+        nameElement = TextElement(activity).also { it.id = View.generateViewId() }
+        phoneNumberElement = TextElement(activity).also { it.id = View.generateViewId() }
+        cardNumberElement = CardNumberElement(activity).also { it.id = View.generateViewId() }
+        cardExpElement = CardExpirationDateElement(activity).also { it.id = View.generateViewId() }
+        cvcElement = CardVerificationCodeElement(activity).also { it.id = View.generateViewId() }
     }
 
     @Test
@@ -166,7 +191,7 @@ class BasisTheoryElementsTests {
         runBlocking {
             every { provider.getTokenizeApi(any()) } returns tokenizeApi
 
-            val cardNumber = faker.business().creditCardNumber()
+            val cardNumber = testCardNumbers.random()
             cardNumberElement.setText(cardNumber)
 
             bt.tokenize(cardNumberElement)
@@ -203,7 +228,7 @@ class BasisTheoryElementsTests {
             val phoneNumber = faker.phoneNumber().phoneNumber()
             phoneNumberElement.setText(phoneNumber)
 
-            val cardNumber = faker.business().creditCardNumber()
+            val cardNumber = testCardNumbers.random()
             cardNumberElement.setText(cardNumber)
 
             val expDate = LocalDate.now().plus(2, ChronoUnit.YEARS)
@@ -299,16 +324,16 @@ class BasisTheoryElementsTests {
             bt.createToken(request)
 
             val expectedData = mapOf(
-                    "string" to data.string,
-                    "int" to data.int,
-                    "nullValue" to null,
-                    "nested" to mapOf(
-                        "double" to data.nested.double,
-                        "bool" to data.nested.bool,
-                        "timestamp" to data.nested.timestamp,
-                        "nullValue" to null
-                    )
+                "string" to data.string,
+                "int" to data.int,
+                "nullValue" to null,
+                "nested" to mapOf(
+                    "double" to data.nested.double,
+                    "bool" to data.nested.bool,
+                    "timestamp" to data.nested.timestamp,
+                    "nullValue" to null
                 )
+            )
             val expectedRequest = createTokenRequest(expectedData)
 
             verify { tokensApi.create(expectedRequest) }
@@ -336,7 +361,7 @@ class BasisTheoryElementsTests {
         runBlocking {
             every { provider.getTokensApi(any()) } returns tokensApi
 
-            val cardNumber = faker.business().creditCardNumber()
+            val cardNumber = testCardNumbers.random()
             cardNumberElement.setText(cardNumber)
 
             val createTokenRequest = createTokenRequest(cardNumberElement)
@@ -383,7 +408,7 @@ class BasisTheoryElementsTests {
             val phoneNumber = faker.phoneNumber().phoneNumber()
             phoneNumberElement.setText(phoneNumber)
 
-            val cardNumber = faker.business().creditCardNumber()
+            val cardNumber = testCardNumbers.random()
             cardNumberElement.setText(cardNumber)
 
             val expDate = LocalDate.now().plus(2, ChronoUnit.YEARS)
@@ -437,6 +462,62 @@ class BasisTheoryElementsTests {
 
             verify { tokensApi.create(expectedCreateTokenRequest) }
         }
+
+    // note: junit only supports one @RunWith class per test class, so we can't use JUnitParamsRunner here
+    @Test
+    fun `throws IncompleteElementException when attempting to tokenize luhn-invalid card`() =
+        incompleteCardThrowsIncompleteElementException("4242424242424245")
+
+    @Test
+    fun `throws IncompleteElementException when attempting to tokenize partial card`() =
+        incompleteCardThrowsIncompleteElementException("424242")
+
+    @Test
+    fun `throws IncompleteElementException when attempting to tokenize invalid expiration dates`() =
+        runBlocking {
+            every { provider.getTokensApi(any()) } returns tokensApi
+
+            cardExpElement.setText("11/01")
+
+            val createTokenRequest = createTokenRequest(object {
+                val expirationMonth = cardExpElement.month()
+                val expirationYear = cardExpElement.year()
+            })
+
+            expectCatching { bt.createToken(createTokenRequest) }
+                .isFailure()
+                .isA<IncompleteElementException>().and {
+                    get { message }.isEqualTo(
+                        IncompleteElementException.errorMessageFor(
+                            cardExpElement.id
+                        )
+                    )
+                }
+
+            verify { tokensApi.create(any()) wasNot Called }
+        }
+
+    private fun incompleteCardThrowsIncompleteElementException(
+        incompleteCardNumber: String
+    ) = runBlocking {
+        every { provider.getTokensApi(any()) } returns tokensApi
+
+        cardNumberElement.setText(incompleteCardNumber)
+
+        val createTokenRequest = createTokenRequest(cardNumberElement)
+
+        expectCatching { bt.createToken(createTokenRequest) }
+            .isFailure()
+            .isA<IncompleteElementException>().and {
+                get { message }.isEqualTo(
+                    IncompleteElementException.errorMessageFor(
+                        cardNumberElement.id
+                    )
+                )
+            }
+
+        verify { tokensApi.create(any()) wasNot Called }
+    }
 
     private fun createTokenRequest(data: Any): CreateTokenRequest =
         CreateTokenRequest().apply {

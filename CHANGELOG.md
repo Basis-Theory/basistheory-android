@@ -1,3 +1,11 @@
+## [1.5.0](https://github.com/Basis-Theory/basistheory-android/compare/1.4.0...1.5.0) (2023-01-10)
+
+
+### Features
+
+* Parity with elements on other platforms ([#32](https://github.com/Basis-Theory/basistheory-android/issues/32)) ([eea07e6](https://github.com/Basis-Theory/basistheory-android/commit/eea07e66bd63488e00ad3210c6d76d052fe288c3))
+
+
 ## [1.4.0](https://github.com/Basis-Theory/basistheory-android/compare/1.3.0...1.4.0) (2023-01-06)
 
 

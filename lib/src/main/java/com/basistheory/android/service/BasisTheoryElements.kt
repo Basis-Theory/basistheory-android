@@ -4,6 +4,7 @@ import com.basistheory.CreateSessionResponse
 import com.basistheory.CreateTokenRequest
 import com.basistheory.CreateTokenResponse
 import com.basistheory.android.model.ElementValueReference
+import com.basistheory.android.model.exceptions.IncompleteElementException
 import com.basistheory.android.util.isPrimitiveType
 import com.basistheory.android.util.toMap
 import com.basistheory.android.view.TextElement
@@ -39,7 +40,7 @@ class BasisTheoryElements internal constructor(
             val data =
                 if (createTokenRequest.data == null) null
                 else if (createTokenRequest.data!!::class.java.isPrimitiveType()) createTokenRequest.data
-                else if (createTokenRequest.data is TextElement) (createTokenRequest.data as TextElement).getTransformedText()
+                else if (createTokenRequest.data is TextElement) (createTokenRequest.data as TextElement).tryGetTextToTokenize()
                 else if (createTokenRequest.data is ElementValueReference) (createTokenRequest.data as ElementValueReference).getValue()
                 else replaceElementRefs(createTokenRequest.data!!.toMap())
 
@@ -62,7 +63,7 @@ class BasisTheoryElements internal constructor(
             if (!fieldType.isPrimitiveType()) {
                 when (value) {
                     is TextElement -> {
-                        map[key] = value.getTransformedText()
+                        map[key] = value.tryGetTextToTokenize()
                     }
                     is ElementValueReference -> {
                         map[key] = value.getValue()
@@ -77,6 +78,13 @@ class BasisTheoryElements internal constructor(
         }
 
         return map
+    }
+
+    private fun TextElement.tryGetTextToTokenize(): String? {
+        if (!this.isComplete)
+            throw IncompleteElementException(this.id)
+
+        return this.getTransformedText()
     }
 
     companion object {

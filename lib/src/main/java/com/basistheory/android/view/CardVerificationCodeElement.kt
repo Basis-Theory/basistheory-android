@@ -26,7 +26,7 @@ class CardVerificationCodeElement @JvmOverloads constructor(
     init {
         super.keyboardType = KeyboardType.NUMBER
         super.mask = defaultMask
-        super.validator = validatorForLength(defaultMask.length)
+        super.validator = validatorForLength(defaultMask.validLengths.max())
     }
 
     companion object {
@@ -41,18 +41,17 @@ class CardVerificationCodeElement @JvmOverloads constructor(
     }
 
     private fun onCardNumberChanged(isInitialConfiguration: Boolean = false) {
-        val oldMaskLength = super.mask?.length
+        val oldMaskLength = super.mask?.validLengths?.max()
 
         val updatedMask = cardNumberElement
-            ?.cardMetadata
             ?.cvcMask
             ?.let { ElementMask(it) }
             ?: defaultMask
 
         super.mask = updatedMask
-        super.validator = validatorForLength(updatedMask.length)
+        super.validator = validatorForLength(updatedMask.validLengths.max())
 
-        val updatedMaskLength = super.mask?.length
+        val updatedMaskLength = super.mask?.validLengths?.max()
 
         // publish a change event if the mask length changed
         if (!isInitialConfiguration && oldMaskLength != updatedMaskLength)

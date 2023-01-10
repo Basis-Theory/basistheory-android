@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import com.basistheory.android.event.ChangeEvent
 import com.basistheory.android.event.EventDetails
+import com.basistheory.android.model.CardMetadata
 import com.basistheory.android.model.KeyboardType
 import com.basistheory.android.service.CardBrandEnricher
 import com.basistheory.android.view.mask.ElementMask
@@ -16,9 +17,6 @@ class CardNumberElement @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : TextElement(context, attrs, defStyleAttr) {
 
-    var cardMetadata: CardBrandEnricher.CardMetadata? = null
-        private set
-
     private val cardBrandEnricher: CardBrandEnricher = CardBrandEnricher()
 
     init {
@@ -28,22 +26,38 @@ class CardNumberElement @JvmOverloads constructor(
         super.validator = LuhnValidator()
     }
 
-    override fun beforeTextChanged(value: String?): String? {
-        cardMetadata = cardBrandEnricher.evaluateCard(getDigitsOnly(value))
+    var cardMetadata: CardMetadata? = null
+        private set
 
-        if (cardMetadata?.cardMask != null)
-            mask = ElementMask(cardMetadata!!.cardMask!!)
+    internal var cvcMask: String? = null
+
+    override fun beforeTextChanged(value: String?): String? {
+        val cardDigits = getDigitsOnly(value)
+        val cardBrandDetails = cardBrandEnricher.evaluateCard(cardDigits)
+
+        if (cardBrandDetails != null)
+            mask = ElementMask(
+                cardBrandDetails.cardMask,
+                cardBrandDetails.validDigitCounts
+                    .map { it + cardBrandDetails.gapCount }
+                    .toIntArray()
+            )
+
+        val isMaskSatisfied = mask?.isSatisfied(value) ?: true
+
+        cardMetadata = CardMetadata(
+            cardBrandDetails?.brand,
+            cardDigits?.take(6).takeIf { isMaskSatisfied },
+            cardDigits?.takeLast(4).takeIf { isMaskSatisfied },
+        )
+        cvcMask = cardBrandDetails?.cvcMask
 
         return value
     }
 
-    override fun createElementChangeEvent(
-        value: String?,
-        isComplete: Boolean,
-        isEmpty: Boolean,
-        isValid: Boolean
-    ): ChangeEvent {
+    override fun createElementChangeEvent(): ChangeEvent {
         val eventDetails = mutableListOf<EventDetails>()
+        val value = getTransformedText()
 
         this.cardMetadata?.brand?.let {
             eventDetails.add(
@@ -54,26 +68,27 @@ class CardNumberElement @JvmOverloads constructor(
             )
         }
 
-        if (value != null && cardMetadata?.isComplete == true) {
+        if (value != null && isMaskSatisfied) {
             eventDetails.add(
                 EventDetails(
-                    EventDetails.Bin,
+                    EventDetails.CardBin,
                     value.take(6)
                 )
             )
 
             eventDetails.add(
                 EventDetails(
-                    EventDetails.Last4,
+                    EventDetails.CardLast4,
                     value.takeLast(4)
                 )
             )
         }
 
         return ChangeEvent(
-            cardMetadata?.isComplete ?: false,
+            isComplete,
             isEmpty,
             isValid,
+            isMaskSatisfied,
             eventDetails
         )
     }

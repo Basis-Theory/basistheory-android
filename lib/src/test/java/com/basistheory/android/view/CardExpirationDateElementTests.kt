@@ -59,15 +59,23 @@ class CardExpirationDateElementTests {
     }
 
     @Test
-    fun `ChangeEvent is computed properly for incomplete expiration dates`() {
+    fun `ChangeEvent and element metadata is computed properly for incomplete expiration dates`() {
         val changeEvents = mutableListOf<ChangeEvent>()
         cardExpirationDateElement.addChangeEventListener { changeEvents.add(it) }
 
         cardExpirationDateElement.setText("12")
         expectThat(changeEvents).single().and {
+            get { isComplete }.isFalse()
             get { isValid }.isFalse()
             get { isEmpty }.isFalse()
+            get { isMaskSatisfied }.isFalse()
+        }
+
+        expectThat(cardExpirationDateElement) {
             get { isComplete }.isFalse()
+            get { isValid }.isFalse()
+            get { isEmpty }.isFalse()
+            get { isMaskSatisfied }.isFalse()
         }
     }
 
@@ -78,9 +86,17 @@ class CardExpirationDateElementTests {
 
         cardExpirationDateElement.setText("12/99")
         expectThat(changeEvents).single().and {
-            get { isValid }.isTrue()
-            get { isEmpty }.isFalse()
             get { isComplete }.isTrue()
+            get { isValid }.isTrue()
+            get { isMaskSatisfied }.isTrue()
+            get { isEmpty }.isFalse()
+        }
+
+        expectThat(cardExpirationDateElement) {
+            get { isComplete }.isTrue()
+            get { isValid }.isTrue()
+            get { isMaskSatisfied }.isTrue()
+            get { isEmpty }.isFalse()
         }
     }
 
@@ -91,9 +107,17 @@ class CardExpirationDateElementTests {
 
         cardExpirationDateElement.setText("01/01")
         expectThat(changeEvents).single().and {
+            get { isComplete }.isFalse()
             get { isValid }.isFalse()
+            get { isMaskSatisfied }.isTrue()
             get { isEmpty }.isFalse()
-            get { isComplete }.isTrue()
+        }
+
+        expectThat(cardExpirationDateElement) {
+            get { isComplete }.isFalse()
+            get { isValid }.isFalse()
+            get { isMaskSatisfied }.isTrue()
+            get { isEmpty }.isFalse()
         }
     }
 
@@ -104,9 +128,17 @@ class CardExpirationDateElementTests {
 
         cardExpirationDateElement.setText("13/99")
         expectThat(changeEvents).single().and {
+            get { isComplete }.isFalse()
             get { isValid }.isFalse()
+            get { isMaskSatisfied }.isTrue()
             get { isEmpty }.isFalse()
-            get { isComplete }.isTrue()
+        }
+
+        expectThat(cardExpirationDateElement) {
+            get { isComplete }.isFalse()
+            get { isValid }.isFalse()
+            get { isMaskSatisfied }.isTrue()
+            get { isEmpty }.isFalse()
         }
     }
 
@@ -117,9 +149,17 @@ class CardExpirationDateElementTests {
 
         cardExpirationDateElement.setText("3")
         expectThat(changeEvents).single().and {
-            get { isValid }.isFalse()
-            get { isEmpty }.isFalse()
             get { isComplete }.isFalse()
+            get { isValid }.isFalse()
+            get { isMaskSatisfied }.isFalse()
+            get { isEmpty }.isFalse()
+        }
+
+        expectThat(cardExpirationDateElement) {
+            get { isComplete }.isFalse()
+            get { isValid }.isFalse()
+            get { isMaskSatisfied }.isFalse()
+            get { isEmpty }.isFalse()
         }
     }
 }

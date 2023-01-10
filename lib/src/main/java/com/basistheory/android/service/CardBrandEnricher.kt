@@ -5,10 +5,10 @@ import com.basistheory.android.constants.CardBrands
 class CardBrandEnricher {
 
     object CardMasks {
-        const val MASK_4_8_12GAPS_19LENGTH = "#### #### #### #######"
-        const val MASK_4_8_12GAPS_16LENGTH = "#### #### #### ####"
-        const val MASK_4_10GAPS_15LENGTH = "#### ###### #####"
-        const val MASK_4_10GAPS_19LENGTH = "#### ###### #########"
+        const val MASK_4_8_12GAPS_19DIGITS = "#### #### #### #######"
+        const val MASK_4_8_12GAPS_16DIGITS = "#### #### #### ####"
+        const val MASK_4_10GAPS_15DIGITS = "#### ###### #####"
+        const val MASK_4_10GAPS_19DIGITS = "#### ###### #########"
     }
 
     object CvcMasks {
@@ -16,38 +16,27 @@ class CardBrandEnricher {
         const val FOUR_DIGIT = "####"
     }
 
-    class CardDetails(
+    class CardBrandDetails(
         var brand: String = "",
         var identifierRanges: List<Pair<String, String?>>,
-        var validLengths: IntArray,
+        var validDigitCounts: IntArray,
+        var gapCount: Int,
         var cvcMask: String,
         var cardMask: String,
-        var cardLength: Int = -1,
         var identifierLength: Int = -1,
-    ) {
-        val isComplete: Boolean
-            get() = validLengths.contains(cardLength)
-    }
-
-    class CardMetadata(
-        val brand: String?,
-        val cvcMask: String?,
-        val cardMask: String?,
-        val isComplete: Boolean,
-        val bin: String?,
-        val last4: String?
     )
 
     private val cardBrands = listOf(
-        CardDetails(
+        CardBrandDetails(
             CardBrands.VISA.label,
             listOf("4" to null),
             intArrayOf(16, 18, 19),
+            3,
             CvcMasks.THREE_DIGIT,
-            CardMasks.MASK_4_8_12GAPS_19LENGTH
+            CardMasks.MASK_4_8_12GAPS_19DIGITS
         ),
 
-        CardDetails(
+        CardBrandDetails(
             CardBrands.MASTERCARD.label, listOf(
                 "51" to "55",
                 "2221" to "2229",
@@ -57,54 +46,59 @@ class CardBrandEnricher {
                 "2720" to null
             ),
             intArrayOf(16),
+            3,
             CvcMasks.THREE_DIGIT,
-            CardMasks.MASK_4_8_12GAPS_16LENGTH
+            CardMasks.MASK_4_8_12GAPS_16DIGITS
         ),
 
-        CardDetails(
+        CardBrandDetails(
             CardBrands.AMERICAN_EXPRESS.label, listOf(
                 "34" to null,
                 "37" to null
             ),
             intArrayOf(15),
+            2,
             CvcMasks.FOUR_DIGIT,
-            CardMasks.MASK_4_10GAPS_15LENGTH
+            CardMasks.MASK_4_10GAPS_15DIGITS
         ),
 
-        CardDetails(
+        CardBrandDetails(
             CardBrands.DINERS_CLUB.label, listOf(
                 "36" to null,
                 "38" to "39",
                 "300" to "305"
             ),
             intArrayOf(14, 16, 19),
+            2,
             CvcMasks.THREE_DIGIT,
-            CardMasks.MASK_4_10GAPS_19LENGTH
+            CardMasks.MASK_4_10GAPS_19DIGITS
         ),
 
-        CardDetails(
+        CardBrandDetails(
             CardBrands.DISCOVER.label, listOf(
                 "65" to null,
                 "6011" to "39",
                 "644" to "649"
             ),
             intArrayOf(16, 19),
+            3,
             CvcMasks.THREE_DIGIT,
-            CardMasks.MASK_4_8_12GAPS_19LENGTH
+            CardMasks.MASK_4_8_12GAPS_19DIGITS
         ),
 
-        CardDetails(
+        CardBrandDetails(
             CardBrands.JCB.label, listOf(
                 "2131" to null,
                 "1800" to "39",
                 "3528" to "3589"
             ),
             intArrayOf(16, 17, 18, 19),
+            3,
             CvcMasks.THREE_DIGIT,
-            CardMasks.MASK_4_8_12GAPS_19LENGTH
+            CardMasks.MASK_4_8_12GAPS_19DIGITS
         ),
 
-        CardDetails(
+        CardBrandDetails(
             CardBrands.UNION_PAY.label, listOf(
                 "620" to null,
                 "6270" to null,
@@ -124,11 +118,12 @@ class CardBrandEnricher {
                 "8110" to "8171",
             ),
             intArrayOf(14, 15, 16, 17, 18, 19),
+            3,
             CvcMasks.THREE_DIGIT,
-            CardMasks.MASK_4_8_12GAPS_19LENGTH
+            CardMasks.MASK_4_8_12GAPS_19DIGITS
         ),
 
-        CardDetails(
+        CardBrandDetails(
             CardBrands.MAESTRO.label, listOf(
                 "493698" to null,
                 "63" to null,
@@ -140,11 +135,12 @@ class CardBrandEnricher {
                 "56" to "59",
             ),
             intArrayOf(12, 13, 14, 15, 16, 17, 18, 19),
+            3,
             CvcMasks.THREE_DIGIT,
-            CardMasks.MASK_4_8_12GAPS_19LENGTH
+            CardMasks.MASK_4_8_12GAPS_19DIGITS
         ),
 
-        CardDetails(
+        CardBrandDetails(
             CardBrands.ELO.label, listOf(
                 "401178" to null,
                 "401179" to null,
@@ -173,19 +169,21 @@ class CardBrandEnricher {
                 "655021" to "655058",
             ),
             intArrayOf(16),
+            3,
             CvcMasks.THREE_DIGIT,
-            CardMasks.MASK_4_8_12GAPS_16LENGTH
+            CardMasks.MASK_4_8_12GAPS_16DIGITS
         ),
 
-        CardDetails(
+        CardBrandDetails(
             CardBrands.MIR.label,
             listOf("2200" to "2204"),
             intArrayOf(16, 17, 18, 19),
+            3,
             CvcMasks.THREE_DIGIT,
-            CardMasks.MASK_4_8_12GAPS_19LENGTH
+            CardMasks.MASK_4_8_12GAPS_19DIGITS
         ),
 
-        CardDetails(
+        CardBrandDetails(
             CardBrands.HIPER.label, listOf(
                 "637095" to null,
                 "63737423" to null,
@@ -196,64 +194,55 @@ class CardBrandEnricher {
                 "637612" to null,
             ),
             intArrayOf(16),
+            3,
             CvcMasks.THREE_DIGIT,
-            CardMasks.MASK_4_8_12GAPS_16LENGTH
+            CardMasks.MASK_4_8_12GAPS_16DIGITS
         ),
 
-        CardDetails(
+        CardBrandDetails(
             CardBrands.HIPERCARD.label, listOf(
                 "606282" to null,
             ),
             intArrayOf(16),
+            3,
             CvcMasks.THREE_DIGIT,
-            CardMasks.MASK_4_8_12GAPS_16LENGTH
+            CardMasks.MASK_4_8_12GAPS_16DIGITS
         )
     )
 
-    fun evaluateCard(number: String?): CardMetadata? {
+    fun evaluateCard(number: String?): CardBrandDetails? {
         if (number.isNullOrBlank()) return null
 
-        var bestMatch: CardDetails? = null
+        var bestMatch: CardBrandDetails? = null
 
-        cardBrands.forEach { cardDetails ->
-            cardDetails.identifierRanges.forEach { range ->
+        cardBrands.forEach { cardBrandDetails ->
+            cardBrandDetails.identifierRanges.forEach { range ->
                 val possibleMatch = number.take(range.first.length)
 
                 if (!range.second.isNullOrBlank() && range.first.toInt() <= possibleMatch.toInt() && possibleMatch.toInt() <= range.second!!.toInt()) {
-                    bestMatch = chooseBestMatch(bestMatch, cardDetails, possibleMatch, number)
+                    bestMatch = chooseBestMatch(bestMatch, cardBrandDetails, possibleMatch)
                 } else if (range.first == possibleMatch) {
-                    bestMatch = chooseBestMatch(bestMatch, cardDetails, possibleMatch, number)
+                    bestMatch = chooseBestMatch(bestMatch, cardBrandDetails, possibleMatch)
                 }
             }
         }
 
-        return with(bestMatch) {
-            val isComplete = this?.isComplete ?: false
-            CardMetadata(
-                this?.brand,
-                this?.cvcMask,
-                this?.cardMask,
-                isComplete,
-                number.take(6).takeIf { isComplete },
-                number.takeLast(4).takeIf { isComplete },
-            )
-        }
+        return bestMatch
     }
 
     private fun chooseBestMatch(
-        currentBestMatch: CardDetails?,
-        cardDetails: CardDetails,
-        identifierMatch: String,
-        number: String
-    ): CardDetails? =
-        if ((currentBestMatch?.identifierLength ?: -1) < identifierMatch.length) with(cardDetails) {
-            CardDetails(
+        currentBestMatch: CardBrandDetails?,
+        cardBrandDetails: CardBrandDetails,
+        identifierMatch: String
+    ): CardBrandDetails? =
+        if ((currentBestMatch?.identifierLength ?: -1) < identifierMatch.length) with(cardBrandDetails) {
+            CardBrandDetails(
                 this.brand,
                 this.identifierRanges,
-                this.validLengths,
+                this.validDigitCounts,
+                this.gapCount,
                 this.cvcMask,
                 this.cardMask,
-                number.length,
                 identifierMatch.length
             )
         }

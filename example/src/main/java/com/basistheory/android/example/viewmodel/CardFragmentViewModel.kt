@@ -11,14 +11,14 @@ class CardFragmentViewModel(application: Application) : TokenizeViewModel(applic
     val cardCvc = ElementViewModel()
 
     val canSubmit: MediatorLiveData<Boolean> = MediatorLiveData<Boolean>().apply {
-        addSource(cardNumber.canSubmit) {
-            value = coalesce(it, cardExpiration.canSubmit.value, cardCvc.canSubmit.value)
+        addSource(cardNumber.isComplete) {
+            value = coalesce(it, cardExpiration.isComplete.value, cardCvc.isComplete.value)
         }
-        addSource(cardExpiration.canSubmit) {
-            value = coalesce(cardNumber.canSubmit.value, it, cardCvc.canSubmit.value)
+        addSource(cardExpiration.isComplete) {
+            value = coalesce(cardNumber.isComplete.value, it, cardCvc.isComplete.value)
         }
-        addSource(cardCvc.canSubmit) {
-            value = coalesce(cardNumber.canSubmit.value, cardExpiration.canSubmit.value, it)
+        addSource(cardCvc.isComplete) {
+            value = coalesce(cardNumber.isComplete.value, cardExpiration.isComplete.value, it)
         }
     }
 
@@ -28,10 +28,10 @@ class CardFragmentViewModel(application: Application) : TokenizeViewModel(applic
 
 class ElementViewModel {
     val isInvalid = MutableLiveData(false)
-    val canSubmit = MutableLiveData(false)
+    val isComplete = MutableLiveData(false)
 
     fun observe(e: ChangeEvent) {
-        isInvalid.value = e.isComplete && !e.isValid
-        canSubmit.value = e.isComplete && e.isValid
+        isInvalid.value = e.isMaskSatisfied && !e.isValid
+        isComplete.value = e.isComplete
     }
 }

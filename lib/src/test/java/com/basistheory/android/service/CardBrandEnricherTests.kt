@@ -6,9 +6,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
-import strikt.assertions.isFalse
 import strikt.assertions.isNull
-import strikt.assertions.isTrue
 
 @RunWith(JUnitParamsRunner::class)
 class CardBrandEnricherTests {
@@ -18,18 +16,18 @@ class CardBrandEnricherTests {
     @Test
     @Parameters(
         value = [
-            "4242424242424242, visa, ${CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_19LENGTH}",
-            "5555555555555555, mastercard, ${CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_16LENGTH}",
-            "378282246310005, americanExpress, ${CardBrandEnricher.CardMasks.MASK_4_10GAPS_15LENGTH}",
-            "36227206271667, dinersClub, ${CardBrandEnricher.CardMasks.MASK_4_10GAPS_19LENGTH}",
-            "6011000990139424, discover, ${CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_19LENGTH}",
-            "3566495867324859, jcb, ${CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_19LENGTH}",
-            "620000000000000, unionPay, ${CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_19LENGTH}",
-            "673948657439, maestro, ${CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_19LENGTH}",
-            "6277803485967438, elo, ${CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_16LENGTH}",
-            "2201003122003222, mir, ${CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_19LENGTH}",
-            "6374335843768548, hiper, ${CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_16LENGTH}",
-            "6062824384829392, hipercard, ${CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_16LENGTH}"
+            "4242424242424242, visa, ${CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_19DIGITS}",
+            "5555555555555555, mastercard, ${CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_16DIGITS}",
+            "378282246310005, american-express, ${CardBrandEnricher.CardMasks.MASK_4_10GAPS_15DIGITS}",
+            "36227206271667, diners-club, ${CardBrandEnricher.CardMasks.MASK_4_10GAPS_19DIGITS}",
+            "6011000990139424, discover, ${CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_19DIGITS}",
+            "3566495867324859, jcb, ${CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_19DIGITS}",
+            "620000000000000, unionpay, ${CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_19DIGITS}",
+            "673948657439, maestro, ${CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_19DIGITS}",
+            "6277803485967438, elo, ${CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_16DIGITS}",
+            "2201003122003222, mir, ${CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_19DIGITS}",
+            "6374335843768548, hiper, ${CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_16DIGITS}",
+            "6062824384829392, hipercard, ${CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_16DIGITS}"
         ]
     )
     fun `should identify correct card brand and mask`(
@@ -48,17 +46,6 @@ class CardBrandEnricherTests {
         expectThat(cardBrandEnricher.evaluateCard("4011784867543859")?.brand).isEqualTo(
             "elo"
         )
-    }
-
-    @Test
-    fun `should set isComplete for best match card lengths`() {
-        // discover valid lengths are 16 or 19
-        val sixteenDigitsDiscoverCardNumber = "6582937163058334"
-
-        expectThat(cardBrandEnricher.evaluateCard(sixteenDigitsDiscoverCardNumber)?.isComplete).isTrue()
-        expectThat(cardBrandEnricher.evaluateCard("${sixteenDigitsDiscoverCardNumber}1")?.isComplete).isFalse()
-        expectThat(cardBrandEnricher.evaluateCard("${sixteenDigitsDiscoverCardNumber}12")?.isComplete).isFalse()
-        expectThat(cardBrandEnricher.evaluateCard("${sixteenDigitsDiscoverCardNumber}123")?.isComplete).isTrue()
     }
 
     @Test

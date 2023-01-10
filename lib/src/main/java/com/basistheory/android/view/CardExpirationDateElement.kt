@@ -12,9 +12,9 @@ class CardExpirationDateElement @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0) : TextElement(context, attrs, defStyleAttr) {
 
-    fun month(): ElementValueReference = ElementValueReference(::getMonthValue)
+    fun month(): ElementValueReference = ElementValueReference(this, ::getMonthValue)
 
-    fun year(): ElementValueReference = ElementValueReference(::getYearValue)
+    fun year(): ElementValueReference = ElementValueReference(this, ::getYearValue)
 
     init {
         super.keyboardType = KeyboardType.NUMBER

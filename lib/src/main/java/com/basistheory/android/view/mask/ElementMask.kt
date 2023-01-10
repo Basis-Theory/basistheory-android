@@ -3,21 +3,25 @@ package com.basistheory.android.view.mask
 import com.basistheory.android.model.InputAction
 
 class ElementMask {
-    val characterMasks: List<Any>
 
     constructor(value: List<Any>) {
         characterMasks = sanitizeAndValidateMask(value)
+        this.validLengths = intArrayOf(characterMasks.size)
     }
 
-    constructor(value: String) {
+    constructor(value: String) : this(value, intArrayOf(value.length))
+
+    constructor(value: String, validLengths: IntArray) {
         characterMasks = sanitizeAndValidateMask(value
             .split("")
             .filter { it.isNotEmpty() }
         )
+        this.validLengths = validLengths
     }
 
-    val length: Int
-        get() = characterMasks.size
+    val characterMasks: List<Any>
+
+    val validLengths: IntArray
 
     internal fun evaluate(text: String?, action: InputAction): String? {
         if (text.isNullOrEmpty())
@@ -53,8 +57,8 @@ class ElementMask {
         return maskedValue.joinToString("")
     }
 
-    fun isComplete(value: String?): Boolean =
-        !value.isNullOrEmpty() && value.length == characterMasks.count()
+    fun isSatisfied(value: String?): Boolean =
+        !value.isNullOrEmpty() && validLengths.contains(value.length)
 
     private fun sanitizeAndValidateMask(
         mask: List<Any>

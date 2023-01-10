@@ -1,7 +1,6 @@
 package com.basistheory.android.view
 
 import android.app.Activity
-import android.media.metrics.Event
 import com.basistheory.android.constants.CardBrands
 import com.basistheory.android.event.ChangeEvent
 import com.basistheory.android.event.EventDetails
@@ -43,16 +42,40 @@ class CardNumberElementTests {
     @Test
     fun `applies mask based on card brand`() {
         cardNumberElement.setText("4242424242424242")
-        expectThat(cardNumberElement.mask)
-            .isEqualTo(ElementMask(CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_19LENGTH))
+        expectThat(cardNumberElement) {
+            get { mask }.isEqualTo(ElementMask(CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_19DIGITS))
+            get { isMaskSatisfied }.isTrue()
+        }
 
-        cardNumberElement.setText("5555555555554444")
-        expectThat(cardNumberElement.mask)
-            .isEqualTo(ElementMask(CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_16LENGTH))
+        cardNumberElement.setText("55555555")
+        expectThat(cardNumberElement) {
+            get { mask }.isEqualTo(ElementMask(CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_16DIGITS))
+            get { isMaskSatisfied }.isFalse()
+        }
 
         cardNumberElement.setText("371449635398431")
-        expectThat(cardNumberElement.mask)
-            .isEqualTo(ElementMask(CardBrandEnricher.CardMasks.MASK_4_10GAPS_15LENGTH))
+        expectThat(cardNumberElement) {
+            get { mask }.isEqualTo(ElementMask(CardBrandEnricher.CardMasks.MASK_4_10GAPS_15DIGITS))
+            get { isMaskSatisfied }.isTrue()
+        }
+    }
+
+    @Test
+    fun `mask can be satisfied for multiple lengths per brand`() {
+        // discover valid lengths are 16 or 19
+        val sixteenDigitsDiscoverCardNumber = "6582937163058334"
+
+        cardNumberElement.setText(sixteenDigitsDiscoverCardNumber)
+        expectThat(cardNumberElement.isMaskSatisfied).isTrue()
+
+        cardNumberElement.setText("${sixteenDigitsDiscoverCardNumber}1")
+        expectThat(cardNumberElement.isMaskSatisfied).isFalse()
+
+        cardNumberElement.setText("${sixteenDigitsDiscoverCardNumber}12")
+        expectThat(cardNumberElement.isMaskSatisfied).isFalse()
+
+        cardNumberElement.setText("${sixteenDigitsDiscoverCardNumber}123")
+        expectThat(cardNumberElement.isMaskSatisfied).isTrue()
     }
 
     @Test
@@ -104,17 +127,18 @@ class CardNumberElementTests {
         expectThat(changeEvents).single().and {
             get { isValid }.isTrue()
             get { isEmpty }.isFalse()
+            get { isMaskSatisfied }.isTrue()
             get { isComplete }.isTrue()
             get { details }.any {
                 get { type }.isEqualTo(EventDetails.CardBrand)
                 get { message }.isEqualTo(CardBrands.VISA.label)
             }
             get { details }.any {
-                get { type }.isEqualTo(EventDetails.Bin)
+                get { type }.isEqualTo(EventDetails.CardBin)
                 get { message }.isEqualTo("411111")
             }
             get { details }.any {
-                get { type }.isEqualTo(EventDetails.Last4)
+                get { type }.isEqualTo(EventDetails.CardLast4)
                 get { message }.isEqualTo("1111")
             }
         }
@@ -129,33 +153,52 @@ class CardNumberElementTests {
         expectThat(changeEvents).single().and {
             get { isValid }.isFalse()
             get { isEmpty }.isFalse()
-            get { isComplete }.isTrue()
+            get { isMaskSatisfied }.isTrue()
+            get { isComplete }.isFalse()
             get { details }.any {
                 get { type }.isEqualTo(EventDetails.CardBrand)
                 get { message }.isEqualTo(CardBrands.VISA.label)
             }
             get { details }.any {
-                get { type }.isEqualTo(EventDetails.Bin)
+                get { type }.isEqualTo(EventDetails.CardBin)
                 get { message }.isEqualTo("424242")
             }
             get { details }.any {
-                get { type }.isEqualTo(EventDetails.Last4)
+                get { type }.isEqualTo(EventDetails.CardLast4)
                 get { message }.isEqualTo("4243")
             }
         }
     }
 
     @Test
-    fun `exposes card metadata for complete cards`() {
-        cardNumberElement.setText("4123 4567 8901 2345")
+    fun `exposes card metadata for cards with satisfied masks`() {
+        cardNumberElement.setText("5432 1098 7654 3210")
 
-        expectThat(cardNumberElement.cardMetadata).isNotNull().and {
-            get { brand }.isEqualTo(CardBrands.VISA.label)
-            get { cardMask }.isEqualTo(CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_19LENGTH)
+        expectThat(cardNumberElement) {
+            get { cardMetadata }.isNotNull().and {
+                get { brand }.isEqualTo(CardBrands.MASTERCARD.label)
+                get { bin }.isEqualTo("543210")
+                get { last4 }.isEqualTo("3210")
+            }
+            get { mask }.isEqualTo(ElementMask(CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_16DIGITS))
             get { cvcMask }.isEqualTo(CardBrandEnricher.CvcMasks.THREE_DIGIT)
-            get { isComplete }.isTrue()
-            get { bin }.isEqualTo("412345")
-            get { last4 }.isEqualTo("2345")
+            get { isMaskSatisfied }.isTrue()
+        }
+    }
+
+    @Test
+    fun `exposes card metadata for cards with unsatisfied masks`() {
+        cardNumberElement.setText("5432 1098 7654 321")
+
+        expectThat(cardNumberElement) {
+            get { cardMetadata }.isNotNull().and {
+                get { brand }.isEqualTo(CardBrands.MASTERCARD.label)
+                get { bin }.isNull()
+                get { last4 }.isNull()
+            }
+            get { mask }.isEqualTo(ElementMask(CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_16DIGITS))
+            get { cvcMask }.isEqualTo(CardBrandEnricher.CvcMasks.THREE_DIGIT)
+            get { isMaskSatisfied }.isFalse()
         }
     }
 
@@ -163,13 +206,15 @@ class CardNumberElementTests {
     fun `exposes card metadata for partial cards`() {
         cardNumberElement.setText("4123")
 
-        expectThat(cardNumberElement.cardMetadata).isNotNull().and {
-            get { brand }.isEqualTo(CardBrands.VISA.label)
-            get { cardMask }.isEqualTo(CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_19LENGTH)
+        expectThat(cardNumberElement) {
+            get { cardMetadata }.isNotNull().and {
+                get { brand }.isEqualTo(CardBrands.VISA.label)
+                get { bin }.isNull()
+                get { last4 }.isNull()
+            }
+            get { mask }.isEqualTo(ElementMask(CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_19DIGITS))
             get { cvcMask }.isEqualTo(CardBrandEnricher.CvcMasks.THREE_DIGIT)
-            get { isComplete }.isFalse()
-            get { bin }.isNull()
-            get { last4 }.isNull()
+            get { isMaskSatisfied }.isFalse()
         }
     }
 }

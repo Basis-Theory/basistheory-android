@@ -1,5 +1,6 @@
 package com.basistheory.android.service
 
+import com.basistheory.ApiClient
 import com.basistheory.android.BuildConfig
 import com.basistheory.auth.ApiKeyAuth
 import com.github.javafaker.Faker
@@ -12,7 +13,7 @@ import java.util.UUID
 class ApiClientProviderTests {
 
     @Test
-    fun `tokenizeApi throws when initialized without an api key`() {
+    fun `getTokenizeApi throws when initialized without an api key`() {
         val provider = ApiClientProvider()
 
         expectCatching { provider.getTokenizeApi() }
@@ -21,21 +22,22 @@ class ApiClientProviderTests {
     }
 
     @Test
-    fun `tokenizeApi configures client with default api key and url`() {
-        val apiUrl = Faker().internet().url()
-        val defaultApiKey = UUID.randomUUID().toString()
-        val provider = ApiClientProvider(apiUrl, defaultApiKey)
-
-        val client = provider.getTokenizeApi()
-
-        expectThat(client.apiClient) {
-            get { apiUrl }.isEqualTo(apiUrl)
-            get { getAuthentication("ApiKey") }
-                .isA<ApiKeyAuth>().and {
-                    get { apiKey }.isEqualTo(defaultApiKey)
-                }
+    fun `getTokenizeApi configures client with default api key and url`() =
+        configuresApiClientWithDefaults {
+                provider -> provider.getTokenizeApi().apiClient
         }
-    }
+
+    @Test
+    fun `getTokensApi configures client with default api key and url`() =
+        configuresApiClientWithDefaults {
+                provider -> provider.getTokensApi().apiClient
+        }
+
+    @Test
+    fun `getSessionsApi configures client with default api key and url`() =
+        configuresApiClientWithDefaults {
+                provider -> provider.getSessionsApi().apiClient
+        }
 
     @Test
     fun `getApiClient configures client with overridden api key`() {
@@ -79,5 +81,23 @@ class ApiClientProviderTests {
         val defaultUserAgent = defaultHeaders?.get("User-Agent")
         expectThat(defaultUserAgent).isNotNull()
             .startsWith("basistheory-android/${BuildConfig.VERSION_NAME}")
+    }
+
+    private fun configuresApiClientWithDefaults(
+        createApiClient: (provider: ApiClientProvider) -> ApiClient
+    ) {
+        val apiUrl = Faker().internet().url()
+        val defaultApiKey = UUID.randomUUID().toString()
+        val provider = ApiClientProvider(apiUrl, defaultApiKey)
+
+        val apiClient = createApiClient(provider)
+
+        expectThat(apiClient) {
+            get { apiUrl }.isEqualTo(apiUrl)
+            get { getAuthentication("ApiKey") }
+                .isA<ApiKeyAuth>().and {
+                    get { apiKey }.isEqualTo(defaultApiKey)
+                }
+        }
     }
 }

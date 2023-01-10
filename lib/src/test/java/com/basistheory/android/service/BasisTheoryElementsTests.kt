@@ -2,6 +2,7 @@ package com.basistheory.android.service
 
 import android.app.Activity
 import com.basistheory.CreateTokenRequest
+import com.basistheory.SessionsApi
 import com.basistheory.TokenizeApi
 import com.basistheory.TokensApi
 import com.basistheory.android.view.CardExpirationDateElement
@@ -45,6 +46,9 @@ class BasisTheoryElementsTests {
 
     @RelaxedMockK
     private lateinit var tokensApi: TokensApi
+
+    @RelaxedMockK
+    private lateinit var sessionsApi: SessionsApi
 
     @RelaxedMockK
     private lateinit var provider: ApiClientProvider
@@ -437,6 +441,28 @@ class BasisTheoryElementsTests {
 
             verify { tokensApi.create(expectedCreateTokenRequest) }
         }
+
+    @Test
+    fun `createSession should call java SDK without api key override`() = runBlocking {
+        every { provider.getSessionsApi(any()) } returns sessionsApi
+
+        bt.createSession()
+
+        verify { provider.getSessionsApi() }
+        verify { sessionsApi.create() }
+    }
+
+    @Test
+    fun `createSession should call java SDK with api key override`() = runBlocking {
+        val apiKeyOverride = UUID.randomUUID().toString()
+
+        every { provider.getSessionsApi(any()) } returns sessionsApi
+
+        bt.createSession(apiKeyOverride)
+
+        verify { provider.getSessionsApi(apiKeyOverride) }
+        verify { sessionsApi.create() }
+    }
 
     private fun createTokenRequest(data: Any): CreateTokenRequest =
         CreateTokenRequest().apply {

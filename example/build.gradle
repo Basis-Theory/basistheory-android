@@ -64,6 +64,12 @@ dependencies {
     androidTestImplementation 'com.github.javafaker:javafaker:1.0.2'
 }
 
+configurations.all {
+    resolutionStrategy {
+        force 'org.yaml:snakeyaml:1.33'
+    }
+}
+
 /**
  * Searches for the value of a gradle property defined with the given name, preferring values
  * defined in local.properties, if available.

@@ -85,3 +85,13 @@ jobs:
           arch: x86_64
           profile: pixel_3a
           script: ./gradlew connectedCheck
+
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/gradle@master
+        env:
+          SNYK_TOKEN: 24e1bfa6-f30e-42fd-b996-a71cec1b0967

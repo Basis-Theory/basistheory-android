@@ -94,3 +94,5 @@ jobs:
         uses: snyk/actions/gradle@master
         env:
           SNYK_TOKEN: 24e1bfa6-f30e-42fd-b996-a71cec1b0967
+        with:
+          command: --all-sub-projects

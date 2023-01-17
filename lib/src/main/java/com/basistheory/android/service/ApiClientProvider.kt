@@ -2,6 +2,7 @@ package com.basistheory.android.service
 
 import com.basistheory.ApiClient
 import com.basistheory.Configuration
+import com.basistheory.SessionsApi
 import com.basistheory.TokenizeApi
 import com.basistheory.TokensApi
 import com.basistheory.android.BuildConfig
@@ -17,6 +18,9 @@ internal class ApiClientProvider(
 
     fun getTokensApi(apiKeyOverride: String? = null): TokensApi =
         TokensApi(getApiClient(apiKeyOverride))
+
+    fun getSessionsApi(apiKeyOverride: String? = null): SessionsApi =
+        SessionsApi(getApiClient(apiKeyOverride))
 
     private fun getApiClient(apiKeyOverride: String? = null): ApiClient {
         val apiKey = apiKeyOverride ?: defaultApiKey

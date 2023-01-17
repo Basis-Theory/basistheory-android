@@ -1,5 +1,6 @@
 package com.basistheory.android.service
 
+import com.basistheory.CreateSessionResponse
 import com.basistheory.CreateTokenRequest
 import com.basistheory.CreateTokenResponse
 import com.basistheory.android.model.ElementValueReference
@@ -46,6 +47,13 @@ class BasisTheoryElements internal constructor(
             createTokenRequest.data = data
 
             tokensApi.create(createTokenRequest)
+        }
+
+    @JvmOverloads
+    suspend fun createSession(apiKeyOverride: String? = null): CreateSessionResponse =
+        withContext(ioDispatcher) {
+            val sessionsApi = apiClientProvider.getSessionsApi(apiKeyOverride)
+            sessionsApi.create()
         }
 
     private fun replaceElementRefs(map: MutableMap<String, Any?>): MutableMap<String, Any?> {

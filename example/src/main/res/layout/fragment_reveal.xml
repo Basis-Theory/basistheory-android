@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bt="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="viewModel"
+            type="com.basistheory.android.example.viewmodel.ProxyViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.basistheory.android.example.view.reveal.RevealDataFragment">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:orientation="vertical">
+
+                <com.basistheory.android.view.CardNumberElement
+                    android:id="@+id/revealedData"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_edit_text"
+                    android:padding="5dp"
+                    bt:hint="Revealed Card Number"
+                    bt:removeDefaultStyles="true"
+                    bt:textColor="@color/gray_800"
+                    bt:editable="false"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/reveal_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:backgroundTint="@color/primary"
+                        android:text="@string/reveal" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/error_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:fontFamily="monospace"
+                    android:text="@{ viewModel.errorMessage }"
+                    android:textColor="@color/red"
+                    android:visibility="@{ viewModel.errorMessage != null ? View.VISIBLE : View.GONE }" />
+
+                <TextView
+                    android:id="@+id/tokenize_result"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:fontFamily="monospace"
+                    android:text="@{ viewModel.proxyResult }"
+                    android:visibility="@{ viewModel.proxyResult != null ? View.VISIBLE : View.GONE }" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

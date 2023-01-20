@@ -16,6 +16,7 @@ class BasisTheoryElements internal constructor(
     private val apiClientProvider: ApiClientProvider,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
+    val proxy: ProxyApi = apiClientProvider.getProxyApi()
 
     @JvmOverloads
     suspend fun tokenize(body: Any, apiKeyOverride: String? = null): Any =

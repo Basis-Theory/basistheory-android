@@ -15,5 +15,9 @@
         <item
             android:id="@+id/nav_virtual_card"
             android:title="@string/title_virtual_card" />
+
+        <item
+            android:id="@+id/nav_reveal"
+            android:title="@string/title_reveal" />
     </group>
 </menu>

@@ -22,6 +22,8 @@ internal class ApiClientProvider(
     fun getSessionsApi(apiKeyOverride: String? = null): SessionsApi =
         SessionsApi(getApiClient(apiKeyOverride))
 
+    fun getProxyApi(): ProxyApi = ProxyApi(::getApiClient)
+
     private fun getApiClient(apiKeyOverride: String? = null): ApiClient {
         val apiKey = apiKeyOverride ?: defaultApiKey
         requireNotNull(apiKey)

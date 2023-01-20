@@ -23,20 +23,26 @@ class ApiClientProviderTests {
 
     @Test
     fun `getTokenizeApi configures client with default api key and url`() =
-        configuresApiClientWithDefaults {
-                provider -> provider.getTokenizeApi().apiClient
+        configuresApiClientWithDefaults { provider ->
+            provider.getTokenizeApi().apiClient
         }
 
     @Test
     fun `getTokensApi configures client with default api key and url`() =
-        configuresApiClientWithDefaults {
-                provider -> provider.getTokensApi().apiClient
+        configuresApiClientWithDefaults { provider ->
+            provider.getTokensApi().apiClient
         }
 
     @Test
     fun `getSessionsApi configures client with default api key and url`() =
-        configuresApiClientWithDefaults {
-                provider -> provider.getSessionsApi().apiClient
+        configuresApiClientWithDefaults { provider ->
+            provider.getSessionsApi().apiClient
+        }
+
+    @Test
+    fun `getProxyApi configures client with default api key and url`() =
+        configuresApiClientWithDefaults { provider ->
+            provider.getProxyApi().apiClientProvider(null)
         }
 
     @Test

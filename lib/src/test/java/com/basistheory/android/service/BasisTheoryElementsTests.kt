@@ -13,6 +13,7 @@ import com.basistheory.android.view.CardVerificationCodeElement
 import com.basistheory.android.view.TextElement
 import com.github.javafaker.Faker
 import io.mockk.Called
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.RelaxedMockK
@@ -27,9 +28,11 @@ import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import strikt.api.expectCatching
+import strikt.api.expectThat
 import strikt.assertions.isA
 import strikt.assertions.isEqualTo
 import strikt.assertions.isFailure
+import strikt.assertions.isNotEqualTo
 import java.time.Instant
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -74,6 +77,9 @@ class BasisTheoryElementsTests {
 
     @RelaxedMockK
     private lateinit var sessionsApi: SessionsApi
+
+    @RelaxedMockK
+    private lateinit var proxyApi: ProxyApi
 
     @RelaxedMockK
     private lateinit var provider: ApiClientProvider
@@ -501,28 +507,6 @@ class BasisTheoryElementsTests {
             verify { tokensApi.create(any()) wasNot Called }
         }
 
-    private fun incompleteCardThrowsIncompleteElementException(
-        incompleteCardNumber: String
-    ) = runBlocking {
-        every { provider.getTokensApi(any()) } returns tokensApi
-
-        cardNumberElement.setText(incompleteCardNumber)
-
-        val createTokenRequest = createTokenRequest(cardNumberElement)
-
-        expectCatching { bt.createToken(createTokenRequest) }
-            .isFailure()
-            .isA<IncompleteElementException>().and {
-                get { message }.isEqualTo(
-                    IncompleteElementException.errorMessageFor(
-                        cardNumberElement.id
-                    )
-                )
-            }
-
-        verify { tokensApi.create(any()) wasNot Called }
-    }
-
     @Test
     fun `createSession should call java SDK without api key override`() = runBlocking {
         every { provider.getSessionsApi(any()) } returns sessionsApi
@@ -545,9 +529,40 @@ class BasisTheoryElementsTests {
         verify { sessionsApi.create() }
     }
 
+    @Test
+    fun `provides a proxy instance`() = runBlocking {
+        every { provider.getProxyApi() } returns proxyApi
+
+        expectThat(bt.proxy).isNotEqualTo(null)
+
+        verify { provider.getProxyApi() }
+    }
+
     private fun createTokenRequest(data: Any): CreateTokenRequest =
         CreateTokenRequest().apply {
             this.type = "token"
             this.data = data
         }
+
+    private fun incompleteCardThrowsIncompleteElementException(
+        incompleteCardNumber: String
+    ) = runBlocking {
+        every { provider.getTokensApi(any()) } returns tokensApi
+
+        cardNumberElement.setText(incompleteCardNumber)
+
+        val createTokenRequest = createTokenRequest(cardNumberElement)
+
+        expectCatching { bt.createToken(createTokenRequest) }
+            .isFailure()
+            .isA<IncompleteElementException>().and {
+                get { message }.isEqualTo(
+                    IncompleteElementException.errorMessageFor(
+                        cardNumberElement.id
+                    )
+                )
+            }
+
+        verify { tokensApi.create(any()) wasNot Called }
+    }
 }

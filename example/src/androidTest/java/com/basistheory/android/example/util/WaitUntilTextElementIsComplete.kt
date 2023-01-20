@@ -5,28 +5,29 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.util.HumanReadables
+import com.basistheory.android.view.TextElement
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.any
 import java.util.concurrent.TimeoutException
 
 /**
- * @return a [WaitUntilVisibleAction] instance created with the given [timeout] parameter.
+ * @return a [WaitUntilTextElementIsComplete] instance created with the given [timeout] parameter.
  */
-fun waitUntilVisible(timeout: Long = 5000L): ViewAction {
-    return WaitUntilVisibleAction(timeout)
+fun waitUntilTextElementIsComplete(timeout: Long = 5000L): ViewAction {
+    return WaitUntilTextElementIsComplete(timeout)
 }
 
 /**
- * A [ViewAction] that waits up to [timeout] milliseconds for a [View]'s visibility value to change to [View.VISIBLE].
+ * A [ViewAction] that waits up to [timeout] milliseconds for a [TextElement] to be complete.
  */
-private class WaitUntilVisibleAction(private val timeout: Long) : ViewAction {
+private class WaitUntilTextElementIsComplete(private val timeout: Long) : ViewAction {
 
     override fun getConstraints(): Matcher<View> {
         return any(View::class.java)
     }
 
     override fun getDescription(): String {
-        return "wait up to $timeout milliseconds for the view to become visible"
+        return "wait up to $timeout milliseconds for the Element to be complete"
     }
 
     override fun perform(uiController: UiController, view: View) {
@@ -34,7 +35,7 @@ private class WaitUntilVisibleAction(private val timeout: Long) : ViewAction {
         val endTime = System.currentTimeMillis() + timeout
 
         do {
-            if (view.visibility == View.VISIBLE) return
+            if ((view as TextElement).isComplete) return
             uiController.loopMainThreadForAtLeast(50)
         } while (System.currentTimeMillis() < endTime)
 

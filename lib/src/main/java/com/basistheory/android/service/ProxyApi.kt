@@ -37,32 +37,33 @@ class ProxyRequest {
     var body: Any? = null
 }
 
-class ProxyApi(val apiClientProvider: (apiKeyOverride: String?) -> ApiClient) : Proxy {
-
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+class ProxyApi(
+    val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+    val apiClientProvider: (apiKeyOverride: String?) -> ApiClient
+) : Proxy {
 
     override suspend fun get(proxyRequest: ProxyRequest, apiKeyOverride: String?): Any? =
-        withContext(ioDispatcher) {
+        withContext(dispatcher) {
             proxy(HttpMethod.GET.name, proxyRequest, apiKeyOverride)
         }
 
     override suspend fun post(proxyRequest: ProxyRequest, apiKeyOverride: String?): Any? =
-        withContext(ioDispatcher) {
+        withContext(dispatcher) {
             proxy(HttpMethod.POST.name, proxyRequest, apiKeyOverride)
         }
 
     override suspend fun put(proxyRequest: ProxyRequest, apiKeyOverride: String?): Any? =
-        withContext(ioDispatcher) {
+        withContext(dispatcher) {
             proxy(HttpMethod.PUT.name, proxyRequest, apiKeyOverride)
         }
 
     override suspend fun patch(proxyRequest: ProxyRequest, apiKeyOverride: String?): Any? =
-        withContext(ioDispatcher) {
+        withContext(dispatcher) {
             proxy(HttpMethod.PATCH.name, proxyRequest, apiKeyOverride)
         }
 
     override suspend fun delete(proxyRequest: ProxyRequest, apiKeyOverride: String?): Any? =
-        withContext(ioDispatcher) {
+        withContext(dispatcher) {
             proxy(HttpMethod.DELETE.name, proxyRequest, apiKeyOverride)
         }
 
@@ -70,7 +71,7 @@ class ProxyApi(val apiClientProvider: (apiKeyOverride: String?) -> ApiClient) : 
         val apiClient = apiClientProvider(apiKeyOverride)
 
         val call = apiClient.buildCall(
-            "https://api.basistheory.com/proxy",
+            "${apiClient.basePath}/proxy",
             proxyRequest.path ?: "",
             method,
             proxyRequest.queryParams?.toPairs(),

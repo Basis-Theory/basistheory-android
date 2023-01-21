@@ -531,11 +531,11 @@ class BasisTheoryElementsTests {
 
     @Test
     fun `provides a proxy instance`() = runBlocking {
-        every { provider.getProxyApi() } returns proxyApi
+        every { provider.getProxyApi(any()) } returns proxyApi
 
         expectThat(bt.proxy).isNotEqualTo(null)
 
-        verify { provider.getProxyApi() }
+        verify { provider.getProxyApi(any()) }
     }
 
     private fun createTokenRequest(data: Any): CreateTokenRequest =

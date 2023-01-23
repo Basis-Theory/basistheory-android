@@ -19,10 +19,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import strikt.api.expectThat
-import strikt.assertions.isA
-import strikt.assertions.isEqualTo
-import strikt.assertions.isNull
-import strikt.assertions.isTrue
+import strikt.assertions.*
 import java.util.*
 
 @RunWith(JUnitParamsRunner::class)
@@ -77,7 +74,7 @@ class ProxyApiTests {
         }
 
         val callSlot = slot<Call>()
-        every { apiClient.execute<Any>(capture(callSlot)) } returns ApiResponse(
+        every { apiClient.execute<Any>(capture(callSlot), any()) } returns ApiResponse(
             200,
             emptyMap(),
             "Hello World"
@@ -93,7 +90,7 @@ class ProxyApiTests {
             }
         }
 
-        verify(exactly = 1) { apiClient.execute<Any>(any()) }
+        verify(exactly = 1) { apiClient.execute<Any>(any(), any()) }
 
         expectThat(callSlot.captured.request()) {
             get { method }.isEqualTo(httpMethod.name)
@@ -119,7 +116,7 @@ class ProxyApiTests {
     @Test
     fun `should transform complex proxy response to element value references`() {
         val callSlot = slot<Call>()
-        every { apiClient.execute<Any>(capture(callSlot)) } returns ApiResponse(
+        every { apiClient.execute<Any>(capture(callSlot), any()) } returns ApiResponse(
             200,
             emptyMap(),
             object {
@@ -144,22 +141,23 @@ class ProxyApiTests {
             proxyApi.post(proxyRequest)
         }
 
-        expectThat(((result as Map<*, *>)["id"])).isNull()
-        expectThat((result["customer_id"])).isA<ElementValueReference>()
+        expectThat(result.tryGetElementValueReference("id")).isNull()
+        expectThat(result.tryGetElementValueReference("invalid_path")).isNull()
+        expectThat((result.tryGetElementValueReference("customer_id"))).isNotNull()
 
-        expectThat((result["card"] as Map<*, *>)["number"]).isA<ElementValueReference>()
-        expectThat((result["card"] as Map<*, *>)["expiration_month"]).isA<ElementValueReference>()
-        expectThat((result["card"] as Map<*, *>)["expiration_year"]).isA<ElementValueReference>()
-        expectThat((result["card"] as Map<*, *>)["cvc"]).isA<ElementValueReference>()
+        expectThat(result.tryGetElementValueReference("card.number")).isNotNull()
+        expectThat(result.tryGetElementValueReference("card.expiration_month")).isNotNull()
+        expectThat(result.tryGetElementValueReference("card.expiration_year")).isNotNull()
+        expectThat(result.tryGetElementValueReference("card.cvc")).isNotNull()
 
-        expectThat(((result["pii"] as Map<*, *>)["name"] as Map<*, *>)["first_name"]).isA<ElementValueReference>()
-        expectThat(((result["pii"] as Map<*, *>)["name"] as Map<*, *>)["last_name"]).isA<ElementValueReference>()
+        expectThat(result.tryGetElementValueReference("pii.name.first_name")).isNotNull()
+        expectThat(result.tryGetElementValueReference("pii.name.last_name")).isNotNull()
     }
 
     @Test
     fun `should transform array proxy response to element value references`() {
         val callSlot = slot<Call>()
-        every { apiClient.execute<Any>(capture(callSlot)) } returns ApiResponse(
+        every { apiClient.execute<Any>(capture(callSlot), any()) } returns ApiResponse(
             200,
             emptyMap(),
             arrayOf(

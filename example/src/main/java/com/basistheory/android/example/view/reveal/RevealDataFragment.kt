@@ -9,8 +9,8 @@ import androidx.fragment.app.viewModels
 import com.basistheory.android.example.databinding.FragmentRevealBinding
 import com.basistheory.android.example.util.tokenExpirationTimestamp
 import com.basistheory.android.example.viewmodel.ProxyViewModel
-import com.basistheory.android.model.ElementValueReference
 import com.basistheory.android.service.ProxyRequest
+import com.basistheory.android.service.getElementValueReference
 
 class RevealDataFragment : Fragment() {
     private val binding: FragmentRevealBinding by lazy {
@@ -52,12 +52,7 @@ class RevealDataFragment : Fragment() {
 
         viewModel.proxy(proxyRequest).observe(viewLifecycleOwner) {
             binding.revealedData
-                .setValueRef(
-                    (((it as Map<*, *>)["json"]
-                            as Map<*, *>)["data"]
-                            as Map<*, *>)["number"]
-                            as ElementValueReference
-                )
+                .setValueRef(it.getElementValueReference("json.data.number"))
         }
     }
 }

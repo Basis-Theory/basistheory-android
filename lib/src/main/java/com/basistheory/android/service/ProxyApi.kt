@@ -99,7 +99,7 @@ class ProxyApi(val apiClientProvider: (apiKeyOverride: String?) -> ApiClient) : 
         else if (data::class.java.isArray) {
             (data as Array<*>).map { transformResponseToValueReferences(it) }
         } else {
-            val map = (data as Map<*, *>).toMutableMap()
+            val map = data.toMap()
             map.forEach { (key, value) -> map[key] = transformResponseToValueReferences(value) }
             map
         }
@@ -107,3 +107,20 @@ class ProxyApi(val apiClientProvider: (apiKeyOverride: String?) -> ApiClient) : 
     private fun String.toElementValueReference(): ElementValueReference =
         ElementValueReference { this }
 }
+
+fun Any?.tryGetElementValueReference(path: String): ElementValueReference? {
+    if (this == null || path.isEmpty()) return null
+
+    val pathSegments = path.split(".")
+    val map = this as? Map<*, *> ?: return null
+
+    val value = map[pathSegments.first()]
+
+    return if (pathSegments.count() > 1)
+        value?.tryGetElementValueReference(pathSegments.drop(1).joinToString("."))
+    else
+        value as ElementValueReference?
+}
+
+fun Any?.getElementValueReference(path: String): ElementValueReference =
+    this.tryGetElementValueReference(path) ?: throw NoSuchElementException()

@@ -22,7 +22,7 @@ class BasisTheoryElementsBuilderTests {
             BasisTheoryElements.builder()
                 .apiKey("api_key")
                 .apiUrl("https://my-custom-api.basistheory.com")
-                .ioDispatcher(Dispatchers.Unconfined)
+                .dispatcher(Dispatchers.Unconfined)
                 .build()
         }.isSuccess().isA<BasisTheoryElements>()
     }

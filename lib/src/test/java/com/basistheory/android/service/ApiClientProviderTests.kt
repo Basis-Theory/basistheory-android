@@ -4,6 +4,7 @@ import com.basistheory.ApiClient
 import com.basistheory.android.BuildConfig
 import com.basistheory.auth.ApiKeyAuth
 import com.github.javafaker.Faker
+import kotlinx.coroutines.Dispatchers
 import org.junit.Test
 import strikt.api.expectCatching
 import strikt.api.expectThat
@@ -40,9 +41,19 @@ class ApiClientProviderTests {
         }
 
     @Test
-    fun `getProxyApi configures client with default api key and url`() =
+    fun `getProxyApi configures client with default api key, url and dispatcher`() =
         configuresApiClientWithDefaults { provider ->
-            provider.getProxyApi().apiClientProvider(null)
+                val proxyApi = provider.getProxyApi()
+                expectThat(proxyApi.dispatcher).isEqualTo(Dispatchers.IO)
+                proxyApi.apiClientProvider(null)
+        }
+
+    @Test
+    fun `getProxyApi configures client with overridden dispatcher`() =
+        configuresApiClientWithDefaults { provider ->
+            val proxyApi = provider.getProxyApi(Dispatchers.Main)
+            expectThat(proxyApi.dispatcher).isEqualTo(Dispatchers.Main)
+            proxyApi.apiClientProvider(null)
         }
 
     @Test

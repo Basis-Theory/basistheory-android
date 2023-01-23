@@ -11,6 +11,7 @@ import io.mockk.spyk
 import io.mockk.verify
 import junitparams.JUnitParamsRunner
 import junitparams.Parameters
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import okhttp3.Call
 import okio.Buffer
@@ -31,7 +32,7 @@ class ProxyApiTests {
     @SpyK
     private var apiClient: ApiClient = spyk()
 
-    private val proxyApi: ProxyApi = ProxyApi { apiClient }
+    private val proxyApi: ProxyApi = ProxyApi(Dispatchers.IO) { apiClient }
 
     private var proxyRequest: ProxyRequest = ProxyRequest()
 

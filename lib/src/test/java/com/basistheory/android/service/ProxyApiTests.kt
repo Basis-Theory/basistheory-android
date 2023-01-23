@@ -11,6 +11,7 @@ import io.mockk.spyk
 import io.mockk.verify
 import junitparams.JUnitParamsRunner
 import junitparams.Parameters
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import okhttp3.Call
 import okio.Buffer
@@ -19,10 +20,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import strikt.api.expectThat
-import strikt.assertions.isA
-import strikt.assertions.isEqualTo
-import strikt.assertions.isNull
-import strikt.assertions.isTrue
+import strikt.assertions.*
 import java.util.*
 
 @RunWith(JUnitParamsRunner::class)
@@ -34,7 +32,7 @@ class ProxyApiTests {
     @SpyK
     private var apiClient: ApiClient = spyk()
 
-    private val proxyApi: ProxyApi = ProxyApi { apiClient }
+    private val proxyApi: ProxyApi = ProxyApi(Dispatchers.IO) { apiClient }
 
     private var proxyRequest: ProxyRequest = ProxyRequest()
 
@@ -77,7 +75,7 @@ class ProxyApiTests {
         }
 
         val callSlot = slot<Call>()
-        every { apiClient.execute<Any>(capture(callSlot)) } returns ApiResponse(
+        every { apiClient.execute<Any>(capture(callSlot), any()) } returns ApiResponse(
             200,
             emptyMap(),
             "Hello World"
@@ -93,7 +91,7 @@ class ProxyApiTests {
             }
         }
 
-        verify(exactly = 1) { apiClient.execute<Any>(any()) }
+        verify(exactly = 1) { apiClient.execute<Any>(any(), any()) }
 
         expectThat(callSlot.captured.request()) {
             get { method }.isEqualTo(httpMethod.name)
@@ -119,47 +117,48 @@ class ProxyApiTests {
     @Test
     fun `should transform complex proxy response to element value references`() {
         val callSlot = slot<Call>()
-        every { apiClient.execute<Any>(capture(callSlot)) } returns ApiResponse(
+        every { apiClient.execute<Any>(capture(callSlot), any()) } returns ApiResponse(
             200,
             emptyMap(),
-            object {
-                val customer_id = "102023201931949"
-                val id = null
-                val card = object {
-                    val number = "4242424242424242"
-                    val expiration_month = "10"
-                    val expiration_year = "2026"
-                    val cvc = "123"
-                }
-                val pii = object {
-                    val name = object {
-                        val first_name = "Drewsue"
-                        val last_name = "Webuino"
-                    }
-                }
-            }
+            linkedMapOf(
+                "customer_id" to "102023201931949",
+                "id" to null,
+                "card" to linkedMapOf(
+                    "number" to "4242424242424242",
+                    "expiration_month" to "10",
+                    "expiration_year" to "2026",
+                    "cvc" to "123",
+                ),
+                "pii" to linkedMapOf(
+                    "name" to linkedMapOf(
+                        "first_name" to "Drewsue",
+                        "last_name" to "Webuino"
+                    )
+                )
+            )
         )
 
         val result = runBlocking {
             proxyApi.post(proxyRequest)
         }
 
-        expectThat(((result as Map<*, *>)["id"])).isNull()
-        expectThat((result["customer_id"])).isA<ElementValueReference>()
+        expectThat(result.tryGetElementValueReference("id")).isNull()
+        expectThat(result.tryGetElementValueReference("invalid_path")).isNull()
+        expectThat((result.tryGetElementValueReference("customer_id"))).isNotNull()
 
-        expectThat((result["card"] as Map<*, *>)["number"]).isA<ElementValueReference>()
-        expectThat((result["card"] as Map<*, *>)["expiration_month"]).isA<ElementValueReference>()
-        expectThat((result["card"] as Map<*, *>)["expiration_year"]).isA<ElementValueReference>()
-        expectThat((result["card"] as Map<*, *>)["cvc"]).isA<ElementValueReference>()
+        expectThat(result.tryGetElementValueReference("card.number")).isNotNull()
+        expectThat(result.tryGetElementValueReference("card.expiration_month")).isNotNull()
+        expectThat(result.tryGetElementValueReference("card.expiration_year")).isNotNull()
+        expectThat(result.tryGetElementValueReference("card.cvc")).isNotNull()
 
-        expectThat(((result["pii"] as Map<*, *>)["name"] as Map<*, *>)["first_name"]).isA<ElementValueReference>()
-        expectThat(((result["pii"] as Map<*, *>)["name"] as Map<*, *>)["last_name"]).isA<ElementValueReference>()
+        expectThat(result.tryGetElementValueReference("pii.name.first_name")).isNotNull()
+        expectThat(result.tryGetElementValueReference("pii.name.last_name")).isNotNull()
     }
 
     @Test
     fun `should transform array proxy response to element value references`() {
         val callSlot = slot<Call>()
-        every { apiClient.execute<Any>(capture(callSlot)) } returns ApiResponse(
+        every { apiClient.execute<Any>(capture(callSlot), any()) } returns ApiResponse(
             200,
             emptyMap(),
             arrayOf(
@@ -176,7 +175,8 @@ class ProxyApiTests {
             proxyApi.post(proxyRequest)
         }
 
-        expectThat((result as List<Any?>).filterNotNull().all { it is ElementValueReference }).isTrue()
+        expectThat(
+            (result as List<Any?>).filterNotNull().all { it is ElementValueReference }).isTrue()
     }
 
     private fun proxyMethodsTestsInput(): Array<Any?> {

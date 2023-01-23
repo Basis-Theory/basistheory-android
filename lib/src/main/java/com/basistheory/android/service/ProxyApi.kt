@@ -1,7 +1,9 @@
 package com.basistheory.android.service
 
 import com.basistheory.ApiClient
-import com.basistheory.android.util.transformResponseToValueReferences
+import com.basistheory.android.model.ElementValueReference
+import com.basistheory.android.util.isPrimitiveType
+import com.basistheory.android.util.toMap
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -35,32 +37,33 @@ class ProxyRequest {
     var body: Any? = null
 }
 
-class ProxyApi(val apiClientProvider: (apiKeyOverride: String?) -> ApiClient) : Proxy {
-
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+class ProxyApi(
+    val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+    val apiClientProvider: (apiKeyOverride: String?) -> ApiClient
+) : Proxy {
 
     override suspend fun get(proxyRequest: ProxyRequest, apiKeyOverride: String?): Any? =
-        withContext(ioDispatcher) {
+        withContext(dispatcher) {
             proxy(HttpMethod.GET.name, proxyRequest, apiKeyOverride)
         }
 
     override suspend fun post(proxyRequest: ProxyRequest, apiKeyOverride: String?): Any? =
-        withContext(ioDispatcher) {
+        withContext(dispatcher) {
             proxy(HttpMethod.POST.name, proxyRequest, apiKeyOverride)
         }
 
     override suspend fun put(proxyRequest: ProxyRequest, apiKeyOverride: String?): Any? =
-        withContext(ioDispatcher) {
+        withContext(dispatcher) {
             proxy(HttpMethod.PUT.name, proxyRequest, apiKeyOverride)
         }
 
     override suspend fun patch(proxyRequest: ProxyRequest, apiKeyOverride: String?): Any? =
-        withContext(ioDispatcher) {
+        withContext(dispatcher) {
             proxy(HttpMethod.PATCH.name, proxyRequest, apiKeyOverride)
         }
 
     override suspend fun delete(proxyRequest: ProxyRequest, apiKeyOverride: String?): Any? =
-        withContext(ioDispatcher) {
+        withContext(dispatcher) {
             proxy(HttpMethod.DELETE.name, proxyRequest, apiKeyOverride)
         }
 
@@ -68,7 +71,7 @@ class ProxyApi(val apiClientProvider: (apiKeyOverride: String?) -> ApiClient) : 
         val apiClient = apiClientProvider(apiKeyOverride)
 
         val call = apiClient.buildCall(
-            "https://api.basistheory.com/proxy",
+            "${apiClient.basePath}/proxy",
             proxyRequest.path ?: "",
             method,
             proxyRequest.queryParams?.toPairs(),
@@ -90,4 +93,35 @@ class ProxyApi(val apiClientProvider: (apiKeyOverride: String?) -> ApiClient) : 
         this.map {
             com.basistheory.Pair(it.key, it.value)
         }
+
+    private fun transformResponseToValueReferences(data: Any?): Any? =
+        if (data == null) null
+        else if (data::class.java.isPrimitiveType()) data.toString().toElementValueReference()
+        else if (data::class.java.isArray) {
+            (data as Array<*>).map { transformResponseToValueReferences(it) }
+        } else {
+            val map = (data as Map<*, *>).toMutableMap()
+            map.forEach { (key, value) -> map[key] = transformResponseToValueReferences(value) }
+            map
+        }
+
+    private fun String.toElementValueReference(): ElementValueReference =
+        ElementValueReference { this }
 }
+
+fun Any?.tryGetElementValueReference(path: String): ElementValueReference? {
+    if (this == null || path.isEmpty()) return null
+
+    val pathSegments = path.split(".")
+    val map = this as? Map<*, *> ?: return null
+
+    val value = map[pathSegments.first()]
+
+    return if (pathSegments.count() > 1)
+        value?.tryGetElementValueReference(pathSegments.drop(1).joinToString("."))
+    else
+        value as ElementValueReference?
+}
+
+fun Any?.getElementValueReference(path: String): ElementValueReference =
+    this.tryGetElementValueReference(path) ?: throw NoSuchElementException()

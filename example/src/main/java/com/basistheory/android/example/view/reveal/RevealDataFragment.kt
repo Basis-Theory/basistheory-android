@@ -12,6 +12,7 @@ import com.basistheory.android.example.util.tokenExpirationTimestamp
 import com.basistheory.android.example.viewmodel.CardFragmentViewModel
 import com.basistheory.android.model.ElementValueReference
 import com.basistheory.android.service.ProxyRequest
+import com.basistheory.android.service.getElementValueReference
 
 class RevealDataFragment : Fragment() {
     private val binding: FragmentRevealBinding by lazy {
@@ -85,25 +86,19 @@ class RevealDataFragment : Fragment() {
             viewModel.getToken(tokenId!!).observe(viewLifecycleOwner) {
                 binding.revealedCardNumber
                     .setValueRef(
-                        ((it as Token).data as Map<*, *>)["number"] as ElementValueReference
+                        (it as Token).data.getElementValueReference("number")
                     )
 
                 binding.revealedExpirationDate
                     .setValueRef(
-                        (it.data as Map<*, *>)["expiration_month"] as ElementValueReference,
-                        (it.data as Map<*, *>)["expiration_year"] as ElementValueReference,
-                        isDate = true
+                        it.data.getElementValueReference("expiration_month"),
+                        it.data.getElementValueReference("expiration_year"),
+                        transform = { value -> value?.toDouble()?.toInt().toString().takeLast(2) }
                     )
             }
 
             viewModel.proxy(proxyRequest).observe(viewLifecycleOwner) {
-                binding.revealedCvc
-                    .setValueRef(
-                        (((it as Map<*, *>)["json"]
-                                as Map<*, *>)["card"]
-                                as Map<*, *>)["cvc"]
-                                as ElementValueReference
-                    )
+                binding.revealedCvc.setValueRef(it.getElementValueReference("json.card.cvc"))
             }
         }
     }

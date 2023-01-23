@@ -116,12 +116,11 @@ open class TextElement @JvmOverloads constructor(
 
     fun setValueRef(
         vararg elementValueReferences: ElementValueReference,
-        isDate: Boolean? = false
+        transform: ((String?) -> CharSequence)? = null
     ) {
-        // todo receive a transform function instead?
-        if (isDate == true) {
+        if (transform != null) {
             setText(elementValueReferences.joinToString("") {
-                it.getValue()?.toDouble()?.toInt().toString().takeLast(2)
+                transform(it.getValue())
             })
         } else {
             setText(elementValueReferences.map { it.getValue() }.joinToString(""))

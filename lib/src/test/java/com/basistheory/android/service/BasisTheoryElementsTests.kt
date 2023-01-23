@@ -4,6 +4,7 @@ import android.app.Activity
 import android.view.View
 import com.basistheory.CreateTokenRequest
 import com.basistheory.SessionsApi
+import com.basistheory.Token
 import com.basistheory.TokenizeApi
 import com.basistheory.TokensApi
 import com.basistheory.android.model.exceptions.IncompleteElementException
@@ -13,7 +14,6 @@ import com.basistheory.android.view.CardVerificationCodeElement
 import com.basistheory.android.view.TextElement
 import com.github.javafaker.Faker
 import io.mockk.Called
-import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.RelaxedMockK
@@ -530,12 +530,36 @@ class BasisTheoryElementsTests {
     }
 
     @Test
+    fun `getToken should call java SDK without api key override`() = runBlocking {
+        every { provider.getTokensApi(any()) } returns tokensApi
+        every { tokensApi.getById(any())} returns Token()
+
+        bt.getToken("")
+
+        verify { provider.getTokensApi() }
+        verify { tokensApi.getById("") }
+    }
+
+    @Test
+    fun `getToken should call java SDK with api key override`() = runBlocking {
+        val apiKeyOverride = UUID.randomUUID().toString()
+
+        every { provider.getTokensApi(any()) } returns tokensApi
+        every { tokensApi.getById(any())} returns Token()
+
+        bt.getToken("", apiKeyOverride)
+
+        verify { provider.getTokensApi(apiKeyOverride) }
+        verify { tokensApi.getById("") }
+    }
+
+    @Test
     fun `provides a proxy instance`() = runBlocking {
-        every { provider.getProxyApi() } returns proxyApi
+        every { provider.getProxyApi(any()) } returns proxyApi
 
         expectThat(bt.proxy).isNotEqualTo(null)
 
-        verify { provider.getProxyApi() }
+        verify { provider.getProxyApi(any()) }
     }
 
     private fun createTokenRequest(data: Any): CreateTokenRequest =

@@ -81,7 +81,24 @@ class TextElementTests {
     fun `can apply mask`() {
         val digitRegex = Regex("""\d""")
         textElement.mask = ElementMask(
-            listOf("+", "1", "(", digitRegex,digitRegex,digitRegex, ")", " ", digitRegex, digitRegex, digitRegex, "-", digitRegex, digitRegex , digitRegex, digitRegex )
+            listOf(
+                "+",
+                "1",
+                "(",
+                digitRegex,
+                digitRegex,
+                digitRegex,
+                ")",
+                " ",
+                digitRegex,
+                digitRegex,
+                digitRegex,
+                "-",
+                digitRegex,
+                digitRegex,
+                digitRegex,
+                digitRegex
+            )
         )
         textElement.setText("2345678900")
         expectThat(textElement.getText()).isEqualTo("+1(234) 567-8900")
@@ -178,5 +195,17 @@ class TextElementTests {
         textElement.setValueRef(valueReference)
 
         expectThat(textElement.getText()).isEqualTo("4242424242424242")
+    }
+
+    @Test
+    fun `can reference the value of multiple value references and transform them`() {
+        val valueReference = ElementValueReference { "08" }
+        val valueReference2 = ElementValueReference { "2030" }
+        textElement.setValueRef(
+            valueReference,
+            valueReference2,
+            transform = { value -> value?.takeLast(2) ?: "" })
+
+        expectThat(textElement.getText()).isEqualTo("0830")
     }
 }

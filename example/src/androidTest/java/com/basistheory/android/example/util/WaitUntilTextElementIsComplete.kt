@@ -13,7 +13,7 @@ import java.util.concurrent.TimeoutException
 /**
  * @return a [WaitUntilTextElementIsComplete] instance created with the given [timeout] parameter.
  */
-fun waitUntilTextElementIsComplete(timeout: Long = 5000L): ViewAction {
+fun waitUntilTextElementIsComplete(timeout: Long = 10000L): ViewAction {
     return WaitUntilTextElementIsComplete(timeout)
 }
 

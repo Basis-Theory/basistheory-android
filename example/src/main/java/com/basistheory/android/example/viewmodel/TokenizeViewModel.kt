@@ -9,36 +9,77 @@ import com.basistheory.android.example.BuildConfig
 import com.basistheory.android.example.R
 import com.basistheory.android.example.util.prettyPrintJson
 import com.basistheory.android.service.BasisTheoryElements
+import com.basistheory.android.service.ProxyRequest
 
-open class TokenizeViewModel(application: Application): AndroidViewModel(application) {
+open class ApiViewModel(application: Application): AndroidViewModel(application) {
     private val _errorMessage = MutableLiveData<String?>(null)
     val errorMessage: LiveData<String?>
         get() = _errorMessage
 
-    private val _tokenizeResult = MutableLiveData<String?>(null)
-    val tokenizeResult: LiveData<String?>
-        get() = _tokenizeResult
+    private val _result = MutableLiveData<String?>(null)
+    val result: LiveData<String?>
+        get() = _result
+
+    private val bt = BasisTheoryElements.builder()
+        .apiUrl(BuildConfig.BASIS_THEORY_API_URL)
+        .apiKey(BuildConfig.BASIS_THEORY_API_KEY)
+        .build()
 
     fun tokenize(payload: Any): LiveData<Any> = liveData {
         _errorMessage.value = null
-        _tokenizeResult.value = null
-
-        val bt = BasisTheoryElements.builder()
-            .apiUrl(BuildConfig.BASIS_THEORY_API_URL)
-            .apiKey(BuildConfig.BASIS_THEORY_API_KEY)
-            .build()
+        _result.value = null
 
         runCatching {
             bt.tokenize(payload)
         }.fold(
             onSuccess = {
-                _tokenizeResult.value = it.prettyPrintJson()
+                _result.value = it.prettyPrintJson()
                 emit(it)
             },
             onFailure = {
                 _errorMessage.value = getApplication<Application>()
                     .resources
                     .getString(R.string.tokenize_error, it)
+            }
+        )
+    }
+
+    fun proxy(proxyRequest: ProxyRequest): LiveData<Any> = liveData {
+        _errorMessage.value = null
+        _result.value = null
+
+        runCatching {
+            bt.proxy.post(proxyRequest)
+        }.fold(
+            onSuccess = {
+                _result.value = it?.prettyPrintJson()
+                if (it != null) {
+                    emit(it)
+                }
+            },
+            onFailure = {
+                _errorMessage.value = getApplication<Application>()
+                    .resources
+                    .getString(R.string.proxy_error, it)
+            }
+        )
+    }
+
+    fun getToken(id: String): LiveData<Any> = liveData {
+        _errorMessage.value = null
+        _result.value = null
+
+        runCatching {
+            bt.getToken(id)
+        }.fold(
+            onSuccess = {
+                _result.value = it.prettyPrintJson()
+                emit(it)
+            },
+            onFailure = {
+                _errorMessage.value = getApplication<Application>()
+                    .resources
+                    .getString(R.string.get_token_error, it)
             }
         )
     }

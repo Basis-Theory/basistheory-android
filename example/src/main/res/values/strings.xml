@@ -12,4 +12,5 @@
     <string name="reveal">Reveal</string>
     <string name="tokenize_error">Error during tokenization: %1$s</string>
     <string name="proxy_error">Error executing proxy: %1$s</string>
+    <string name="get_token_error">Error retrieving token: %1$s</string>
 </resources>

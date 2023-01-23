@@ -5,7 +5,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.basistheory.android.event.ChangeEvent
 
-class CardFragmentViewModel(application: Application) : TokenizeViewModel(application) {
+class CardFragmentViewModel(application: Application) : ApiViewModel(application) {
     val cardNumber = ElementViewModel()
     val cardExpiration = ElementViewModel()
     val cardCvc = ElementViewModel()

@@ -1,9 +1,7 @@
 package com.basistheory.android.service
 
 import com.basistheory.ApiClient
-import com.basistheory.android.model.ElementValueReference
-import com.basistheory.android.util.isPrimitiveType
-import com.basistheory.android.util.toMap
+import com.basistheory.android.util.transformResponseToValueReferences
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -92,18 +90,4 @@ class ProxyApi(val apiClientProvider: (apiKeyOverride: String?) -> ApiClient) : 
         this.map {
             com.basistheory.Pair(it.key, it.value)
         }
-
-    private fun transformResponseToValueReferences(data: Any?): Any? =
-        if (data == null) null
-        else if (data::class.java.isPrimitiveType()) data.toString().toElementValueReference()
-        else if (data::class.java.isArray) {
-            (data as Array<*>).map { transformResponseToValueReferences(it) }
-        } else {
-            val map = (data as Map<*, *>).toMutableMap()
-            map.forEach { (key, value) -> map[key] = transformResponseToValueReferences(value) }
-            map
-        }
-
-    private fun String.toElementValueReference(): ElementValueReference =
-        ElementValueReference { this }
 }

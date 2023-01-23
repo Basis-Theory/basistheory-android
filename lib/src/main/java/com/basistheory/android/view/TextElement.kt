@@ -114,8 +114,18 @@ open class TextElement @JvmOverloads constructor(
         }
     }
 
-    fun setValueRef(elementValueReference: ElementValueReference) {
-        setText(elementValueReference.getValue())
+    fun setValueRef(
+        vararg elementValueReferences: ElementValueReference,
+        isDate: Boolean? = false
+    ) {
+        // todo receive a transform function instead?
+        if (isDate == true) {
+            setText(elementValueReferences.joinToString("") {
+                it.getValue()?.toDouble()?.toInt().toString().takeLast(2)
+            })
+        } else {
+            setText(elementValueReferences.map { it.getValue() }.joinToString(""))
+        }
         _editText.requestLayout()
     }
 

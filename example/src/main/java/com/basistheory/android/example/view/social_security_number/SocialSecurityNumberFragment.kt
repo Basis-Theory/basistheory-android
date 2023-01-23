@@ -8,13 +8,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.basistheory.android.example.databinding.FragmentSocialSecurityNumberBinding
 import com.basistheory.android.example.util.tokenExpirationTimestamp
-import com.basistheory.android.example.viewmodel.TokenizeViewModel
+import com.basistheory.android.example.viewmodel.ApiViewModel
 
 class SocialSecurityNumberFragment : Fragment() {
     private val binding: FragmentSocialSecurityNumberBinding by lazy {
         FragmentSocialSecurityNumberBinding.inflate(layoutInflater)
     }
-    private val viewModel: TokenizeViewModel by viewModels()
+    private val viewModel: ApiViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,

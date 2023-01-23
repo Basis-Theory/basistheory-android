@@ -3,10 +3,12 @@ package com.basistheory.android.service
 import com.basistheory.CreateSessionResponse
 import com.basistheory.CreateTokenRequest
 import com.basistheory.CreateTokenResponse
+import com.basistheory.Token
 import com.basistheory.android.model.ElementValueReference
 import com.basistheory.android.model.exceptions.IncompleteElementException
 import com.basistheory.android.util.isPrimitiveType
 import com.basistheory.android.util.toMap
+import com.basistheory.android.util.transformResponseToValueReferences
 import com.basistheory.android.view.TextElement
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -55,6 +57,19 @@ class BasisTheoryElements internal constructor(
         withContext(ioDispatcher) {
             val sessionsApi = apiClientProvider.getSessionsApi(apiKeyOverride)
             sessionsApi.create()
+        }
+
+    @JvmOverloads
+    suspend fun getToken(
+        id: String,
+        apiKeyOverride: String? = null
+    ): Token =
+        withContext(ioDispatcher) {
+            val tokensApi = apiClientProvider.getTokensApi(apiKeyOverride)
+
+            val token = tokensApi.getById(id)
+            token.data = transformResponseToValueReferences(token.data)
+            token
         }
 
     private fun replaceElementRefs(map: MutableMap<String, Any?>): MutableMap<String, Any?> {

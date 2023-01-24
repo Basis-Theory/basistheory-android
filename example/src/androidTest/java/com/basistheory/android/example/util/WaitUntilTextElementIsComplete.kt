@@ -35,7 +35,7 @@ private class WaitUntilTextElementIsComplete(private val timeout: Long) : ViewAc
         val endTime = System.currentTimeMillis() + timeout
 
         do {
-            if ((view as TextElement).isComplete) return
+            if (!(view as TextElement).isEmpty) return
             uiController.loopMainThreadForAtLeast(50)
         } while (System.currentTimeMillis() < endTime)
 

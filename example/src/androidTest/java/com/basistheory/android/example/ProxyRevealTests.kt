@@ -39,22 +39,21 @@ class ProxyRevealTests {
         val cvc = "123"
 
         // type values into elements
-        onView(withId(R.id.card_number)).perform(scrollTo(), typeText(cardNumber))
+        onView(withId(R.id.card_number)).perform(typeText(cardNumber))
         onView(withId(R.id.expiration_date)).perform(
-            scrollTo(),
             typeText("$expMonth/${expYear.takeLast(2)}")
         )
-        onView(withId(R.id.cvc)).perform(scrollTo(), typeText(cvc))
+        onView(withId(R.id.cvc)).perform(typeText(cvc))
 
         // click tokenize
-        onView(withId(R.id.tokenize_button)).perform(closeSoftKeyboard(), scrollTo(),  click())
+        onView(withId(R.id.tokenize_button)).perform(closeSoftKeyboard(), click())
 
         // wait for tokenize result
         onView(withId(R.id.tokenize_result))
             .perform(waitUntilVisible())
 
         // click reveal
-        onView(withId(R.id.reveal_button)).perform(scrollTo(), click())
+        onView(withId(R.id.reveal_button)).perform(click())
 
         // assertions on read only elements
         onView(withId(R.id.revealedCardNumber))

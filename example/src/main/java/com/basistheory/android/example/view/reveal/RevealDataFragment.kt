@@ -10,7 +10,6 @@ import com.basistheory.Token
 import com.basistheory.android.example.databinding.FragmentRevealBinding
 import com.basistheory.android.example.util.tokenExpirationTimestamp
 import com.basistheory.android.example.viewmodel.CardFragmentViewModel
-import com.basistheory.android.model.ElementValueReference
 import com.basistheory.android.service.ProxyRequest
 import com.basistheory.android.service.getElementValueReference
 import com.basistheory.android.service.getValue

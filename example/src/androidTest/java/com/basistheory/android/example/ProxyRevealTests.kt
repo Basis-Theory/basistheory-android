@@ -57,8 +57,8 @@ class ProxyRevealTests {
         onView(withId(R.id.reveal_button)).perform(click())
 
         // assertions on read only elements
-//        onView(withId(R.id.revealedCardNumber))
-//            .perform(waitUntilTextElementIsComplete())
+        onView(withId(R.id.revealedCardNumber))
+            .perform(scrollTo(), waitUntilTextElementIsComplete())
 
 //        onView(withId(R.id.revealedExpirationDate))
 //            .perform(waitUntilTextElementIsComplete())

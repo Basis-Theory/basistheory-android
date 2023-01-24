@@ -2,7 +2,7 @@ name: Pull Request
 
 on:
   pull_request:
-    branches: [master]
+    branches: [ master ]
 
 env:
   ORG_GRADLE_PROJECT_com.basistheory.android.example.apiUrl: https://api-dev.basistheory.com
@@ -37,7 +37,7 @@ jobs:
 
     strategy:
       matrix:
-        api-level: [29]
+        api-level: [ 29 ]
 
     steps:
       - name: Checkout
@@ -85,3 +85,25 @@ jobs:
           arch: x86_64
           profile: pixel_3a
           script: ./gradlew connectedCheck --stacktrace
+
+  code-security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/gradle@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_API_KEY }}
+        with:
+          command: code test
+
+  dependencies-security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/gradle@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_API_KEY }}
+        with:
+          args: --all-sub-projects --severity-threshold=high

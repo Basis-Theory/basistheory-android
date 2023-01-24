@@ -81,3 +81,9 @@ dependencies {
     testImplementation 'com.github.javafaker:javafaker:1.0.2'
     testImplementation 'io.mockk:mockk:1.13.3'
 }
+
+configurations.all {
+    resolutionStrategy {
+        force 'org.yaml:snakeyaml:1.33'
+    }
+}

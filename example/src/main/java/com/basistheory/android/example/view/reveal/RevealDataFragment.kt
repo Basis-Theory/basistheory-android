@@ -93,7 +93,7 @@ class RevealDataFragment : Fragment() {
                     .setValueRef(
                         it.getElementValueReference("data.expiration_month"),
                         it.getElementValueReference("data.expiration_year"),
-                        transform = { value -> value?.toDouble()?.toInt().toString().takeLast(2) }
+                        transform = { value -> value?.takeLast(2) ?: "" }
                     )
             }
 

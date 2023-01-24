@@ -58,13 +58,13 @@ class ProxyRevealTests {
 
         // assertions on read only elements
         onView(withId(R.id.revealedCardNumber))
-            .perform(scrollTo(), waitUntilTextElementIsComplete())
+            .perform(waitUntilTextElementIsComplete())
 
-//        onView(withId(R.id.revealedExpirationDate))
-//            .perform(waitUntilTextElementIsComplete())
-//
-//        onView(withId(R.id.revealedCvc))
-//            .perform(waitUntilTextElementIsComplete())
+        onView(withId(R.id.revealedExpirationDate))
+            .perform(waitUntilTextElementIsComplete())
+
+        onView(withId(R.id.revealedCvc))
+            .perform(waitUntilTextElementIsComplete())
     }
 
     @Test

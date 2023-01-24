@@ -9,28 +9,28 @@ env:
   ORG_GRADLE_PROJECT_com.basistheory.android.example.apiKey: ${{ secrets.BASIS_THEORY_API_KEY }}
 
 jobs:
-#  build:
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#
-#      - name: Setup JDK version
-#        uses: actions/setup-java@v3
-#        with:
-#          java-version: '17'
-#          distribution: 'adopt'
-#          cache: 'gradle'
-#
-#      - name: Setup Gradle cache
-#        uses: gradle/gradle-build-action@v2
-#
-#      - name: Build modules
-#        run: ./gradlew build -x test
-#
-#      - name: Run unit tests
-#        run: ./gradlew testDebugUnitTest
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup JDK version
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+          cache: 'gradle'
+
+      - name: Setup Gradle cache
+        uses: gradle/gradle-build-action@v2
+
+      - name: Build modules
+        run: ./gradlew build -x test
+
+      - name: Run unit tests
+        run: ./gradlew testDebugUnitTest
 
   acceptance:
     runs-on: macos-latest
@@ -86,24 +86,24 @@ jobs:
           profile: pixel_3a
           script: ./gradlew connectedCheck
 
-#  code-security:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@master
-#      - name: Run Snyk to check for vulnerabilities
-#        uses: snyk/actions/gradle@master
-#        env:
-#          SNYK_TOKEN: ${{ secrets.SNYK_API_KEY }}
-#        with:
-#          command: code test
-#
-#  dependencies-security:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@master
-#      - name: Run Snyk to check for vulnerabilities
-#        uses: snyk/actions/gradle@master
-#        env:
-#          SNYK_TOKEN: ${{ secrets.SNYK_API_KEY }}
-#        with:
-#          args: --all-sub-projects --severity-threshold=high
+  code-security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/gradle@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_API_KEY }}
+        with:
+          command: code test
+
+  dependencies-security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/gradle@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_API_KEY }}
+        with:
+          args: --all-sub-projects --severity-threshold=high

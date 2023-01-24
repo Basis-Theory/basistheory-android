@@ -13,6 +13,7 @@ import com.basistheory.android.example.viewmodel.CardFragmentViewModel
 import com.basistheory.android.model.ElementValueReference
 import com.basistheory.android.service.ProxyRequest
 import com.basistheory.android.service.getElementValueReference
+import com.basistheory.android.service.getValue
 
 class RevealDataFragment : Fragment() {
     private val binding: FragmentRevealBinding by lazy {
@@ -52,7 +53,7 @@ class RevealDataFragment : Fragment() {
                 }
                 val expires_at = tokenExpirationTimestamp()
             }).observe(viewLifecycleOwner) {
-            tokenId = (it as Map<*, *>)["id"] as String
+            tokenId = it.getValue<String>("id")
         }
 
     /**

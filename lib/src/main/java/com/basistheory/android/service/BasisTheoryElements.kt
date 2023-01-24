@@ -67,9 +67,9 @@ class BasisTheoryElements internal constructor(
         withContext(dispatcher) {
             val tokensApi = apiClientProvider.getTokensApi(apiKeyOverride)
 
-            val token = tokensApi.getById(id)
-            token.data = transformResponseToValueReferences(token.data)
-            token
+            tokensApi.getById(id).also {
+                it.data = transformResponseToValueReferences(it.data)
+            }
         }
 
     private fun replaceElementRefs(map: MutableMap<String, Any?>): MutableMap<String, Any?> {
@@ -107,4 +107,20 @@ class BasisTheoryElements internal constructor(
         @JvmStatic
         fun builder(): BasisTheoryElementsBuilder = BasisTheoryElementsBuilder()
     }
+}
+
+fun <T> Any?.getValue(path: String): T = this.tryGetValue(path) ?: throw NoSuchElementException()
+
+fun <T> Any?.tryGetValue(path: String): T? {
+    if (this == null || path.isEmpty()) return null
+
+    val pathSegments = path.split(".")
+    val map = this as? Map<*, *> ?: return null
+
+    val value = map[pathSegments.first()]
+
+    return if (pathSegments.count() > 1)
+        value?.tryGetValue(pathSegments.drop(1).joinToString("."))
+    else
+        value as? T?
 }

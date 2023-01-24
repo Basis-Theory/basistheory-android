@@ -531,26 +531,29 @@ class BasisTheoryElementsTests {
 
     @Test
     fun `getToken should call java SDK without api key override`() = runBlocking {
-        every { provider.getTokensApi(any()) } returns tokensApi
-        every { tokensApi.getById(any())} returns Token()
+        val tokenId = UUID.randomUUID().toString()
 
-        bt.getToken("")
+        every { provider.getTokensApi(any()) } returns tokensApi
+        every { tokensApi.getById(tokenId)} returns Token()
+
+        bt.getToken(tokenId)
 
         verify { provider.getTokensApi() }
-        verify { tokensApi.getById("") }
+        verify { tokensApi.getById(tokenId) }
     }
 
     @Test
     fun `getToken should call java SDK with api key override`() = runBlocking {
+        val tokenId = UUID.randomUUID().toString()
         val apiKeyOverride = UUID.randomUUID().toString()
 
         every { provider.getTokensApi(any()) } returns tokensApi
-        every { tokensApi.getById(any())} returns Token()
+        every { tokensApi.getById(tokenId)} returns Token()
 
-        bt.getToken("", apiKeyOverride)
+        bt.getToken(tokenId, apiKeyOverride)
 
         verify { provider.getTokensApi(apiKeyOverride) }
-        verify { tokensApi.getById("") }
+        verify { tokensApi.getById(tokenId) }
     }
 
     @Test

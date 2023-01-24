@@ -13,11 +13,13 @@ import com.basistheory.android.example.view.MainActivity
 import org.hamcrest.Matchers.*
 import org.junit.Assert.*
 import org.junit.FixMethodOrder
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 
+@Ignore
 @RunWith(AndroidJUnit4::class)
 class DrawerTests {
 

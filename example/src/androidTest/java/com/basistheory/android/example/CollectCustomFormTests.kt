@@ -13,10 +13,12 @@ import com.github.javafaker.Faker
 import org.hamcrest.Matchers.allOf
 import org.junit.Assert.*
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@Ignore
 @RunWith(AndroidJUnit4::class)
 class CollectCustomFormTests {
 

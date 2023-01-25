@@ -33,12 +33,11 @@ class ProxyRevealTests {
 
     @Test
     fun canProxyAndReveal() {
-        val cardNumber = "4242424242424242"
+        val cardNumber = "4242 4242 4242 4242"
         val expMonth = "11"
         val expYear = (LocalDate.now().year + 1).toString()
         val cvc = "123"
 
-        // type values into elements
         onView(withId(R.id.card_number)).perform(scrollTo(), typeText(cardNumber))
         onView(withId(R.id.expiration_date)).perform(
             scrollTo(),
@@ -46,25 +45,29 @@ class ProxyRevealTests {
         )
         onView(withId(R.id.cvc)).perform(scrollTo(), typeText(cvc))
 
-        // click tokenize
         onView(withId(R.id.tokenize_button)).perform(closeSoftKeyboard(), click())
 
-        // wait for tokenize result
-        onView(withId(R.id.tokenize_result))
-            .perform(waitUntilVisible())
+        onView(withId(R.id.result)).perform(waitUntilVisible())
 
-        // click reveal
         onView(withId(R.id.reveal_button)).perform(click())
 
+        Thread.sleep(3000)
+
         // assertions on read only elements
-        onView(withId(R.id.revealedCardNumber))
-            .perform(waitUntilTextElementIsComplete())
+        onView(allOf(
+            withHint("Revealed Card Number"),
+            withText(cardNumber)
+        )).check(matches(isDisplayed()))
 
-        onView(withId(R.id.revealedExpirationDate))
-            .perform(waitUntilTextElementIsComplete())
+        onView(allOf(
+            withHint("Revealed Expiration Date"),
+            withText("11/${expYear.takeLast(2)}")
+        )).check(matches(isDisplayed()))
 
-        onView(withId(R.id.revealedCvc))
-            .perform(waitUntilTextElementIsComplete())
+        onView(allOf(
+            withHint("Revealed CVC"),
+            withText(cvc)
+        )).check(matches(isDisplayed()))
     }
 
     @Test

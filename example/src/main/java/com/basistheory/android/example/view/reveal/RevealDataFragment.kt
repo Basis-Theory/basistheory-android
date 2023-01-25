@@ -86,14 +86,14 @@ class RevealDataFragment : Fragment() {
             viewModel.getToken(tokenId!!).observe(viewLifecycleOwner) {
                 binding.revealedCardNumber
                     .setValueRef(
-                        it.getElementValueReference("data.number")
+                        (it as Token).data.getElementValueReference("number")
                     )
 
                 binding.revealedExpirationDate
                     .setValueRef(
-                        it.getElementValueReference("data.expiration_month"),
-                        it.getElementValueReference("data.expiration_year"),
-                        transform = { value -> value?.takeLast(2) ?: "" }
+                        it.data.getElementValueReference("expiration_month"),
+                        it.data.getElementValueReference("expiration_year"),
+                        transform = { value -> value?.toDouble()?.toInt().toString().takeLast(2) }
                     )
             }
 

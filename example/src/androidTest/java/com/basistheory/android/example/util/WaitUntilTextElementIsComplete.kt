@@ -13,7 +13,7 @@ import java.util.concurrent.TimeoutException
 /**
  * @return a [WaitUntilTextElementIsComplete] instance created with the given [timeout] parameter.
  */
-fun waitUntilTextElementIsComplete(timeout: Long = 10000L): ViewAction {
+fun waitUntilTextElementIsComplete(timeout: Long = 5000): ViewAction {
     return WaitUntilTextElementIsComplete(timeout)
 }
 
@@ -31,11 +31,10 @@ private class WaitUntilTextElementIsComplete(private val timeout: Long) : ViewAc
     }
 
     override fun perform(uiController: UiController, view: View) {
-
         val endTime = System.currentTimeMillis() + timeout
 
         do {
-            if (!(view as TextElement).isEmpty) return
+            if (!(view as TextElement).isComplete) return
             uiController.loopMainThreadForAtLeast(50)
         } while (System.currentTimeMillis() < endTime)
 

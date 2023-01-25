@@ -47,7 +47,7 @@ class CollectSocialSecurityNumberTests {
         onView(withId(R.id.tokenize_button)).perform(scrollTo(), click())
 
         // assertions on tokenize response
-        onView(withId(R.id.tokenize_result))
+        onView(withId(R.id.result))
             .perform(waitUntilVisible())
             .check(matches(withSubstring("123-45-6789")))
     }

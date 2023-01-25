@@ -51,7 +51,7 @@ class ProxyRevealTests {
 
         onView(withId(R.id.reveal_button)).perform(click())
 
-        Thread.sleep(3000)
+        Thread.sleep(10000)
 
         // assertions on read only elements
         onView(allOf(

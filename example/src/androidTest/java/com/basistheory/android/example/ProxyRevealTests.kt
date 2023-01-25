@@ -7,7 +7,6 @@ import androidx.test.espresso.contrib.DrawerActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.activityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.basistheory.android.example.util.waitUntilTextElementIsComplete
 import com.basistheory.android.example.util.waitUntilVisible
 import com.basistheory.android.example.view.MainActivity
 import org.hamcrest.Matchers.allOf
@@ -51,7 +50,7 @@ class ProxyRevealTests {
 
         onView(withId(R.id.reveal_button)).perform(click())
 
-        Thread.sleep(60000)
+        Thread.sleep(1000)
 
         // assertions on read only elements
         onView(allOf(

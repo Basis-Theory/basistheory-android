@@ -10,7 +10,8 @@ import com.basistheory.android.view.validation.FutureDateValidator
 class CardExpirationDateElement @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0) : TextElement(context, attrs, defStyleAttr) {
+    defStyleAttr: Int = 0
+) : TextElement(context, attrs, defStyleAttr) {
 
     fun month(): ElementValueReference = ElementValueReference(this, ::getMonthValue)
 
@@ -59,9 +60,11 @@ class CardExpirationDateElement @JvmOverloads constructor(
         try {
             (this?.toInt()).toString()
         } catch (e: java.lang.NumberFormatException) {
-            (this?.toDouble()?.toInt()).toString()
-        } catch(e: java.lang.NumberFormatException) {
-            this
+            try {
+                (this?.toDouble()?.toInt()).toString()
+            } catch (e: java.lang.NumberFormatException) {
+                this
+            }
         }
 
     companion object {

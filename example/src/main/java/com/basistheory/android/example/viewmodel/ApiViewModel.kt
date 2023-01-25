@@ -20,6 +20,10 @@ open class ApiViewModel(application: Application): AndroidViewModel(application)
     val result: LiveData<String?>
         get() = _result
 
+    private val _proxyResult = MutableLiveData<String?>(null)
+    val proxyResult: LiveData<String?>
+        get() = _proxyResult
+
     private val bt = BasisTheoryElements.builder()
         .apiUrl(BuildConfig.BASIS_THEORY_API_URL)
         .apiKey(BuildConfig.BASIS_THEORY_API_KEY)
@@ -46,13 +50,13 @@ open class ApiViewModel(application: Application): AndroidViewModel(application)
 
     fun proxy(proxyRequest: ProxyRequest): LiveData<Any> = liveData {
         _errorMessage.value = null
-        _result.value = null
+        _proxyResult.value = null
 
         runCatching {
             bt.proxy.post(proxyRequest)
         }.fold(
             onSuccess = {
-                _result.value = it?.prettyPrintJson()
+                _proxyResult.value = it?.prettyPrintJson()
                 if (it != null) {
                     emit(it)
                 }

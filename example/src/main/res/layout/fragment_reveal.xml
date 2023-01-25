@@ -140,6 +140,15 @@
                     android:text="@{ viewModel.result }"
                     android:visibility="@{ viewModel.result != null ? View.VISIBLE : View.GONE }" />
 
+                <TextView
+                    android:id="@+id/proxy_result"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:fontFamily="monospace"
+                    android:text="@{ viewModel.proxyResult }"
+                    android:visibility="@{ viewModel.proxyResult != null ? View.VISIBLE : View.GONE }" />
+
             </LinearLayout>
 
         </ScrollView>

@@ -50,6 +50,7 @@ class ProxyRevealTests {
         onView(withId(R.id.reveal_button)).perform(click())
 
         onView(withId(R.id.result)).perform(waitUntilVisible())
+        onView(withId(R.id.proxy_result)).perform(waitUntilVisible())
 
         // assertions on read only elements
         onView(allOf(

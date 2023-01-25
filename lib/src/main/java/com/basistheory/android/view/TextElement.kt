@@ -114,17 +114,8 @@ open class TextElement @JvmOverloads constructor(
         }
     }
 
-    fun setValueRef(
-        vararg elementValueReferences: ElementValueReference,
-        transform: ((String?) -> CharSequence)? = null
-    ) {
-        if (transform != null) {
-            setText(elementValueReferences.joinToString("") {
-                transform(it.getValue())
-            })
-        } else {
-            setText(elementValueReferences.map { it.getValue() }.joinToString(""))
-        }
+    fun setValueRef(elementValueReference: ElementValueReference) {
+        setText(elementValueReference.getValue())
         _editText.requestLayout()
     }
 

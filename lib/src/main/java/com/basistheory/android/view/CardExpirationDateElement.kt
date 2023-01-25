@@ -16,6 +16,16 @@ class CardExpirationDateElement @JvmOverloads constructor(
 
     fun year(): ElementValueReference = ElementValueReference(this, ::getYearValue)
 
+    fun setValueRef(
+        monthRef: ElementValueReference,
+        yearRef: ElementValueReference
+    ) {
+        val month = monthRef.getValue().toIntString()
+        val year = yearRef.getValue().toIntString()
+
+        setText("${month}${year?.takeLast(2)}")
+    }
+
     init {
         super.keyboardType = KeyboardType.NUMBER
         super.mask = defaultMask
@@ -44,6 +54,15 @@ class CardExpirationDateElement @JvmOverloads constructor(
             ?.split("/")
             ?.elementAtOrNull(1)
             ?.let { "20$it" }
+
+    private fun String?.toIntString(): String? =
+        try {
+            (this?.toInt()).toString()
+        } catch (e: java.lang.NumberFormatException) {
+            (this?.toDouble()?.toInt()).toString()
+        } catch(e: java.lang.NumberFormatException) {
+            this
+        }
 
     companion object {
         private val digit = Regex("""\d""")

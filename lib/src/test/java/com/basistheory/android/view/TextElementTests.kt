@@ -196,16 +196,4 @@ class TextElementTests {
 
         expectThat(textElement.getText()).isEqualTo("4242424242424242")
     }
-
-    @Test
-    fun `can reference the value of multiple value references and transform them`() {
-        val valueReference = ElementValueReference { "08" }
-        val valueReference2 = ElementValueReference { "2030" }
-        textElement.setValueRef(
-            valueReference,
-            valueReference2,
-            transform = { value -> value?.takeLast(2) ?: "" })
-
-        expectThat(textElement.getText()).isEqualTo("0830")
-    }
 }

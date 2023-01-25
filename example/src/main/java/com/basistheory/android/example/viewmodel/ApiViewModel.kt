@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
+import com.basistheory.Token
 import com.basistheory.android.example.BuildConfig
 import com.basistheory.android.example.R
 import com.basistheory.android.example.util.prettyPrintJson
@@ -69,7 +70,7 @@ open class ApiViewModel(application: Application): AndroidViewModel(application)
         )
     }
 
-    fun getToken(id: String): LiveData<Any> = liveData {
+    fun getToken(id: String): LiveData<Token> = liveData {
         _errorMessage.value = null
         _result.value = null
 

@@ -84,7 +84,7 @@ jobs:
           target: default
           arch: x86_64
           profile: pixel_3a
-          script: ./gradlew connectedCheck --stacktrace --debug --scan
+          script: ./gradlew connectedCheck
 
   code-security:
     runs-on: ubuntu-latest

@@ -18,7 +18,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.time.LocalDate
 
-@RunWith(AndroidJUnit4::class)
 class ProxyRevealTests {
 
     @get:Rule
@@ -50,7 +49,7 @@ class ProxyRevealTests {
 
         onView(withId(R.id.reveal_button)).perform(click())
 
-        Thread.sleep(1000)
+        onView(withId(R.id.result)).perform(waitUntilVisible())
 
         // assertions on read only elements
         onView(allOf(

@@ -11,7 +11,6 @@ import com.basistheory.android.example.util.waitUntilVisible
 import com.basistheory.android.example.view.MainActivity
 import org.junit.Assert.*
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith

@@ -2,6 +2,7 @@ package com.basistheory.android.view
 
 import android.app.Activity
 import com.basistheory.android.event.ChangeEvent
+import com.basistheory.android.model.ElementValueReference
 import com.basistheory.android.view.mask.ElementMask
 import com.basistheory.android.view.transform.RegexReplaceElementTransform
 import com.basistheory.android.view.validation.RegexValidator
@@ -80,7 +81,24 @@ class TextElementTests {
     fun `can apply mask`() {
         val digitRegex = Regex("""\d""")
         textElement.mask = ElementMask(
-            listOf("+", "1", "(", digitRegex,digitRegex,digitRegex, ")", " ", digitRegex, digitRegex, digitRegex, "-", digitRegex, digitRegex , digitRegex, digitRegex )
+            listOf(
+                "+",
+                "1",
+                "(",
+                digitRegex,
+                digitRegex,
+                digitRegex,
+                ")",
+                " ",
+                digitRegex,
+                digitRegex,
+                digitRegex,
+                "-",
+                digitRegex,
+                digitRegex,
+                digitRegex,
+                digitRegex
+            )
         )
         textElement.setText("2345678900")
         expectThat(textElement.getText()).isEqualTo("+1(234) 567-8900")
@@ -169,5 +187,13 @@ class TextElementTests {
 
         otherTextElement.setText("(123) 456-7890")
         expectThat(textElement.getText()).isEqualTo("(123) 456-7890")
+    }
+
+    @Test
+    fun `can reference the value of a value reference`() {
+        val valueReference = ElementValueReference { "4242424242424242" }
+        textElement.setValueRef(valueReference)
+
+        expectThat(textElement.getText()).isEqualTo("4242424242424242")
     }
 }

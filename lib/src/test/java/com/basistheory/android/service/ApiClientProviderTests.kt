@@ -4,6 +4,7 @@ import com.basistheory.ApiClient
 import com.basistheory.android.BuildConfig
 import com.basistheory.auth.ApiKeyAuth
 import com.github.javafaker.Faker
+import kotlinx.coroutines.Dispatchers
 import org.junit.Test
 import strikt.api.expectCatching
 import strikt.api.expectThat
@@ -23,20 +24,36 @@ class ApiClientProviderTests {
 
     @Test
     fun `getTokenizeApi configures client with default api key and url`() =
-        configuresApiClientWithDefaults {
-                provider -> provider.getTokenizeApi().apiClient
+        configuresApiClientWithDefaults { provider ->
+            provider.getTokenizeApi().apiClient
         }
 
     @Test
     fun `getTokensApi configures client with default api key and url`() =
-        configuresApiClientWithDefaults {
-                provider -> provider.getTokensApi().apiClient
+        configuresApiClientWithDefaults { provider ->
+            provider.getTokensApi().apiClient
         }
 
     @Test
     fun `getSessionsApi configures client with default api key and url`() =
-        configuresApiClientWithDefaults {
-                provider -> provider.getSessionsApi().apiClient
+        configuresApiClientWithDefaults { provider ->
+            provider.getSessionsApi().apiClient
+        }
+
+    @Test
+    fun `getProxyApi configures client with default api key, url and dispatcher`() =
+        configuresApiClientWithDefaults { provider ->
+                val proxyApi = provider.getProxyApi()
+                expectThat(proxyApi.dispatcher).isEqualTo(Dispatchers.IO)
+                proxyApi.apiClientProvider(null)
+        }
+
+    @Test
+    fun `getProxyApi configures client with overridden dispatcher`() =
+        configuresApiClientWithDefaults { provider ->
+            val proxyApi = provider.getProxyApi(Dispatchers.Main)
+            expectThat(proxyApi.dispatcher).isEqualTo(Dispatchers.Main)
+            proxyApi.apiClientProvider(null)
         }
 
     @Test

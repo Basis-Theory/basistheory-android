@@ -5,8 +5,12 @@
     <string name="title_social_security_number">Collect SSNs</string>
     <string name="title_custom_form">Custom Forms</string>
     <string name="title_virtual_card">Virtual Card</string>
+    <string name="title_reveal">Reveal Data</string>
 
     <string name="autofill">Autofill</string>
     <string name="tokenize">Tokenize</string>
+    <string name="reveal">Reveal</string>
     <string name="tokenize_error">Error during tokenization: %1$s</string>
+    <string name="proxy_error">Error executing proxy: %1$s</string>
+    <string name="get_token_error">Error retrieving token: %1$s</string>
 </resources>

@@ -20,6 +20,7 @@ import com.basistheory.android.event.BlurEvent
 import com.basistheory.android.event.ChangeEvent
 import com.basistheory.android.event.ElementEventListeners
 import com.basistheory.android.event.FocusEvent
+import com.basistheory.android.model.ElementValueReference
 import com.basistheory.android.model.InputAction
 import com.basistheory.android.model.KeyboardType
 import com.basistheory.android.view.mask.ElementMask
@@ -31,7 +32,8 @@ open class TextElement @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
-    private val _editText = AppCompatEditText(context, null, androidx.appcompat.R.attr.editTextStyle)
+    private val _editText =
+        AppCompatEditText(context, null, androidx.appcompat.R.attr.editTextStyle)
     private var _defaultBackground = _editText.background
     private val _eventListeners = ElementEventListeners()
     private var _isInternalChange: Boolean = false
@@ -110,6 +112,11 @@ open class TextElement @JvmOverloads constructor(
             setText(element.getText())
             _editText.requestLayout()
         }
+    }
+
+    fun setValueRef(elementValueReference: ElementValueReference) {
+        setText(elementValueReference.getValue())
+        _editText.requestLayout()
     }
 
     val isComplete: Boolean

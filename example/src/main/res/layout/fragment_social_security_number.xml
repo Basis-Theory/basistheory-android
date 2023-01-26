@@ -7,7 +7,7 @@
         <import type="android.view.View" />
         <variable
             name="viewModel"
-            type="com.basistheory.android.example.viewmodel.TokenizeViewModel" />
+            type="com.basistheory.android.example.viewmodel.ApiViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -74,13 +74,13 @@
                     android:visibility="@{ viewModel.errorMessage != null ? View.VISIBLE : View.GONE }" />
 
                 <TextView
-                    android:id="@+id/tokenize_result"
+                    android:id="@+id/result"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:fontFamily="monospace"
-                    android:text="@{ viewModel.tokenizeResult }"
-                    android:visibility="@{ viewModel.tokenizeResult != null ? View.VISIBLE : View.GONE }" />
+                    android:text="@{ viewModel.result }"
+                    android:visibility="@{ viewModel.result != null ? View.VISIBLE : View.GONE }" />
 
             </LinearLayout>
 

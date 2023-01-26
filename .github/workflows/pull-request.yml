@@ -2,7 +2,7 @@ name: Pull Request
 
 on:
   pull_request:
-    branches: [master]
+    branches: [ master ]
 
 env:
   ORG_GRADLE_PROJECT_com.basistheory.android.example.apiUrl: https://api-dev.basistheory.com
@@ -37,7 +37,7 @@ jobs:
 
     strategy:
       matrix:
-        api-level: [29]
+        api-level: [ 29 ]
 
     steps:
       - name: Checkout

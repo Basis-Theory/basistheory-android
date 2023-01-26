@@ -2,6 +2,7 @@ package com.basistheory.android.view
 
 import android.app.Activity
 import com.basistheory.android.event.ChangeEvent
+import com.basistheory.android.model.ElementValueReference
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -161,5 +162,23 @@ class CardExpirationDateElementTests {
             get { isMaskSatisfied }.isFalse()
             get { isEmpty }.isFalse()
         }
+    }
+
+    @Test
+    fun `can set value references for both month and year ints`() {
+        val monthRef = ElementValueReference { "8" }
+        val yearRef = ElementValueReference { "2030" }
+        cardExpirationDateElement.setValueRef(monthRef, yearRef)
+
+        expectThat(cardExpirationDateElement.getText()).isEqualTo("08/30")
+    }
+
+    @Test
+    fun `can set value references for both month and year as doubles`() {
+        val monthRef = ElementValueReference { "8.0" }
+        val yearRef = ElementValueReference { "2030.0" }
+        cardExpirationDateElement.setValueRef(monthRef, yearRef)
+
+        expectThat(cardExpirationDateElement.getText()).isEqualTo("08/30")
     }
 }

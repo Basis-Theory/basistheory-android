@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.basistheory.android.example.databinding.FragmentCustomFormBinding
 import com.basistheory.android.example.util.tokenExpirationTimestamp
-import com.basistheory.android.example.viewmodel.TokenizeViewModel
+import com.basistheory.android.example.viewmodel.ApiViewModel
 import com.basistheory.android.model.KeyboardType
 import com.basistheory.android.view.mask.ElementMask
 
@@ -16,7 +16,7 @@ class CustomFormFragment : Fragment() {
     private val binding: FragmentCustomFormBinding by lazy {
         FragmentCustomFormBinding.inflate(layoutInflater)
     }
-    private val viewModel: TokenizeViewModel by viewModels()
+    private val viewModel: ApiViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?

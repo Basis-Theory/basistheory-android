@@ -3,10 +3,12 @@ package com.basistheory.android.service
 import com.basistheory.CreateSessionResponse
 import com.basistheory.CreateTokenRequest
 import com.basistheory.CreateTokenResponse
+import com.basistheory.Token
 import com.basistheory.android.model.ElementValueReference
 import com.basistheory.android.model.exceptions.IncompleteElementException
 import com.basistheory.android.util.isPrimitiveType
 import com.basistheory.android.util.toMap
+import com.basistheory.android.util.transformResponseToValueReferences
 import com.basistheory.android.view.TextElement
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -14,12 +16,13 @@ import kotlinx.coroutines.withContext
 
 class BasisTheoryElements internal constructor(
     private val apiClientProvider: ApiClientProvider,
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
+    val proxy: ProxyApi = apiClientProvider.getProxyApi(dispatcher)
 
     @JvmOverloads
     suspend fun tokenize(body: Any, apiKeyOverride: String? = null): Any =
-        withContext(ioDispatcher) {
+        withContext(dispatcher) {
             val tokenizeApiClient = apiClientProvider.getTokenizeApi(apiKeyOverride)
             val request =
                 if (body::class.java.isPrimitiveType()) body
@@ -35,7 +38,7 @@ class BasisTheoryElements internal constructor(
         createTokenRequest: CreateTokenRequest,
         apiKeyOverride: String? = null
     ): CreateTokenResponse =
-        withContext(ioDispatcher) {
+        withContext(dispatcher) {
             val tokensApi = apiClientProvider.getTokensApi(apiKeyOverride)
             val data =
                 if (createTokenRequest.data == null) null
@@ -51,9 +54,22 @@ class BasisTheoryElements internal constructor(
 
     @JvmOverloads
     suspend fun createSession(apiKeyOverride: String? = null): CreateSessionResponse =
-        withContext(ioDispatcher) {
+        withContext(dispatcher) {
             val sessionsApi = apiClientProvider.getSessionsApi(apiKeyOverride)
             sessionsApi.create()
+        }
+
+    @JvmOverloads
+    suspend fun getToken(
+        id: String,
+        apiKeyOverride: String? = null
+    ): Token =
+        withContext(dispatcher) {
+            val tokensApi = apiClientProvider.getTokensApi(apiKeyOverride)
+
+            tokensApi.getById(id).also {
+                it.data = transformResponseToValueReferences(it.data)
+            }
         }
 
     private fun replaceElementRefs(map: MutableMap<String, Any?>): MutableMap<String, Any?> {
@@ -91,4 +107,20 @@ class BasisTheoryElements internal constructor(
         @JvmStatic
         fun builder(): BasisTheoryElementsBuilder = BasisTheoryElementsBuilder()
     }
+}
+
+fun <T> Any?.getValue(path: String): T = this.tryGetValue(path) ?: throw NoSuchElementException()
+
+fun <T> Any?.tryGetValue(path: String): T? {
+    if (this == null || path.isEmpty()) return null
+
+    val pathSegments = path.split(".")
+    val map = this as? Map<*, *> ?: return null
+
+    val value = map[pathSegments.first()]
+
+    return if (pathSegments.count() > 1)
+        value?.tryGetValue(pathSegments.drop(1).joinToString("."))
+    else
+        value as? T?
 }

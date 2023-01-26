@@ -10,11 +10,22 @@ import com.basistheory.android.view.validation.FutureDateValidator
 class CardExpirationDateElement @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0) : TextElement(context, attrs, defStyleAttr) {
+    defStyleAttr: Int = 0
+) : TextElement(context, attrs, defStyleAttr) {
 
     fun month(): ElementValueReference = ElementValueReference(this, ::getMonthValue)
 
     fun year(): ElementValueReference = ElementValueReference(this, ::getYearValue)
+
+    fun setValueRef(
+        monthRef: ElementValueReference,
+        yearRef: ElementValueReference
+    ) {
+        val month = monthRef.getValue().toIntString()
+        val year = yearRef.getValue().toIntString()
+
+        setText("${month}${year?.takeLast(2)}")
+    }
 
     init {
         super.keyboardType = KeyboardType.NUMBER
@@ -44,6 +55,17 @@ class CardExpirationDateElement @JvmOverloads constructor(
             ?.split("/")
             ?.elementAtOrNull(1)
             ?.let { "20$it" }
+
+    private fun String?.toIntString(): String? =
+        try {
+            (this?.toInt()).toString()
+        } catch (e: java.lang.NumberFormatException) {
+            try {
+                (this?.toDouble()?.toInt()).toString()
+            } catch (e: java.lang.NumberFormatException) {
+                this
+            }
+        }
 
     companion object {
         private val digit = Regex("""\d""")

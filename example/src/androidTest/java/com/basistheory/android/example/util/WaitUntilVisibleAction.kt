@@ -19,7 +19,7 @@ fun waitUntilVisible(timeout: Long = 5000L): ViewAction {
 /**
  * A [ViewAction] that waits up to [timeout] milliseconds for a [View]'s visibility value to change to [View.VISIBLE].
  */
-class WaitUntilVisibleAction(private val timeout: Long) : ViewAction {
+private class WaitUntilVisibleAction(private val timeout: Long) : ViewAction {
 
     override fun getConstraints(): Matcher<View> {
         return any(View::class.java)

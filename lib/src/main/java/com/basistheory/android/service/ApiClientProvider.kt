@@ -7,6 +7,8 @@ import com.basistheory.TokenizeApi
 import com.basistheory.TokensApi
 import com.basistheory.android.BuildConfig
 import com.basistheory.auth.ApiKeyAuth
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
 internal class ApiClientProvider(
     private val apiUrl: String = "https://api.basistheory.com",
@@ -21,6 +23,9 @@ internal class ApiClientProvider(
 
     fun getSessionsApi(apiKeyOverride: String? = null): SessionsApi =
         SessionsApi(getApiClient(apiKeyOverride))
+
+    fun getProxyApi(dispatcher: CoroutineDispatcher = Dispatchers.IO): ProxyApi =
+        ProxyApi(dispatcher, ::getApiClient)
 
     private fun getApiClient(apiKeyOverride: String? = null): ApiClient {
         val apiKey = apiKeyOverride ?: defaultApiKey

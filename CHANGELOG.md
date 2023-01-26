@@ -1,3 +1,11 @@
+## [1.6.0](https://github.com/Basis-Theory/basistheory-android/compare/1.5.0...1.6.0) (2023-01-26)
+
+
+### Features
+
+* support proxy and retrieve ([#40](https://github.com/Basis-Theory/basistheory-android/issues/40)) ([a0b3cea](https://github.com/Basis-Theory/basistheory-android/commit/a0b3cea9474e82e9ba94877acdcd6991306e25af))
+
+
 ## [1.5.0](https://github.com/Basis-Theory/basistheory-android/compare/1.4.0...1.5.0) (2023-01-10)
 
 

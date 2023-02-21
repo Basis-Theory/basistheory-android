@@ -89,7 +89,9 @@ jobs:
   code-security:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/gradle@master
         env:
@@ -100,7 +102,9 @@ jobs:
   dependencies-security:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/gradle@master
         env:

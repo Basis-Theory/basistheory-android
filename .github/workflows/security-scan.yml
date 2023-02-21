@@ -1,0 +1,38 @@
+name: Security Scan
+
+on:
+  schedule:
+    - cron: '0 12 * * 1' # 12pm UTC every Monday
+  workflow_dispatch:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Snyk code scan
+        uses: snyk/actions/gradle@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_API_KEY }}
+        with:
+          command: code test
+
+      - name: Snyk dependency scan
+        uses: snyk/actions/gradle@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_API_KEY }}
+        with:
+          args: --all-sub-projects --severity-threshold=high
+
+      - name: Slack Alert on Failure
+        uses: 8398a7/action-slack@v3
+        if: failure()
+        with:
+          author_name: Security Scan
+          status: ${{ job.status }}
+          channel: ${{ secrets.SLACK_SECURITY_SCAN_ALERT_CHANNEL_ID }}
+          fields: 'repo,workflow'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

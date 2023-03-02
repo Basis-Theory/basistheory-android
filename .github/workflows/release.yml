@@ -9,6 +9,11 @@ jobs:
     name: Tag repo
     runs-on: ubuntu-latest
     steps:
+      - name: Start Deploy Message
+        uses: Basis-Theory/github-actions/deploy-slack-action@master
+        with:
+          slack-api-token: ${{ secrets.SLACK_DUCKBOT_API_KEY }}
+          channel: ${{ vars.SLACK_DUCKBOT_PRODUCT_DEPLOY_CHANNEL }}
       - name: Checkout
         uses: actions/checkout@v3
         with:
@@ -43,3 +48,10 @@ jobs:
         with:
           github_token: ${{ secrets.SEMANTIC_RELEASE_PAT }}
           branch: ${{ github.ref }}
+      - name: Stop Deploy Message
+        if: always()
+        uses: Basis-Theory/github-actions/deploy-slack-action@master
+        with:
+          slack-api-token: ${{ secrets.SLACK_DUCKBOT_API_KEY }}
+          channel: ${{ vars.SLACK_DUCKBOT_PRODUCT_DEPLOY_CHANNEL }}
+          status: 'done'

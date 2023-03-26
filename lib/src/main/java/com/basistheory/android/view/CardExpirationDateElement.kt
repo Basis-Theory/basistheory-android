@@ -38,11 +38,20 @@ class CardExpirationDateElement @JvmOverloads constructor(
      */
     override fun beforeTextChanged(value: String?): String? {
         val firstChar = value?.firstOrNull()
+        val secondChar = value?.getOrNull(1)
 
-        if (firstChar?.isDigit() != true) return value
+        if (firstChar?.isDigit() != true || secondChar != null && !secondChar.isDigit()) return value
 
         val firstDigit = firstChar.digitToInt()
-        return if (firstDigit > 1) "0$value" else value
+
+        val paddedValue = if (firstDigit > 1) "0$value" else value
+        val month = paddedValue.take(2).toInt()
+
+        //if (paddedValue[0].digitToInt() > 1) return ""
+
+        return if (month < 1 || month > 12)
+            "${paddedValue.firstOrNull()}${paddedValue.takeLast(paddedValue.length - month.toString().length)}}"
+        else paddedValue
     }
 
     private fun getMonthValue(): String? =

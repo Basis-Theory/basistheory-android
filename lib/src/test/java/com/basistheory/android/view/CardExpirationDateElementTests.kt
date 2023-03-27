@@ -123,27 +123,6 @@ class CardExpirationDateElementTests {
     }
 
     @Test
-    fun `ChangeEvent is computed properly for invalid expiration dates`() {
-        val changeEvents = mutableListOf<ChangeEvent>()
-        cardExpirationDateElement.addChangeEventListener { changeEvents.add(it) }
-
-        cardExpirationDateElement.setText("13/99")
-        expectThat(changeEvents).single().and {
-            get { isComplete }.isFalse()
-            get { isValid }.isFalse()
-            get { isMaskSatisfied }.isTrue()
-            get { isEmpty }.isFalse()
-        }
-
-        expectThat(cardExpirationDateElement) {
-            get { isComplete }.isFalse()
-            get { isValid }.isFalse()
-            get { isMaskSatisfied }.isTrue()
-            get { isEmpty }.isFalse()
-        }
-    }
-
-    @Test
     fun `ChangeEvent is raised once when single digit month is entered`() {
         val changeEvents = mutableListOf<ChangeEvent>()
         cardExpirationDateElement.addChangeEventListener { changeEvents.add(it) }
@@ -180,5 +159,25 @@ class CardExpirationDateElementTests {
         cardExpirationDateElement.setValueRef(monthRef, yearRef)
 
         expectThat(cardExpirationDateElement.getText()).isEqualTo("08/30")
+    }
+
+    @Test
+    fun `does not allow invalid month inputs`() {
+        for (i in 13..19) {
+            cardExpirationDateElement.setText(i.toString())
+            expectThat(cardExpirationDateElement.getTransformedText()).isEqualTo("1")
+            cardExpirationDateElement.setText(null)
+        }
+
+        cardExpirationDateElement.setText("00")
+        expectThat(cardExpirationDateElement.getTransformedText()).isEqualTo("0")
+        cardExpirationDateElement.setText(null)
+
+        cardExpirationDateElement.setText("20")
+        expectThat(cardExpirationDateElement.getTransformedText()).isEqualTo("02/0")
+        cardExpirationDateElement.setText(null)
+
+        cardExpirationDateElement.setText("aa")
+        expectThat(cardExpirationDateElement.getTransformedText()).isEqualTo("")
     }
 }

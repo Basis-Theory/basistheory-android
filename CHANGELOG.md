@@ -1,3 +1,11 @@
+## [1.7.0](https://github.com/Basis-Theory/basistheory-android/compare/1.6.0...1.7.0) (2023-03-27)
+
+
+### Features
+
+* do not allow invalid month inputs ([#48](https://github.com/Basis-Theory/basistheory-android/issues/48)) ([65841c0](https://github.com/Basis-Theory/basistheory-android/commit/65841c09fef46d918556b73835d0f6ee1ba01a7c))
+
+
 ## [1.6.0](https://github.com/Basis-Theory/basistheory-android/compare/1.5.0...1.6.0) (2023-01-26)
 
 

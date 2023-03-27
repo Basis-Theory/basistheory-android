@@ -45,12 +45,10 @@ class CardExpirationDateElement @JvmOverloads constructor(
         val firstDigit = firstChar.digitToInt()
 
         val paddedValue = if (firstDigit > 1) "0$value" else value
-        val month = paddedValue.take(2).toInt()
+        val month = paddedValue.take(2)
 
-        //if (paddedValue[0].digitToInt() > 1) return ""
-
-        return if (month < 1 || month > 12)
-            "${paddedValue.firstOrNull()}${paddedValue.takeLast(paddedValue.length - month.toString().length)}}"
+        return if (month.toInt() < 1 || month.toInt() > 12)
+            "${paddedValue.firstOrNull()}${paddedValue.takeLast(paddedValue.length - month.length)}}"
         else paddedValue
     }
 

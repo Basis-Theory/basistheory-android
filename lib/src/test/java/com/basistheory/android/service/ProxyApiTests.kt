@@ -236,7 +236,7 @@ class ProxyApiWithElementsTests {
     @Test
     fun `proxy should replace top level TextElement ref with underlying data value`() {
         val name = faker.name().fullName()
-        nameElement.setText("test")
+        nameElement.setText(name)
 
         proxyRequest = proxyRequest.apply {
             headers = mapOf(

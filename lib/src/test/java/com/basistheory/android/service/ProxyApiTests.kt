@@ -1,8 +1,12 @@
 package com.basistheory.android.service
 
+import android.app.Activity
+import android.view.View
 import com.basistheory.ApiClient
 import com.basistheory.ApiResponse
 import com.basistheory.android.model.ElementValueReference
+import com.basistheory.android.view.TextElement
+import com.github.javafaker.Faker
 import io.mockk.every
 import io.mockk.impl.annotations.SpyK
 import io.mockk.junit4.MockKRule
@@ -19,13 +23,14 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.Robolectric
+import org.robolectric.RobolectricTestRunner
 import strikt.api.expectThat
 import strikt.assertions.*
 import java.util.*
 
 @RunWith(JUnitParamsRunner::class)
 class ProxyApiTests {
-
     @get:Rule
     val mockkRule = MockKRule(this)
 
@@ -61,7 +66,7 @@ class ProxyApiTests {
         httpMethod: HttpMethod,
         contentType: String?,
         contentsSubType: String?,
-        requestBody: Any?
+        requestBody: String?
     ) {
         val queryParamValue = UUID.randomUUID().toString()
         proxyRequest = proxyRequest.apply {
@@ -105,7 +110,7 @@ class ProxyApiTests {
                 val buffer = Buffer()
                 this.subject.body!!.writeTo(buffer)
                 val bodyInRequest = buffer.readUtf8()
-                expectThat(bodyInRequest).isEqualTo(requestBody as String)
+                expectThat(bodyInRequest).isEqualTo(requestBody)
             } else {
                 get { body }.isNull()
             }
@@ -188,5 +193,83 @@ class ProxyApiTests {
             arrayOf(HttpMethod.PUT, "text", "plain", "Hello World"),
         )
     }
+}
 
+@RunWith(RobolectricTestRunner::class)
+class ProxyApiWithElementsTests {
+    private val faker = Faker()
+
+    @get:Rule
+    val mockkRule = MockKRule(this)
+
+    @SpyK
+    private var apiClient: ApiClient = spyk()
+
+    private val proxyApi: ProxyApi = ProxyApi(Dispatchers.IO) { apiClient }
+
+    private var proxyRequest: ProxyRequest = ProxyRequest()
+
+    private lateinit var nameElement: TextElement
+
+    @Before
+    fun setUp() {
+        val activity = Robolectric.buildActivity(Activity::class.java).get()
+        nameElement = TextElement(activity).also { it.id = View.generateViewId() }
+
+        every {
+            apiClient.buildCall(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } answers { callOriginal() }
+    }
+
+    @Test
+    fun `proxy should replace top level TextElement ref with underlying data value`() {
+        val name = faker.name().fullName()
+        nameElement.setText("test")
+
+        proxyRequest = proxyRequest.apply {
+            headers = mapOf(
+                "BT-PROXY-URL" to "https://echo.basistheory.com/post",
+                "Content-Type" to "application/json"
+            )
+            body = nameElement
+        }
+
+        val callSlot = slot<Call>()
+        every { apiClient.execute<Any>(capture(callSlot), any()) } returns ApiResponse(
+            200,
+            emptyMap(),
+            "Hello World"
+        )
+
+        val result = runBlocking {
+            proxyApi.post(proxyRequest)
+        }
+
+        verify(exactly = 1) { apiClient.execute<Any>(any(), any()) }
+
+        expectThat(callSlot.captured.request()) {
+            if (this.subject.body != null) {
+                val buffer = Buffer()
+                this.subject.body!!.writeTo(buffer)
+                val bodyInRequest = buffer.readUtf8()
+                expectThat(bodyInRequest).isEqualTo(name)
+            } else {
+                get { body }.isNull()
+            }
+        }
+
+        expectThat(result).isA<ElementValueReference>()
+    }
 }

@@ -70,12 +70,12 @@ class ProxyApi(
 
     private fun proxy(method: String, proxyRequest: ProxyRequest, apiKeyOverride: String?): Any? {
         val apiClient = apiClientProvider(apiKeyOverride)
-        val body = proxyRequest.body
+        var body = proxyRequest.body
 
         if (body != null) {
-            if (body::class.java.isPrimitiveType()) body
-            else if (body is TextElement) body.getTransformedText()
-            else if (body is ElementValueReference) body.getValue()
+            if (body::class.java.isPrimitiveType()) body = body
+            else if (body is TextElement) body = body.getTransformedText()
+            else if (body is ElementValueReference) body = body.getValue()
             else replaceElementRefs(body.toMap())
         }
 

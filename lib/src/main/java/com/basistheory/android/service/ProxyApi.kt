@@ -2,7 +2,9 @@ package com.basistheory.android.service
 
 import com.basistheory.ApiClient
 import com.basistheory.android.model.ElementValueReference
-import com.basistheory.android.util.transformResponseToValueReferences
+import com.basistheory.android.util.*
+import com.basistheory.android.util.replaceElementRefs
+import com.basistheory.android.view.TextElement
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -68,6 +70,14 @@ class ProxyApi(
 
     private fun proxy(method: String, proxyRequest: ProxyRequest, apiKeyOverride: String?): Any? {
         val apiClient = apiClientProvider(apiKeyOverride)
+        val body = proxyRequest.body
+
+        if (body != null) {
+            if (body::class.java.isPrimitiveType()) body
+            else if (body is TextElement) body.getTransformedText()
+            else if (body is ElementValueReference) body.getValue()
+            else replaceElementRefs(body.toMap())
+        }
 
         val call = apiClient.buildCall(
             "${apiClient.basePath}/proxy",
@@ -75,7 +85,7 @@ class ProxyApi(
             method,
             proxyRequest.queryParams?.toPairs(),
             emptyList(),
-            proxyRequest.body,
+            body,
             proxyRequest.headers,
             emptyMap(),
             emptyMap(),

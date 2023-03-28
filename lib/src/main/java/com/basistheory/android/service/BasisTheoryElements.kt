@@ -5,9 +5,10 @@ import com.basistheory.CreateTokenRequest
 import com.basistheory.CreateTokenResponse
 import com.basistheory.Token
 import com.basistheory.android.model.ElementValueReference
-import com.basistheory.android.model.exceptions.IncompleteElementException
+import com.basistheory.android.util.tryGetTextToTokenize
 import com.basistheory.android.util.isPrimitiveType
 import com.basistheory.android.util.toMap
+import com.basistheory.android.util.replaceElementRefs
 import com.basistheory.android.util.transformResponseToValueReferences
 import com.basistheory.android.view.TextElement
 import kotlinx.coroutines.CoroutineDispatcher
@@ -71,37 +72,6 @@ class BasisTheoryElements internal constructor(
                 it.data = transformResponseToValueReferences(it.data)
             }
         }
-
-    private fun replaceElementRefs(map: MutableMap<String, Any?>): MutableMap<String, Any?> {
-        for ((key, value) in map) {
-            if (value == null) continue
-            val fieldType = value::class.java
-            if (!fieldType.isPrimitiveType()) {
-                when (value) {
-                    is TextElement -> {
-                        map[key] = value.tryGetTextToTokenize()
-                    }
-                    is ElementValueReference -> {
-                        map[key] = value.getValue()
-                    }
-                    else -> {
-                        val children = value.toMap()
-                        map[key] = children
-                        replaceElementRefs(children)
-                    }
-                }
-            }
-        }
-
-        return map
-    }
-
-    private fun TextElement.tryGetTextToTokenize(): String? {
-        if (!this.isComplete)
-            throw IncompleteElementException(this.id)
-
-        return this.getTransformedText()
-    }
 
     companion object {
         @JvmStatic

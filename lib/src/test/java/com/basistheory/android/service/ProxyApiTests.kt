@@ -3,6 +3,7 @@ package com.basistheory.android.service
 import com.basistheory.ApiClient
 import com.basistheory.ApiResponse
 import com.basistheory.android.model.ElementValueReference
+import com.basistheory.android.view.TextElement
 import io.mockk.every
 import io.mockk.impl.annotations.SpyK
 import io.mockk.junit4.MockKRule
@@ -61,7 +62,7 @@ class ProxyApiTests {
         httpMethod: HttpMethod,
         contentType: String?,
         contentsSubType: String?,
-        requestBody: String?
+        requestBody: Any?
     ) {
         val queryParamValue = UUID.randomUUID().toString()
         proxyRequest = proxyRequest.apply {
@@ -105,7 +106,7 @@ class ProxyApiTests {
                 val buffer = Buffer()
                 this.subject.body!!.writeTo(buffer)
                 val bodyInRequest = buffer.readUtf8()
-                expectThat(bodyInRequest).isEqualTo(requestBody)
+                expectThat(bodyInRequest).isEqualTo(requestBody as String)
             } else {
                 get { body }.isNull()
             }
@@ -180,12 +181,18 @@ class ProxyApiTests {
     }
 
     private fun proxyMethodsTestsInput(): Array<Any?> {
+        lateinit var textElement: TextElement
+
+        val textElementValue = "Hello World"
+        textElement.setText(textElementValue)
+
         return arrayOf(
             arrayOf(HttpMethod.GET, null, null, null),
             arrayOf(HttpMethod.DELETE, null, null, null),
             arrayOf(HttpMethod.POST, "text", "plain", "Hello World"),
             arrayOf(HttpMethod.PATCH, "text", "plain", "Hello World"),
-            arrayOf(HttpMethod.PUT, "text", "plain", "Hello World")
+            arrayOf(HttpMethod.PUT, "text", "plain", "Hello World"),
+            arrayOf(HttpMethod.POST, "text", "plain", textElement),
         )
     }
 

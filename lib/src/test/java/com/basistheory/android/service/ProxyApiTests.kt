@@ -241,7 +241,7 @@ class ProxyApiWithElementsTests {
         proxyRequest = proxyRequest.apply {
             headers = mapOf(
                 "BT-PROXY-URL" to "https://echo.basistheory.com/post",
-                "Content-Type" to "application/json"
+                "Content-Type" to "text/plain"
             )
             body = nameElement
         }
@@ -260,6 +260,10 @@ class ProxyApiWithElementsTests {
         verify(exactly = 1) { apiClient.execute<Any>(any(), any()) }
 
         expectThat(callSlot.captured.request()) {
+            get { headers["BT-PROXY-URL"] }.isEqualTo("https://echo.basistheory.com/post")
+            get { body?.contentType()?.type }.isEqualTo("text")
+            get { body?.contentType()?.subtype }.isEqualTo("plain")
+
             if (this.subject.body != null) {
                 val buffer = Buffer()
                 this.subject.body!!.writeTo(buffer)

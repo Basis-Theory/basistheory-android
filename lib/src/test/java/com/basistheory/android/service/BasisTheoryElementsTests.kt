@@ -2,25 +2,23 @@ package com.basistheory.android.service
 
 import android.app.Activity
 import android.view.View
-import com.basistheory.CreateTokenRequest
-import com.basistheory.SessionsApi
-import com.basistheory.Token
-import com.basistheory.TokenizeApi
-import com.basistheory.TokensApi
+import com.basistheory.*
+import com.basistheory.android.model.ElementValueReference
 import com.basistheory.android.model.exceptions.IncompleteElementException
 import com.basistheory.android.view.CardExpirationDateElement
 import com.basistheory.android.view.CardNumberElement
 import com.basistheory.android.view.CardVerificationCodeElement
 import com.basistheory.android.view.TextElement
 import com.github.javafaker.Faker
-import io.mockk.Called
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.impl.annotations.SpyK
 import io.mockk.junit4.MockKRule
-import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import okhttp3.Call
+import okio.Buffer
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -29,10 +27,7 @@ import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import strikt.api.expectCatching
 import strikt.api.expectThat
-import strikt.assertions.isA
-import strikt.assertions.isEqualTo
-import strikt.assertions.isFailure
-import strikt.assertions.isNotEqualTo
+import strikt.assertions.*
 import java.time.Instant
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -89,6 +84,13 @@ class BasisTheoryElementsTests {
 
     @InjectMockKs
     private lateinit var bt: BasisTheoryElements
+
+    @SpyK
+    private var apiClient: ApiClient = spyk()
+
+    private val testProxyApi: ProxyApi = ProxyApi(Dispatchers.IO) { apiClient }
+
+    private var proxyRequest: ProxyRequest = ProxyRequest()
 
     @Before
     fun setUp() {
@@ -472,6 +474,196 @@ class BasisTheoryElementsTests {
 
             verify { tokensApi.create(expectedCreateTokenRequest) }
         }
+
+    @Test
+    fun `proxy should replace Element refs within request object with underlying data values`() {
+        val name = faker.name().fullName()
+        nameElement.setText(name)
+
+        val phoneNumber = faker.phoneNumber().phoneNumber()
+        phoneNumberElement.setText(phoneNumber)
+
+
+        var data = object {
+            val name = nameElement
+            val phone = phoneNumberElement
+        }
+
+        val stringifiedData = "{\"name\":\"${name}\",\"phone\":\"${phoneNumber}\"}"
+
+        proxyRequest = proxyRequest.apply {
+            headers = mapOf(
+                "BT-PROXY-URL" to "https://echo.basistheory.com/post",
+                "Content-Type" to "application/json"
+            )
+            body = data
+        }
+
+        val callSlot = slot<Call>()
+        every { apiClient.execute<Any>(capture(callSlot), any()) } returns ApiResponse(
+            200,
+            emptyMap(),
+            "Hello World"
+        )
+
+        val result = runBlocking {
+            testProxyApi.post(proxyRequest)
+        }
+
+        verify(exactly = 1) { apiClient.execute<Any>(any(), any()) }
+
+        expectThat(callSlot.captured.request()) {
+            get { headers["BT-PROXY-URL"] }.isEqualTo("https://echo.basistheory.com/post")
+            get { body?.contentType()?.type }.isEqualTo("application")
+            get { body?.contentType()?.subtype }.isEqualTo("json")
+
+            if (this.subject.body != null) {
+                val buffer = Buffer()
+                this.subject.body!!.writeTo(buffer)
+                val bodyInRequest = buffer.readUtf8()
+                expectThat(bodyInRequest).isEqualTo(stringifiedData)
+            } else {
+                get { body }.isNull()
+            }
+        }
+
+        expectThat(result).isA<ElementValueReference>()
+    }
+
+    @Test
+    fun `proxy should replace top level TextElement ref with underlying data value`() {
+        val name = faker.name().fullName()
+        nameElement.setText(name)
+
+        proxyRequest = proxyRequest.apply {
+            headers = mapOf(
+                "BT-PROXY-URL" to "https://echo.basistheory.com/post",
+                "Content-Type" to "text/plain"
+            )
+            body = nameElement
+        }
+
+        val callSlot = slot<Call>()
+        every { apiClient.execute<Any>(capture(callSlot), any()) } returns ApiResponse(
+            200,
+            emptyMap(),
+            "Hello World"
+        )
+
+        val result = runBlocking {
+            testProxyApi.post(proxyRequest)
+        }
+
+        verify(exactly = 1) { apiClient.execute<Any>(any(), any()) }
+
+        expectThat(callSlot.captured.request()) {
+            get { headers["BT-PROXY-URL"] }.isEqualTo("https://echo.basistheory.com/post")
+            get { body?.contentType()?.type }.isEqualTo("text")
+            get { body?.contentType()?.subtype }.isEqualTo("plain")
+
+            if (this.subject.body != null) {
+                val buffer = Buffer()
+                this.subject.body!!.writeTo(buffer)
+                val bodyInRequest = buffer.readUtf8()
+                expectThat(bodyInRequest).isEqualTo(name)
+            } else {
+                get { body }.isNull()
+            }
+        }
+
+        expectThat(result).isA<ElementValueReference>()
+    }
+
+    @Test
+    fun `proxy should replace top level CardNumberElement ref with underlying data value`() {
+        val cardNumber = testCardNumbers.random()
+        cardNumberElement.setText(cardNumber)
+
+        proxyRequest = proxyRequest.apply {
+            headers = mapOf(
+                "BT-PROXY-URL" to "https://echo.basistheory.com/post",
+                "Content-Type" to "text/plain"
+            )
+            body = cardNumberElement
+        }
+
+        val callSlot = slot<Call>()
+        every { apiClient.execute<Any>(capture(callSlot), any()) } returns ApiResponse(
+            200,
+            emptyMap(),
+            "Hello World"
+        )
+
+        val result = runBlocking {
+            testProxyApi.post(proxyRequest)
+        }
+
+        verify(exactly = 1) { apiClient.execute<Any>(any(), any()) }
+
+        expectThat(callSlot.captured.request()) {
+            get { headers["BT-PROXY-URL"] }.isEqualTo("https://echo.basistheory.com/post")
+            get { body?.contentType()?.type }.isEqualTo("text")
+            get { body?.contentType()?.subtype }.isEqualTo("plain")
+
+            if (this.subject.body != null) {
+                val buffer = Buffer()
+                this.subject.body!!.writeTo(buffer)
+                val bodyInRequest = buffer.readUtf8()
+                expectThat(bodyInRequest).isEqualTo(cardNumber.replace(Regex("""[^\d]"""), ""))
+            } else {
+                get { body }.isNull()
+            }
+        }
+
+        expectThat(result).isA<ElementValueReference>()
+    }
+
+    @Test
+    fun `proxy should replace top level CardExpirationDateElement ref with underlying data value`() {
+        val expDate = LocalDate.now().plus(2, ChronoUnit.YEARS)
+        val month = expDate.monthValue.toString().padStart(2, '0')
+        val year = expDate.year.toString()
+        val expDateString = "$month/${year.takeLast(2)}"
+        cardExpElement.setText(expDateString)
+
+        proxyRequest = proxyRequest.apply {
+            headers = mapOf(
+                "BT-PROXY-URL" to "https://echo.basistheory.com/post",
+                "Content-Type" to "text/plain"
+            )
+            body = cardExpElement
+        }
+
+        val callSlot = slot<Call>()
+        every { apiClient.execute<Any>(capture(callSlot), any()) } returns ApiResponse(
+            200,
+            emptyMap(),
+            "Hello World"
+        )
+
+        val result = runBlocking {
+            testProxyApi.post(proxyRequest)
+        }
+
+        verify(exactly = 1) { apiClient.execute<Any>(any(), any()) }
+
+        expectThat(callSlot.captured.request()) {
+            get { headers["BT-PROXY-URL"] }.isEqualTo("https://echo.basistheory.com/post")
+            get { body?.contentType()?.type }.isEqualTo("text")
+            get { body?.contentType()?.subtype }.isEqualTo("plain")
+
+            if (this.subject.body != null) {
+                val buffer = Buffer()
+                this.subject.body!!.writeTo(buffer)
+                val bodyInRequest = buffer.readUtf8()
+                expectThat(bodyInRequest).isEqualTo(expDateString)
+            } else {
+                get { body }.isNull()
+            }
+        }
+
+        expectThat(result).isA<ElementValueReference>()
+    }
 
     // note: junit only supports one @RunWith class per test class, so we can't use JUnitParamsRunner here
     @Test

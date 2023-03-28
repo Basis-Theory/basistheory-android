@@ -76,7 +76,7 @@ class ProxyApi(
             if (body::class.java.isPrimitiveType()) body = body
             else if (body is TextElement) body = body.getTransformedText()
             else if (body is ElementValueReference) body = body.getValue()
-            else replaceElementRefs(body.toMap())
+            else body = replaceElementRefs(body.toMap())
         }
 
         val call = apiClient.buildCall(

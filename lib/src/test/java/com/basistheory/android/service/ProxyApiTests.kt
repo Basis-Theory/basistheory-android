@@ -1,12 +1,8 @@
 package com.basistheory.android.service
 
-import android.app.Activity
-import android.view.View
 import com.basistheory.ApiClient
 import com.basistheory.ApiResponse
 import com.basistheory.android.model.ElementValueReference
-import com.basistheory.android.view.TextElement
-import com.github.javafaker.Faker
 import io.mockk.every
 import io.mockk.impl.annotations.SpyK
 import io.mockk.junit4.MockKRule
@@ -23,14 +19,13 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.Robolectric
-import org.robolectric.RobolectricTestRunner
 import strikt.api.expectThat
 import strikt.assertions.*
 import java.util.*
 
 @RunWith(JUnitParamsRunner::class)
 class ProxyApiTests {
+
     @get:Rule
     val mockkRule = MockKRule(this)
 
@@ -190,7 +185,7 @@ class ProxyApiTests {
             arrayOf(HttpMethod.DELETE, null, null, null),
             arrayOf(HttpMethod.POST, "text", "plain", "Hello World"),
             arrayOf(HttpMethod.PATCH, "text", "plain", "Hello World"),
-            arrayOf(HttpMethod.PUT, "text", "plain", "Hello World"),
+            arrayOf(HttpMethod.PUT, "text", "plain", "Hello World")
         )
     }
 }

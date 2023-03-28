@@ -2,7 +2,13 @@ package com.basistheory.android.service
 
 import android.app.Activity
 import android.view.View
-import com.basistheory.*
+import com.basistheory.CreateTokenRequest
+import com.basistheory.SessionsApi
+import com.basistheory.Token
+import com.basistheory.TokenizeApi
+import com.basistheory.TokensApi
+import com.basistheory.ApiResponse
+import com.basistheory.ApiClient
 import com.basistheory.android.model.ElementValueReference
 import com.basistheory.android.model.exceptions.IncompleteElementException
 import com.basistheory.android.view.CardExpirationDateElement
@@ -10,11 +16,15 @@ import com.basistheory.android.view.CardNumberElement
 import com.basistheory.android.view.CardVerificationCodeElement
 import com.basistheory.android.view.TextElement
 import com.github.javafaker.Faker
-import io.mockk.*
+import io.mockk.Called
+import io.mockk.every
+import io.mockk.slot
+import io.mockk.spyk
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.impl.annotations.SpyK
 import io.mockk.junit4.MockKRule
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import okhttp3.Call
@@ -27,7 +37,11 @@ import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import strikt.api.expectCatching
 import strikt.api.expectThat
-import strikt.assertions.*
+import strikt.assertions.isA
+import strikt.assertions.isEqualTo
+import strikt.assertions.isFailure
+import strikt.assertions.isNotEqualTo
+import strikt.assertions.isNull
 import java.time.Instant
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit

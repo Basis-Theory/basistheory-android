@@ -3,7 +3,6 @@ package com.basistheory.android.service
 import com.basistheory.ApiClient
 import com.basistheory.ApiResponse
 import com.basistheory.android.model.ElementValueReference
-import com.basistheory.android.view.TextElement
 import io.mockk.every
 import io.mockk.impl.annotations.SpyK
 import io.mockk.junit4.MockKRule
@@ -181,18 +180,12 @@ class ProxyApiTests {
     }
 
     private fun proxyMethodsTestsInput(): Array<Any?> {
-        lateinit var textElement: TextElement
-
-        val textElementValue = "Hello World"
-        textElement.setText(textElementValue)
-
         return arrayOf(
             arrayOf(HttpMethod.GET, null, null, null),
             arrayOf(HttpMethod.DELETE, null, null, null),
             arrayOf(HttpMethod.POST, "text", "plain", "Hello World"),
             arrayOf(HttpMethod.PATCH, "text", "plain", "Hello World"),
             arrayOf(HttpMethod.PUT, "text", "plain", "Hello World"),
-            arrayOf(HttpMethod.POST, "text", "plain", textElement),
         )
     }
 

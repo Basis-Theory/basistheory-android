@@ -47,7 +47,7 @@ class CardNumberElement @JvmOverloads constructor(
 
         cardMetadata = CardMetadata(
             cardBrandDetails?.brand,
-            cardDigits?.take(6).takeIf { isMaskSatisfied },
+            cardDigits?.take(cardDigits.binLength()).takeIf { isMaskSatisfied },
             cardDigits?.takeLast(4).takeIf { isMaskSatisfied },
         )
         cvcMask = cardBrandDetails?.cvcMask
@@ -72,7 +72,7 @@ class CardNumberElement @JvmOverloads constructor(
             eventDetails.add(
                 EventDetails(
                     EventDetails.CardBin,
-                    value.take(6)
+                    value.take(value.binLength())
                 )
             )
 
@@ -97,6 +97,8 @@ class CardNumberElement @JvmOverloads constructor(
         val maskedValue = mask?.evaluate(text, inputAction)
         return transform?.apply(maskedValue) ?: maskedValue
     }
+
+    private fun String.binLength() = if(this.length >= 16) 8 else 6
 
     companion object {
         private val digit = Regex("""\d""")

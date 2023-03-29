@@ -135,7 +135,7 @@ class CardNumberElementTests {
             }
             get { details }.any {
                 get { type }.isEqualTo(EventDetails.CardBin)
-                get { message }.isEqualTo("411111")
+                get { message }.isEqualTo("41111111")
             }
             get { details }.any {
                 get { type }.isEqualTo(EventDetails.CardLast4)
@@ -161,12 +161,36 @@ class CardNumberElementTests {
             }
             get { details }.any {
                 get { type }.isEqualTo(EventDetails.CardBin)
-                get { message }.isEqualTo("424242")
+                get { message }.isEqualTo("42424242")
             }
             get { details }.any {
                 get { type }.isEqualTo(EventDetails.CardLast4)
                 get { message }.isEqualTo("4243")
             }
+        }
+    }
+
+    @Test
+    fun `ChangeEvent bin is computed properly for 16 digit or longer card numbers`() {
+        val changeEvents = mutableListOf<ChangeEvent>()
+        cardNumberElement.addChangeEventListener { changeEvents.add(it) }
+
+        cardNumberElement.setText("4111 1111 1111 1111")
+        expectThat(changeEvents.single().details).any {
+            get { type }.isEqualTo(EventDetails.CardBin)
+            get { message }.isEqualTo("41111111")
+        }
+    }
+
+    @Test
+    fun `ChangeEvent bin is computed properly for 15 digit or shorter card numbers`() {
+        val changeEvents = mutableListOf<ChangeEvent>()
+        cardNumberElement.addChangeEventListener { changeEvents.add(it) }
+
+        cardNumberElement.setText("3782 822463 10005")
+        expectThat(changeEvents.single().details).any {
+            get { type }.isEqualTo(EventDetails.CardBin)
+            get { message }.isEqualTo("378282")
         }
     }
 
@@ -177,7 +201,7 @@ class CardNumberElementTests {
         expectThat(cardNumberElement) {
             get { cardMetadata }.isNotNull().and {
                 get { brand }.isEqualTo(CardBrands.MASTERCARD.label)
-                get { bin }.isEqualTo("543210")
+                get { bin }.isEqualTo("54321098")
                 get { last4 }.isEqualTo("3210")
             }
             get { mask }.isEqualTo(ElementMask(CardBrandEnricher.CardMasks.MASK_4_8_12GAPS_16DIGITS))
@@ -216,5 +240,19 @@ class CardNumberElementTests {
             get { cvcMask }.isEqualTo(CardBrandEnricher.CvcMasks.THREE_DIGIT)
             get { isMaskSatisfied }.isFalse()
         }
+    }
+
+    @Test
+    fun `card metadata bin is computed properly for 16 digit or longer card numbers`() {
+        cardNumberElement.setText("5432 1098 7654 3210")
+
+        expectThat(cardNumberElement.cardMetadata?.bin).isEqualTo("54321098")
+    }
+
+    @Test
+    fun `card metadata bin is computed properly for 15 digit or shorter card numbers`() {
+        cardNumberElement.setText("3782 822463 10005")
+
+        expectThat(cardNumberElement.cardMetadata?.bin).isEqualTo("378282")
     }
 }

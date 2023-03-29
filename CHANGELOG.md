@@ -1,3 +1,11 @@
+## [1.8.0](https://github.com/Basis-Theory/basistheory-android/compare/1.7.0...1.8.0) (2023-03-29)
+
+
+### Features
+
+* updating card bin depending on card length ([#52](https://github.com/Basis-Theory/basistheory-android/issues/52)) ([6d6585b](https://github.com/Basis-Theory/basistheory-android/commit/6d6585b4ebc947f9f6492fdf604c939251001d5d))
+
+
 ## [1.7.0](https://github.com/Basis-Theory/basistheory-android/compare/1.6.0...1.7.0) (2023-03-27)
 
 

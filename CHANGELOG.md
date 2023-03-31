@@ -1,3 +1,11 @@
+## [1.9.0](https://github.com/Basis-Theory/basistheory-android/compare/1.8.0...1.9.0) (2023-03-31)
+
+
+### Features
+
+* allow passing elements in proxy body ([#51](https://github.com/Basis-Theory/basistheory-android/issues/51)) ([aa92321](https://github.com/Basis-Theory/basistheory-android/commit/aa923215333978dc1034abb1e0ed5c898c05a97c))
+
+
 ## [1.8.0](https://github.com/Basis-Theory/basistheory-android/compare/1.7.0...1.8.0) (2023-03-29)
 
 

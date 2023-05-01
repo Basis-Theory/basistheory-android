@@ -65,6 +65,8 @@ class CustomFormFragment : Fragment() {
         binding.name.setText("John Doe")
         binding.phoneNumber.setText("2345678900")
         binding.orderNumber.setText("ABC123")
+        binding.password.setText("secret password 123")
+        binding.pin.setText("1234")
     }
 
     private fun tokenize() = viewModel.tokenize(object {
@@ -73,6 +75,8 @@ class CustomFormFragment : Fragment() {
             val name = binding.name
             val phoneNumber = binding.phoneNumber
             val orderNumber = binding.orderNumber
+            val password = binding.password
+            val pin = binding.pin
         }
         val expires_at = tokenExpirationTimestamp()
     }).observe(viewLifecycleOwner) {}

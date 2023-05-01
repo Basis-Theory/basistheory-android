@@ -34,7 +34,7 @@
                     android:inputType="number"
                     android:padding="5dp"
                     bt:hint="Social Security Number"
-                    bt:keyboardType="number"
+                    bt:inputType="number"
                     bt:mask="###-##-####"
                     bt:removeDefaultStyles="true"
                     bt:textColor="@color/gray_800" />

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.text.Editable
 import android.text.TextWatcher
+import android.text.method.PasswordTransformationMethod
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View.OnFocusChangeListener
@@ -22,7 +23,7 @@ import com.basistheory.android.event.ElementEventListeners
 import com.basistheory.android.event.FocusEvent
 import com.basistheory.android.model.ElementValueReference
 import com.basistheory.android.model.InputAction
-import com.basistheory.android.model.KeyboardType
+import com.basistheory.android.model.InputType
 import com.basistheory.android.view.mask.ElementMask
 import com.basistheory.android.view.transform.ElementTransform
 import com.basistheory.android.view.validation.ElementValidator
@@ -61,10 +62,10 @@ open class TextElement @JvmOverloads constructor(
 
                     hint = getString(R.styleable.TextElement_hint)
 
-                    keyboardType = KeyboardType.fromInt(
+                    inputType = InputType.fromInt(
                         getInt(
-                            R.styleable.TextElement_keyboardType,
-                            KeyboardType.TEXT.inputType
+                            R.styleable.TextElement_inputType,
+                            InputType.TEXT.androidInputType
                         )
                     )
 
@@ -166,10 +167,13 @@ open class TextElement @JvmOverloads constructor(
             _editText.hint = value
         }
 
-    var keyboardType: KeyboardType
-        get() = KeyboardType.fromInt(_editText.inputType)
+    var inputType: InputType
+        get() = InputType.fromInt(_editText.inputType)
         set(value) {
-            _editText.inputType = value.inputType
+            _editText.inputType = value.androidInputType
+
+            if (value.isConcealed)
+                _editText.transformationMethod = PasswordTransformationMethod.getInstance()
         }
 
     var removeDefaultStyles: Boolean

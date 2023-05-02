@@ -2,6 +2,7 @@ package com.basistheory.android.view
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.Editable
@@ -86,6 +87,11 @@ open class TextElement @JvmOverloads constructor(
                         R.styleable.TextElement_textSize,
                         16f * resources.displayMetrics.scaledDensity
                     )
+
+//                    typeface = getDimension(
+//                        R.styleable.TextElement_textSize,
+//                        16f * resources.displayMetrics.scaledDensity
+//                    )
                 } finally {
                     recycle()
                 }
@@ -159,6 +165,12 @@ open class TextElement @JvmOverloads constructor(
     var textSize: Float
         get() = _editText.textSize
         set(value) = _editText.setTextSize(TypedValue.COMPLEX_UNIT_PX, value)
+
+    var typeface: Typeface?
+        get() = _editText.typeface
+        set(value) {
+            _editText.typeface = value
+        }
 
     var hint: CharSequence?
         get() = _editText.hint

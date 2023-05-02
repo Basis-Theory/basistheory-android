@@ -35,4 +35,10 @@
         android:label="@string/title_reveal"
         tools:layout="@layout/fragment_reveal" />
 
+    <fragment
+        android:id="@+id/nav_styling"
+        android:name="com.basistheory.android.example.view.styling.StylingFragment"
+        android:label="@string/title_styling"
+        tools:layout="@layout/fragment_styling" />
+
 </navigation>

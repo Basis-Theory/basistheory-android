@@ -88,10 +88,10 @@ open class TextElement @JvmOverloads constructor(
                         16f * resources.displayMetrics.scaledDensity
                     )
 
-//                    typeface = getDimension(
-//                        R.styleable.TextElement_textSize,
-//                        16f * resources.displayMetrics.scaledDensity
-//                    )
+                    typeface = resolveTypeface(
+                        getInt(R.styleable.TextElement_typeface, 0),
+                        defStyleAttr
+                    )
                 } finally {
                     recycle()
                 }
@@ -307,6 +307,14 @@ open class TextElement @JvmOverloads constructor(
             it(event)
         }
     }
+
+    private fun resolveTypeface(typefaceIndex: Int, style: Int): Typeface? =
+        when (typefaceIndex) {
+            1 -> Typeface.create(Typeface.SANS_SERIF, style)
+            2 -> Typeface.create(Typeface.SERIF, style)
+            3 -> Typeface.create(Typeface.MONOSPACE, style)
+            else -> Typeface.defaultFromStyle(style)
+        }
 
     internal companion object {
         private const val STATE_SUPER = "state_super"

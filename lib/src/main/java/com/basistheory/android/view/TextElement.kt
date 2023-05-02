@@ -22,8 +22,9 @@ import com.basistheory.android.event.ElementEventListeners
 import com.basistheory.android.event.FocusEvent
 import com.basistheory.android.model.ElementValueReference
 import com.basistheory.android.model.InputAction
-import com.basistheory.android.model.KeyboardType
+import com.basistheory.android.model.InputType
 import com.basistheory.android.view.mask.ElementMask
+import com.basistheory.android.view.method.FullyHiddenTransformationMethod
 import com.basistheory.android.view.transform.ElementTransform
 import com.basistheory.android.view.validation.ElementValidator
 
@@ -40,6 +41,7 @@ open class TextElement @JvmOverloads constructor(
     private var _isValid: Boolean = true
     private var _isMaskSatisfied: Boolean = true
     private var _isEmpty: Boolean = true
+    private var _inputType: InputType = InputType.TEXT
 
     internal var inputAction: InputAction = InputAction.INSERT
 
@@ -61,11 +63,8 @@ open class TextElement @JvmOverloads constructor(
 
                     hint = getString(R.styleable.TextElement_hint)
 
-                    keyboardType = KeyboardType.fromInt(
-                        getInt(
-                            R.styleable.TextElement_keyboardType,
-                            KeyboardType.TEXT.inputType
-                        )
+                    inputType = InputType.values().elementAt(
+                        getInt(R.styleable.TextElement_inputType, 0)
                     )
 
                     mask = getString(R.styleable.TextElement_mask)?.let { ElementMask(it) }
@@ -166,10 +165,14 @@ open class TextElement @JvmOverloads constructor(
             _editText.hint = value
         }
 
-    var keyboardType: KeyboardType
-        get() = KeyboardType.fromInt(_editText.inputType)
+    var inputType: InputType
+        get() = _inputType
         set(value) {
-            _editText.inputType = value.inputType
+            _inputType = value
+            _editText.inputType = value.androidInputType
+
+            if (value.isConcealed)
+                _editText.transformationMethod = FullyHiddenTransformationMethod()
         }
 
     var removeDefaultStyles: Boolean

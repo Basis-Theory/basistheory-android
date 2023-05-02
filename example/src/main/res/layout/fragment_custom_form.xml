@@ -55,7 +55,31 @@
                     android:background="@drawable/rounded_edit_text"
                     android:padding="5dp"
                     bt:hint="Order Number"
-                    bt:keyboardType="text"
+                    bt:inputType="text"
+                    bt:removeDefaultStyles="true"
+                    bt:textColor="@color/gray_800" />
+
+                <com.basistheory.android.view.TextElement
+                    android:id="@+id/password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/rounded_edit_text"
+                    android:padding="5dp"
+                    bt:hint="Password"
+                    bt:inputType="textPassword"
+                    bt:removeDefaultStyles="true"
+                    bt:textColor="@color/gray_800" />
+
+                <com.basistheory.android.view.TextElement
+                    android:id="@+id/pin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/rounded_edit_text"
+                    android:padding="5dp"
+                    bt:hint="PIN"
+                    bt:inputType="numberPassword"
                     bt:removeDefaultStyles="true"
                     bt:textColor="@color/gray_800" />
 
@@ -63,7 +87,8 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="50dp">
 
                     <Button
                         android:id="@+id/tokenize_button"

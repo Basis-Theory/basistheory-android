@@ -1,3 +1,11 @@
+## [1.11.0](https://github.com/Basis-Theory/basistheory-android/compare/1.10.0...1.11.0) (2023-05-03)
+
+
+### Features
+
+* Adds typeface property to elements ([#59](https://github.com/Basis-Theory/basistheory-android/issues/59)) ([c00241c](https://github.com/Basis-Theory/basistheory-android/commit/c00241ca39d716d8fd0e327d8eb664d096f1d49b))
+
+
 ## [1.10.0](https://github.com/Basis-Theory/basistheory-android/compare/1.9.0...1.10.0) (2023-05-02)
 
 

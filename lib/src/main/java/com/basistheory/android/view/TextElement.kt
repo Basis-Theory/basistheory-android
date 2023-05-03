@@ -2,6 +2,7 @@ package com.basistheory.android.view
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.Editable
@@ -85,6 +86,11 @@ open class TextElement @JvmOverloads constructor(
                         R.styleable.TextElement_textSize,
                         16f * resources.displayMetrics.scaledDensity
                     )
+
+                    typeface = resolveTypeface(
+                        getInt(R.styleable.TextElement_typeface, 0),
+                        defStyleAttr
+                    )
                 } finally {
                     recycle()
                 }
@@ -158,6 +164,12 @@ open class TextElement @JvmOverloads constructor(
     var textSize: Float
         get() = _editText.textSize
         set(value) = _editText.setTextSize(TypedValue.COMPLEX_UNIT_PX, value)
+
+    var typeface: Typeface?
+        get() = _editText.typeface
+        set(value) {
+            _editText.typeface = value
+        }
 
     var hint: CharSequence?
         get() = _editText.hint
@@ -298,6 +310,14 @@ open class TextElement @JvmOverloads constructor(
             it(event)
         }
     }
+
+    private fun resolveTypeface(typefaceIndex: Int, style: Int): Typeface? =
+        when (typefaceIndex) {
+            1 -> Typeface.create(Typeface.SANS_SERIF, style)
+            2 -> Typeface.create(Typeface.SERIF, style)
+            3 -> Typeface.create(Typeface.MONOSPACE, style)
+            else -> Typeface.defaultFromStyle(style)
+        }
 
     internal companion object {
         private const val STATE_SUPER = "state_super"

@@ -83,7 +83,6 @@
                     bt:removeDefaultStyles="true"
                     bt:textColor="@color/gray_800" />
 
-
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

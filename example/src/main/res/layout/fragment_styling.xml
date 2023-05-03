@@ -43,7 +43,7 @@
                     android:layout_height="wrap_content"
                     android:padding="5dp"
                     bt:removeDefaultStyles="false"
-                    bt:keyboardType="number"
+                    bt:inputType="number"
                     bt:mask="###-##-####"
                     bt:hint="Social Security Number" />
 

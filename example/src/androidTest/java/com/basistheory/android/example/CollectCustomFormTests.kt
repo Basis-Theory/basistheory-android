@@ -36,6 +36,8 @@ class CollectCustomFormTests {
         onView(withText("John Doe")).check(matches(isDisplayed()))
         onView(withText("+1(234) 567-8900")).check(matches(isDisplayed()))
         onView(withText("ABC-123")).check(matches(isDisplayed()))
+        onView(withText("secret password 123")).check(matches(isDisplayed()))
+        onView(withText("1234")).check(matches(isDisplayed()))
     }
 
     @Test
@@ -43,11 +45,15 @@ class CollectCustomFormTests {
         val name = Faker().name().fullName()
         val phoneNumber = "2345678900"
         val orderNumber = "ABC123"
+        val password = Faker().zelda().character()
+        val pin = Faker().number().randomNumber(4, true).toString()
 
         // type values into elements
         onView(withId(R.id.name)).perform(scrollTo(), typeText(name))
         onView(withId(R.id.phoneNumber)).perform(scrollTo(), typeText(phoneNumber))
         onView(withId(R.id.orderNumber)).perform(scrollTo(), typeText(orderNumber))
+        onView(withId(R.id.password)).perform(scrollTo(), typeText(password))
+        onView(withId(R.id.pin)).perform(scrollTo(), typeText(pin))
 
         // click tokenize
         onView(withId(R.id.tokenize_button)).perform(scrollTo(), click())
@@ -60,7 +66,9 @@ class CollectCustomFormTests {
                     allOf(
                         withSubstring(name),
                         withSubstring("+1(234) 567-8900"),
-                        withSubstring("ABC-123")
+                        withSubstring("ABC-123"),
+                        withSubstring(password),
+                        withSubstring(pin)
                     )
                 )
             )

@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import com.basistheory.android.event.ChangeEvent
 import com.basistheory.android.event.EventDetails
 import com.basistheory.android.model.CardMetadata
-import com.basistheory.android.model.KeyboardType
+import com.basistheory.android.model.InputType
 import com.basistheory.android.service.CardBrandEnricher
 import com.basistheory.android.view.mask.ElementMask
 import com.basistheory.android.view.transform.RegexReplaceElementTransform
@@ -20,7 +20,7 @@ class CardNumberElement @JvmOverloads constructor(
     private val cardBrandEnricher: CardBrandEnricher = CardBrandEnricher()
 
     init {
-        super.keyboardType = KeyboardType.NUMBER
+        super.inputType = InputType.NUMBER
         super.mask = defaultMask
         super.transform = RegexReplaceElementTransform(Regex("""\s"""), "")
         super.validator = LuhnValidator()

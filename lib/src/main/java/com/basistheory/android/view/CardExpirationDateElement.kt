@@ -3,7 +3,7 @@ package com.basistheory.android.view
 import android.content.Context
 import android.util.AttributeSet
 import com.basistheory.android.model.ElementValueReference
-import com.basistheory.android.model.KeyboardType
+import com.basistheory.android.model.InputType
 import com.basistheory.android.view.mask.ElementMask
 import com.basistheory.android.view.validation.FutureDateValidator
 
@@ -28,7 +28,7 @@ class CardExpirationDateElement @JvmOverloads constructor(
     }
 
     init {
-        super.keyboardType = KeyboardType.NUMBER
+        super.inputType = InputType.NUMBER
         super.mask = defaultMask
         super.validator = FutureDateValidator()
     }

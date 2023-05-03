@@ -9,7 +9,7 @@ import androidx.fragment.app.viewModels
 import com.basistheory.android.example.databinding.FragmentCustomFormBinding
 import com.basistheory.android.example.util.tokenExpirationTimestamp
 import com.basistheory.android.example.viewmodel.ApiViewModel
-import com.basistheory.android.model.KeyboardType
+import com.basistheory.android.model.InputType
 import com.basistheory.android.view.mask.ElementMask
 
 class CustomFormFragment : Fragment() {
@@ -28,8 +28,8 @@ class CustomFormFragment : Fragment() {
         val digitRegex = Regex("""\d""")
         val charRegex = Regex("""[A-Za-z]""")
 
-        // illustrates that keyboardType can be set programmatically (or in xml)
-        binding.phoneNumber.keyboardType = KeyboardType.NUMBER
+        // illustrates that inputType can be set programmatically (or in xml)
+        binding.phoneNumber.inputType = InputType.NUMBER
         binding.phoneNumber.mask = ElementMask(
             listOf(
                 "+",
@@ -65,6 +65,8 @@ class CustomFormFragment : Fragment() {
         binding.name.setText("John Doe")
         binding.phoneNumber.setText("2345678900")
         binding.orderNumber.setText("ABC123")
+        binding.password.setText("secret password 123")
+        binding.pin.setText("1234")
     }
 
     private fun tokenize() = viewModel.tokenize(object {
@@ -73,6 +75,8 @@ class CustomFormFragment : Fragment() {
             val name = binding.name
             val phoneNumber = binding.phoneNumber
             val orderNumber = binding.orderNumber
+            val password = binding.password
+            val pin = binding.pin
         }
         val expires_at = tokenExpirationTimestamp()
     }).observe(viewLifecycleOwner) {}

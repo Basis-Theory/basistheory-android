@@ -1,3 +1,11 @@
+## [1.10.0](https://github.com/Basis-Theory/basistheory-android/compare/1.9.0...1.10.0) (2023-05-02)
+
+
+### Features
+
+* Adds support for hidden input types ([#58](https://github.com/Basis-Theory/basistheory-android/issues/58)) ([98b36f9](https://github.com/Basis-Theory/basistheory-android/commit/98b36f9b928f5826b51de7f0290db4ca10189473))
+
+
 ## [1.9.0](https://github.com/Basis-Theory/basistheory-android/compare/1.8.0...1.9.0) (2023-03-31)
 
 

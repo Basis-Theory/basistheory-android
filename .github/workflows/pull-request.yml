@@ -24,7 +24,7 @@ jobs:
           cache: 'gradle'
 
       - name: Setup Gradle cache
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v2.4.2
 
       - name: Build modules
         run: ./gradlew build -x test
@@ -51,7 +51,7 @@ jobs:
           cache: 'gradle'
 
       - name: Setup Gradle cache
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v2.4.2
 
       - name: Setup AVD cache
         uses: actions/cache@v3

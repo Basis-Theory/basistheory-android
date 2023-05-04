@@ -11,6 +11,7 @@
         <attr name="removeDefaultStyles" format="boolean" />
         <attr name="text" format="string" />
         <attr name="textColor" format="reference|color" />
+        <attr name="hintTextColor" format="reference|color" />
         <attr name="textSize" format="dimension" />
     </declare-styleable>
 </resources>

@@ -82,6 +82,11 @@ open class TextElement @JvmOverloads constructor(
                         Color.BLACK
                     )
 
+                    hintTextColor = getColor(
+                        R.styleable.TextElement_hintTextColor,
+                        Color.LTGRAY
+                    )
+
                     textSize = getDimension(
                         R.styleable.TextElement_textSize,
                         16f * resources.displayMetrics.scaledDensity
@@ -117,6 +122,15 @@ open class TextElement @JvmOverloads constructor(
     fun setValueRef(elementValueReference: ElementValueReference) {
         setText(elementValueReference.getValue())
         _editText.requestLayout()
+    }
+
+    fun setDrawables(startDrawable: Int, topDrawable: Int, endDrawable: Int, bottomDrawable: Int) {
+        _editText.setCompoundDrawablesWithIntrinsicBounds(
+            startDrawable,
+            topDrawable,
+            endDrawable,
+            bottomDrawable
+        )
     }
 
     val isComplete: Boolean
@@ -164,6 +178,12 @@ open class TextElement @JvmOverloads constructor(
         get() = _editText.hint
         set(value) {
             _editText.hint = value
+        }
+
+    var hintTextColor: Int
+        get() = _editText.currentHintTextColor
+        set(value) {
+            _editText.setHintTextColor(value)
         }
 
     var keyboardType: KeyboardType

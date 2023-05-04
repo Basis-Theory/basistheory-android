@@ -125,9 +125,13 @@ open class TextElement @JvmOverloads constructor(
         _editText.requestLayout()
     }
 
-    fun setIcon(drawable: Int) {
-        _editText.setCompoundDrawablesWithIntrinsicBounds(0, 0, drawable,0)
-        _editText.backgroundTintMode
+    fun setDrawables(startDrawable: Int, topDrawable: Int, endDrawable: Int, bottomDrawable: Int) {
+        _editText.setCompoundDrawablesWithIntrinsicBounds(
+            startDrawable,
+            topDrawable,
+            endDrawable,
+            bottomDrawable
+        )
     }
 
     val isComplete: Boolean

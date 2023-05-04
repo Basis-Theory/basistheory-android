@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.basistheory.android.example.R
 import com.basistheory.android.example.databinding.FragmentCardBinding
 import com.basistheory.android.example.util.tokenExpirationTimestamp
 import com.basistheory.android.example.viewmodel.CardFragmentViewModel
@@ -25,7 +26,7 @@ class CardFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-        // binding.cvc.cardNumberElement = binding.cardNumber
+        binding.cvc.cardNumberElement = binding.cardNumber
 
         binding.tokenizeButton.setOnClickListener { tokenize() }
         binding.autofillButton.setOnClickListener { autofill() }

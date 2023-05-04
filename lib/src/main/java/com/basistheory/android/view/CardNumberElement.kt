@@ -2,8 +2,6 @@ package com.basistheory.android.view
 
 import android.content.Context
 import android.util.AttributeSet
-import androidx.core.content.res.ResourcesCompat
-import com.basistheory.android.R
 import com.basistheory.android.event.ChangeEvent
 import com.basistheory.android.event.EventDetails
 import com.basistheory.android.model.CardMetadata
@@ -27,7 +25,6 @@ class CardNumberElement @JvmOverloads constructor(
         super.mask = defaultMask
         super.transform = RegexReplaceElementTransform(Regex("""\s"""), "")
         super.validator = LuhnValidator()
-        super.setIcon(R.drawable.card)
     }
 
     var cardMetadata: CardMetadata? = null
@@ -38,8 +35,6 @@ class CardNumberElement @JvmOverloads constructor(
     override fun beforeTextChanged(value: String?): String? {
         val cardDigits = getDigitsOnly(value)
         val cardBrandDetails = cardBrandEnricher.evaluateCard(cardDigits)
-        
-
 
         if (cardBrandDetails != null)
             mask = ElementMask(

@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.basistheory.android.service.BasisTheoryElements
 import com.basistheory.android.view.CardNumberElement
+import com.basistheory.android.view.CardVerificationCodeElement
 import kotlinx.coroutines.runBlocking
 
 class MainActivity : AppCompatActivity() {
@@ -25,6 +26,8 @@ class MainActivity : AppCompatActivity() {
         .build()
 
     private lateinit var cardNumberElement: CardNumberElement
+
+    private lateinit var cvcElement: CardVerificationCodeElement
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +69,28 @@ class MainActivity : AppCompatActivity() {
                                 if (e.isMaskSatisfied && !e.isValid) Color.RED else Color.GRAY
                         }
                     }
+                }
+            )
+
+            AndroidView(
+                factory = { context ->
+                    CardVerificationCodeElement(context).apply {
+                        layoutParams = ViewGroup.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                        )
+                        setPadding(5, 5, 5, 5)
+                        hint = "CVC"
+                        textColor = Color.GRAY
+                        removeDefaultStyles = true
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                update = {
+                    cvcElement = it
+                    cvcElement.cardNumberElement = cardNumberElement
                 }
             )
 

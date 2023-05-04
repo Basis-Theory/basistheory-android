@@ -3,6 +3,7 @@ package com.basistheory.android.view
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.Editable
@@ -122,6 +123,11 @@ open class TextElement @JvmOverloads constructor(
     fun setValueRef(elementValueReference: ElementValueReference) {
         setText(elementValueReference.getValue())
         _editText.requestLayout()
+    }
+
+    fun setIcon(drawable: Int) {
+        _editText.setCompoundDrawablesWithIntrinsicBounds(0, 0, drawable,0)
+        _editText.backgroundTintMode
     }
 
     val isComplete: Boolean

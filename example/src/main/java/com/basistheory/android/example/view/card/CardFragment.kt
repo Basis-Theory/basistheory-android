@@ -25,7 +25,7 @@ class CardFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-        binding.cvc.cardNumberElement = binding.cardNumber
+        // binding.cvc.cardNumberElement = binding.cardNumber
 
         binding.tokenizeButton.setOnClickListener { tokenize() }
         binding.autofillButton.setOnClickListener { autofill() }

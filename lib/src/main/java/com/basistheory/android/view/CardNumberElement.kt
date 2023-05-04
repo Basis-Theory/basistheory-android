@@ -11,7 +11,6 @@ import com.basistheory.android.view.mask.ElementMask
 import com.basistheory.android.view.transform.RegexReplaceElementTransform
 import com.basistheory.android.view.validation.LuhnValidator
 
-
 class CardNumberElement @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,

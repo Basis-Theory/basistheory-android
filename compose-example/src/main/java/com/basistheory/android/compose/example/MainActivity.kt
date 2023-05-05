@@ -15,9 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import com.basistheory.android.compose.example.util.tokenExpirationTimestamp
 import com.basistheory.android.example.util.prettyPrintJson
 import com.basistheory.android.service.BasisTheoryElements
+import com.basistheory.android.view.CardExpirationDateElement
 import com.basistheory.android.view.CardNumberElement
+import com.basistheory.android.view.CardVerificationCodeElement
 import kotlinx.coroutines.runBlocking
 
 class MainActivity : AppCompatActivity() {
@@ -27,6 +30,10 @@ class MainActivity : AppCompatActivity() {
         .build()
 
     private lateinit var cardNumberElement: CardNumberElement
+
+    private lateinit var cardExpirationDateElement: CardExpirationDateElement
+
+    private lateinit var cvcElement: CardVerificationCodeElement
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,11 +61,12 @@ class MainActivity : AppCompatActivity() {
                             ViewGroup.LayoutParams.WRAP_CONTENT,
                         )
                         setPadding(0, 0, 0, 0)
-                        hint = "13-19 digits"
+                        hint = "Card Number"
                         removeDefaultStyles = true
                         textColor = Color.LTGRAY
                         hintTextColor = Color.LTGRAY
-                        background = ContextCompat.getDrawable(context, R.drawable.underlined_edit_text)
+                        background =
+                            ContextCompat.getDrawable(context, R.drawable.underlined_edit_text)
                         setDrawables(0, 0, R.drawable.card, 0)
                     }
                 },
@@ -69,6 +77,67 @@ class MainActivity : AppCompatActivity() {
                     cardNumberElement = it
                     it.addChangeEventListener { e ->
                         run {
+                            it.textColor =
+                                if (e.isMaskSatisfied && !e.isValid) Color.RED else Color.GRAY
+                        }
+                    }
+                }
+            )
+
+            AndroidView(
+                factory = { context ->
+                    CardExpirationDateElement(context).apply {
+                        layoutParams = ViewGroup.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                        )
+                        setPadding(0, 0, 0, 0)
+                        hint = "MM/YY"
+                        removeDefaultStyles = true
+                        textColor = Color.LTGRAY
+                        hintTextColor = Color.LTGRAY
+                        background =
+                            ContextCompat.getDrawable(context, R.drawable.underlined_edit_text)
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                update = {
+                    cardExpirationDateElement = it
+                    it.addChangeEventListener { e ->
+                        run {
+                            it.textColor =
+                                if (e.isMaskSatisfied && !e.isValid) Color.RED else Color.GRAY
+                        }
+                    }
+                }
+            )
+
+            AndroidView(
+                factory = { context ->
+                    CardVerificationCodeElement(context).apply {
+                        layoutParams = ViewGroup.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                        )
+                        setPadding(0, 0, 0, 0)
+                        hint = "CVC"
+                        removeDefaultStyles = true
+                        textColor = Color.LTGRAY
+                        hintTextColor = Color.LTGRAY
+                        background =
+                            ContextCompat.getDrawable(context, R.drawable.underlined_edit_text)
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                update = {
+                    cvcElement = it
+                    cvcElement.cardNumberElement = cardNumberElement
+                    it.addChangeEventListener { e ->
+                        run {
                             // println(e)
                             it.textColor =
                                 if (e.isMaskSatisfied && !e.isValid) Color.RED else Color.GRAY
@@ -77,17 +146,25 @@ class MainActivity : AppCompatActivity() {
                 }
             )
 
-            Button(onClick = {
-                val tokenizeResponse = runBlocking {
-                    bt.tokenize(object {
-                        val type = "card_number"
-                        val data = cardNumberElement
-                    }).prettyPrintJson()
-                }
+            Button(
+                onClick = {
+                    val tokenizeResponse = runBlocking {
+                        bt.tokenize(object {
+                            val type = "card"
+                            val data = object {
+                                val number = cardNumberElement
+                                val expiration_month = cardExpirationDateElement.month()
+                                val expiration_year = cardExpirationDateElement.year()
+                                val cvc = cvcElement
+                            }
+                            val expires_at = tokenExpirationTimestamp()
+                        }).prettyPrintJson()
+                    }
 
-                println(tokenizeResponse)
-            },
-            modifier = Modifier.padding(start = 5.dp, top = 10.dp)) {
+                    println(tokenizeResponse)
+                },
+                modifier = Modifier.padding(start = 5.dp, top = 10.dp)
+            ) {
                 Text(text = "Tokenize")
             }
         }

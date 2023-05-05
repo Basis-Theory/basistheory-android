@@ -138,7 +138,6 @@ class MainActivity : AppCompatActivity() {
                     cvcElement.cardNumberElement = cardNumberElement
                     it.addChangeEventListener { e ->
                         run {
-                            // println(e)
                             it.textColor =
                                 if (e.isMaskSatisfied && !e.isValid) Color.RED else Color.GRAY
                         }

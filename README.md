@@ -28,7 +28,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-      implementation 'com.github.basis-theory:basistheory-android:1.12.0'
+      implementation 'com.github.basis-theory:basistheory-android:1.13.0'
   }
 ```
 

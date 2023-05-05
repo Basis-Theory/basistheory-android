@@ -1,3 +1,11 @@
+## [1.13.0](https://github.com/Basis-Theory/basistheory-android/compare/1.12.0...1.13.0) (2023-05-05)
+
+
+### Features
+
+* set hint color and adding jetpack compose example ([#61](https://github.com/Basis-Theory/basistheory-android/issues/61)) ([4385482](https://github.com/Basis-Theory/basistheory-android/commit/4385482c2a4130f5ba50c88348c24379b1b283a7))
+
+
 ## [1.12.0](https://github.com/Basis-Theory/basistheory-android/compare/1.11.0...1.12.0) (2023-05-05)
 
 

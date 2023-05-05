@@ -4,16 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
+
         <variable
             name="viewModel"
-            type="com.basistheory.android.example.viewmodel.ApiViewModel" />
+            type="com.basistheory.android.example.viewmodel.CardFragmentViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.basistheory.android.example.view.social_security_number.SocialSecurityNumberFragment">
+        tools:context="com.basistheory.android.example.view.card.CardFragment">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -27,17 +29,23 @@
                 android:orientation="vertical">
 
                 <com.basistheory.android.view.TextElement
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:layout_marginBottom="20dp"
+                    bt:removeDefaultStyles="false"
+                    bt:hint="Name" />
+
+                <com.basistheory.android.view.TextElement
                     android:id="@+id/socialSecurityNumber"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/rounded_edit_text"
-                    android:inputType="number"
                     android:padding="5dp"
-                    bt:hint="Social Security Number"
+                    bt:removeDefaultStyles="false"
                     bt:inputType="number"
                     bt:mask="###-##-####"
-                    bt:removeDefaultStyles="true"
-                    bt:textColor="@color/gray_800" />
+                    bt:hint="Social Security Number" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -45,43 +53,32 @@
                     android:orientation="horizontal">
 
                     <Button
-                        android:id="@+id/tokenize_button"
+                        android:id="@+id/style1_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
                         android:backgroundTint="@color/primary"
-                        android:text="@string/tokenize" />
+                        android:text="@string/style1" />
 
                     <Button
-                        android:id="@+id/autofill_button"
+                        android:id="@+id/style2_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="20dp"
                         android:backgroundTint="@color/primary"
-                        android:text="@string/autofill" />
+                        android:text="@string/style2" />
+
+                    <Button
+                        android:id="@+id/reset_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="20dp"
+                        android:backgroundTint="@color/primary"
+                        android:text="@string/reset" />
 
                 </LinearLayout>
-
-                <TextView
-                    android:id="@+id/error_message"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:fontFamily="monospace"
-                    android:text="@{ viewModel.errorMessage }"
-                    android:textColor="@color/red"
-                    android:visibility="@{ viewModel.errorMessage != null ? View.VISIBLE : View.GONE }" />
-
-                <TextView
-                    android:id="@+id/result"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:fontFamily="monospace"
-                    android:text="@{ viewModel.result }"
-                    android:visibility="@{ viewModel.result != null ? View.VISIBLE : View.GONE }" />
-
             </LinearLayout>
 
         </ScrollView>

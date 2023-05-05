@@ -39,7 +39,9 @@ class DrawerTests {
             R.id.nav_card to R.string.title_card,
             R.id.nav_social_security_number to R.string.title_social_security_number,
             R.id.nav_custom_form to R.string.title_custom_form,
-            R.id.nav_virtual_card to R.string.title_virtual_card
+            R.id.nav_virtual_card to R.string.title_virtual_card,
+            R.id.nav_reveal to R.string.title_reveal,
+            R.id.nav_styling to R.string.title_styling
         ).forEach { (navId, stringId) ->
             // navigate to view
             onView(withId(R.id.drawer_layout)).perform(open())

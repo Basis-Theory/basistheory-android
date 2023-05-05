@@ -2,6 +2,7 @@ package com.basistheory.android.view
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.Editable
@@ -22,8 +23,9 @@ import com.basistheory.android.event.ElementEventListeners
 import com.basistheory.android.event.FocusEvent
 import com.basistheory.android.model.ElementValueReference
 import com.basistheory.android.model.InputAction
-import com.basistheory.android.model.KeyboardType
+import com.basistheory.android.model.InputType
 import com.basistheory.android.view.mask.ElementMask
+import com.basistheory.android.view.method.FullyHiddenTransformationMethod
 import com.basistheory.android.view.transform.ElementTransform
 import com.basistheory.android.view.validation.ElementValidator
 
@@ -40,6 +42,7 @@ open class TextElement @JvmOverloads constructor(
     private var _isValid: Boolean = true
     private var _isMaskSatisfied: Boolean = true
     private var _isEmpty: Boolean = true
+    private var _inputType: InputType = InputType.TEXT
 
     internal var inputAction: InputAction = InputAction.INSERT
 
@@ -61,11 +64,8 @@ open class TextElement @JvmOverloads constructor(
 
                     hint = getString(R.styleable.TextElement_hint)
 
-                    keyboardType = KeyboardType.fromInt(
-                        getInt(
-                            R.styleable.TextElement_keyboardType,
-                            KeyboardType.TEXT.inputType
-                        )
+                    inputType = InputType.values().elementAt(
+                        getInt(R.styleable.TextElement_inputType, 0)
                     )
 
                     mask = getString(R.styleable.TextElement_mask)?.let { ElementMask(it) }
@@ -90,6 +90,11 @@ open class TextElement @JvmOverloads constructor(
                     textSize = getDimension(
                         R.styleable.TextElement_textSize,
                         16f * resources.displayMetrics.scaledDensity
+                    )
+
+                    typeface = resolveTypeface(
+                        getInt(R.styleable.TextElement_typeface, 0),
+                        defStyleAttr
                     )
                 } finally {
                     recycle()
@@ -174,6 +179,12 @@ open class TextElement @JvmOverloads constructor(
         get() = _editText.textSize
         set(value) = _editText.setTextSize(TypedValue.COMPLEX_UNIT_PX, value)
 
+    var typeface: Typeface?
+        get() = _editText.typeface
+        set(value) {
+            _editText.typeface = value
+        }
+
     var hint: CharSequence?
         get() = _editText.hint
         set(value) {
@@ -186,10 +197,14 @@ open class TextElement @JvmOverloads constructor(
             _editText.setHintTextColor(value)
         }
 
-    var keyboardType: KeyboardType
-        get() = KeyboardType.fromInt(_editText.inputType)
+    var inputType: InputType
+        get() = _inputType
         set(value) {
-            _editText.inputType = value.inputType
+            _inputType = value
+            _editText.inputType = value.androidInputType
+
+            if (value.isConcealed)
+                _editText.transformationMethod = FullyHiddenTransformationMethod()
         }
 
     var removeDefaultStyles: Boolean
@@ -315,6 +330,14 @@ open class TextElement @JvmOverloads constructor(
             it(event)
         }
     }
+
+    private fun resolveTypeface(typefaceIndex: Int, style: Int): Typeface? =
+        when (typefaceIndex) {
+            1 -> Typeface.create(Typeface.SANS_SERIF, style)
+            2 -> Typeface.create(Typeface.SERIF, style)
+            3 -> Typeface.create(Typeface.MONOSPACE, style)
+            else -> Typeface.defaultFromStyle(style)
+        }
 
     internal companion object {
         private const val STATE_SUPER = "state_super"

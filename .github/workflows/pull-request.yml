@@ -5,7 +5,7 @@ on:
     branches: [ master ]
 
 env:
-  ORG_GRADLE_PROJECT_com.basistheory.android.example.apiUrl: https://api-dev.basistheory.com
+  ORG_GRADLE_PROJECT_com.basistheory.android.example.apiUrl: https://api.flock-dev.com
   ORG_GRADLE_PROJECT_com.basistheory.android.example.apiKey: ${{ secrets.BASIS_THEORY_API_KEY }}
 
 jobs:
@@ -24,7 +24,7 @@ jobs:
           cache: 'gradle'
 
       - name: Setup Gradle cache
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v2.4.2
 
       - name: Build modules
         run: ./gradlew build -x test
@@ -51,7 +51,7 @@ jobs:
           cache: 'gradle'
 
       - name: Setup Gradle cache
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v2.4.2
 
       - name: Setup AVD cache
         uses: actions/cache@v3

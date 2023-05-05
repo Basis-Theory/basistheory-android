@@ -19,5 +19,9 @@
         <item
             android:id="@+id/nav_reveal"
             android:title="@string/title_reveal" />
+
+        <item
+            android:id="@+id/nav_styling"
+            android:title="@string/title_styling" />
     </group>
 </menu>

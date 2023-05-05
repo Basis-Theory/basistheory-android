@@ -1,3 +1,11 @@
+## [1.12.0](https://github.com/Basis-Theory/basistheory-android/compare/1.11.0...1.12.0) (2023-05-05)
+
+
+### Features
+
+* set text element drawables ([#60](https://github.com/Basis-Theory/basistheory-android/issues/60)) ([88201e0](https://github.com/Basis-Theory/basistheory-android/commit/88201e0a5910b2e6b639da2f8e8e3fcba3d1f9b0))
+
+
 ## [1.11.0](https://github.com/Basis-Theory/basistheory-android/compare/1.10.0...1.11.0) (2023-05-03)
 
 

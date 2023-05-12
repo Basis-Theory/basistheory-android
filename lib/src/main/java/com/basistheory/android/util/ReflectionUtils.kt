@@ -10,7 +10,7 @@ fun Any.toMap(): MutableMap<String, Any?> {
         {
             it.isAccessible = true
             it.get(this)
-        }).toMutableMap()
+        }).filterNot { it.key.startsWith("this$") }.toMutableMap()
 }
 
 

@@ -1,3 +1,11 @@
+### [1.13.1](https://github.com/Basis-Theory/basistheory-android/compare/1.13.0...1.13.1) (2023-05-12)
+
+
+### Bug Fixes
+
+* removing this properties when converting objects to map ([#62](https://github.com/Basis-Theory/basistheory-android/issues/62)) ([e2a9005](https://github.com/Basis-Theory/basistheory-android/commit/e2a9005bfffb890d80c7c19300d224b763bf30de))
+
+
 ## [1.13.0](https://github.com/Basis-Theory/basistheory-android/compare/1.12.0...1.13.0) (2023-05-05)
 
 

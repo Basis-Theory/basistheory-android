@@ -1,3 +1,11 @@
+## [1.14.0](https://github.com/Basis-Theory/basistheory-android/compare/1.13.1...1.14.0) (2023-05-15)
+
+
+### Features
+
+* support arrays when tokenizing ([#63](https://github.com/Basis-Theory/basistheory-android/issues/63)) ([3bf1876](https://github.com/Basis-Theory/basistheory-android/commit/3bf18768155218438076fbf523408a1f3ac5803b))
+
+
 ### [1.13.1](https://github.com/Basis-Theory/basistheory-android/compare/1.13.0...1.13.1) (2023-05-12)
 
 

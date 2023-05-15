@@ -15,28 +15,36 @@ fun transformResponseToValueReferences(data: Any?): Any? =
         map
     }
 
-internal fun replaceElementRefs(map: MutableMap<String, Any?>): MutableMap<String, Any?> {
-    for ((key, value) in map) {
-        if (value == null) continue
-        val fieldType = value::class.java
-        if (!fieldType.isPrimitiveType()) {
-            when (value) {
-                is TextElement -> {
-                    map[key] = value.tryGetTextToTokenize()
+internal fun replaceElementRefs(value: Any?): Any? {
+    if (value == null) return null
+    val fieldType = value::class.java
+
+    return if (fieldType.isPrimitiveType()) value
+    else if (fieldType.isArray) {
+        val array = value as Array<*>
+        array.map {
+            it?.let { arrayValue ->
+                replaceElementRefs(arrayValue)
+            }
+        }
+    } else {
+        when (value) {
+            is TextElement -> {
+                value.tryGetTextToTokenize()
+            }
+            is ElementValueReference -> {
+                value.getValue()
+            }
+            else -> {
+                val children = if (value as? MutableMap<String, Any?> != null) value.toMutableMap() else value.toMap()
+                for ((key, mapValue) in children) {
+                    children[key] = replaceElementRefs(mapValue)
                 }
-                is ElementValueReference -> {
-                    map[key] = value.getValue()
-                }
-                else -> {
-                    val children = value.toMap()
-                    map[key] = children
-                    replaceElementRefs(children)
-                }
+
+                children
             }
         }
     }
-
-    return map
 }
 
 internal fun TextElement.tryGetTextToTokenize(): String? {

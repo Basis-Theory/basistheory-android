@@ -176,7 +176,17 @@ class BasisTheoryElementsTests {
                         val timestamp = Instant.now().toString()
                         val nullValue = null
                     }
+                    val array = arrayOf(
+                        faker.lorem().word(),
+                        faker.random().nextDouble(),
+                        faker.random().nextBoolean(),
+                        null
+                    )
                 }
+                val containers = arrayOf(
+                    "/test/1/",
+                    "/test/2/"
+                )
             }
 
             bt.tokenize(request)
@@ -192,7 +202,17 @@ class BasisTheoryElementsTests {
                         "bool" to request.data.nested.bool,
                         "timestamp" to request.data.nested.timestamp,
                         "nullValue" to null,
+                    ),
+                    "array" to arrayListOf(
+                        request.data.array[0],
+                        request.data.array[1],
+                        request.data.array[2],
+                        null
                     )
+                ),
+                "containers" to arrayListOf(
+                    request.containers[0],
+                    request.containers[1]
                 )
             )
 
@@ -280,6 +300,11 @@ class BasisTheoryElementsTests {
                         val raw = faker.lorem().word()
                         val phoneNumber = phoneNumberElement
                     }
+                    val array = arrayOf(
+                        nameElement,
+                        phoneNumberElement,
+                        null
+                    )
                 }
             }
 
@@ -299,6 +324,11 @@ class BasisTheoryElementsTests {
                     "nested" to mapOf(
                         "raw" to request.data.nested.raw,
                         "phoneNumber" to phoneNumber
+                    ),
+                    "array" to arrayListOf(
+                        name,
+                        phoneNumber,
+                        null
                     )
                 )
             )
@@ -344,6 +374,12 @@ class BasisTheoryElementsTests {
                     val timestamp = Instant.now().toString()
                     val nullValue = null
                 }
+                val array = arrayOf(
+                    faker.lorem().word(),
+                    faker.random().nextDouble(),
+                    faker.random().nextBoolean(),
+                    null
+                )
             }
             val request = createTokenRequest(data)
 
@@ -358,6 +394,12 @@ class BasisTheoryElementsTests {
                     "bool" to data.nested.bool,
                     "timestamp" to data.nested.timestamp,
                     "nullValue" to null
+                ),
+                "array" to arrayListOf(
+                    data.array[0],
+                    data.array[1],
+                    data.array[2],
+                    null
                 )
             )
             val expectedRequest = createTokenRequest(expectedData)
@@ -460,6 +502,11 @@ class BasisTheoryElementsTests {
                         val raw = faker.lorem().word()
                         val phoneNumber = phoneNumberElement
                     }
+                    val array = arrayOf(
+                        nameElement,
+                        phoneNumberElement,
+                        null
+                    )
                 }
             }
             val createTokenRequest = createTokenRequest(data)
@@ -480,6 +527,11 @@ class BasisTheoryElementsTests {
                     "nested" to mapOf(
                         "raw" to data.data.nested.raw,
                         "phoneNumber" to phoneNumber
+                    ),
+                    "array" to arrayListOf(
+                        name,
+                        phoneNumber,
+                        null
                     )
                 )
             )
@@ -740,7 +792,7 @@ class BasisTheoryElementsTests {
         val tokenId = UUID.randomUUID().toString()
 
         every { provider.getTokensApi(any()) } returns tokensApi
-        every { tokensApi.getById(tokenId)} returns Token()
+        every { tokensApi.getById(tokenId) } returns Token()
 
         bt.getToken(tokenId)
 
@@ -754,7 +806,7 @@ class BasisTheoryElementsTests {
         val apiKeyOverride = UUID.randomUUID().toString()
 
         every { provider.getTokensApi(any()) } returns tokensApi
-        every { tokensApi.getById(tokenId)} returns Token()
+        every { tokensApi.getById(tokenId) } returns Token()
 
         bt.getToken(tokenId, apiKeyOverride)
 

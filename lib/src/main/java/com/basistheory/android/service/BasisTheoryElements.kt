@@ -29,7 +29,7 @@ class BasisTheoryElements internal constructor(
                 if (body::class.java.isPrimitiveType()) body
                 else if (body is TextElement) body.getTransformedText()
                 else if (body is ElementValueReference) body.getValue()
-                else replaceElementRefs(body.toMap())
+                else replaceElementRefs(body)
 
             tokenizeApiClient.tokenize(request)
         }

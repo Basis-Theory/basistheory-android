@@ -55,7 +55,6 @@ open class TextElement @JvmOverloads constructor(
         )
         super.addView(_editText)
 
-        // wire up custom attributes
         context.theme.obtainStyledAttributes(attrs, R.styleable.TextElement, defStyleAttr, 0)
             .apply {
                 try {

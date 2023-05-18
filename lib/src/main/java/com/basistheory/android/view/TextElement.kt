@@ -1,9 +1,9 @@
 package com.basistheory.android.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.Editable
@@ -54,48 +54,40 @@ open class TextElement @JvmOverloads constructor(
         )
         super.addView(_editText)
 
-        // wires up attributes declared in the xml layout with properties on this element
         context.theme.obtainStyledAttributes(attrs, R.styleable.TextElement, defStyleAttr, 0)
             .apply {
                 try {
-                    isEditable = getBoolean(
-                        R.styleable.TextElement_editable,
-                        true
+                    // map standard android attributes
+                    hint = getString(R.styleable.TextElement_android_hint)
+
+                    inputType = InputType.fromAndroidAttr(
+                        getInt(
+                            R.styleable.TextElement_android_inputType,
+                            android.text.InputType.TYPE_CLASS_TEXT
+                        )
                     )
 
-                    hint = getString(R.styleable.TextElement_hint)
+                    isEditable = getBoolean(R.styleable.TextElement_android_enabled, true)
 
-                    inputType = InputType.values().elementAt(
-                        getInt(R.styleable.TextElement_inputType, 0)
-                    )
+                    setText(getString(R.styleable.TextElement_android_text))
 
-                    mask = getString(R.styleable.TextElement_mask)?.let { ElementMask(it) }
+                    textColor = getColor(R.styleable.TextElement_android_textColor, Color.BLACK)
 
-                    removeDefaultStyles = getBoolean(
-                        R.styleable.TextElement_removeDefaultStyles,
-                        true
-                    )
+                    textSize = getDimension(R.styleable.TextElement_android_textSize, 16f * resources.displayMetrics.scaledDensity)
 
-                    setText(getString(R.styleable.TextElement_text))
-
-                    textColor = getColor(
-                        R.styleable.TextElement_textColor,
-                        Color.BLACK
-                    )
-
-                    hintTextColor = getColor(
-                        R.styleable.TextElement_hintTextColor,
-                        Color.LTGRAY
-                    )
-
-                    textSize = getDimension(
-                        R.styleable.TextElement_textSize,
-                        16f * resources.displayMetrics.scaledDensity
-                    )
+                    hintTextColor = getColor(R.styleable.TextElement_android_textColorHint, Color.LTGRAY)
 
                     typeface = resolveTypeface(
-                        getInt(R.styleable.TextElement_typeface, 0),
+                        getInt(R.styleable.TextElement_android_typeface, 0),
                         defStyleAttr
+                    )
+
+                    // map custom attributes
+                    mask = getString(R.styleable.TextElement_bt_mask)?.let { ElementMask(it) }
+
+                    removeDefaultStyles = getBoolean(
+                        R.styleable.TextElement_bt_removeDefaultStyles,
+                        true
                     )
                 } finally {
                     recycle()

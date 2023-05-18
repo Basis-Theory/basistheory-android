@@ -30,7 +30,6 @@ import com.basistheory.android.view.method.FullyHiddenTransformationMethod
 import com.basistheory.android.view.transform.ElementTransform
 import com.basistheory.android.view.validation.ElementValidator
 
-@SuppressLint("ResourceType")
 open class TextElement @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,

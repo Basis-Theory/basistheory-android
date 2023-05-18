@@ -55,48 +55,6 @@ open class TextElement @JvmOverloads constructor(
         )
         super.addView(_editText)
 
-        val androidAttributes = arrayOf(
-            android.R.attr.hint,
-            android.R.attr.inputType,
-            android.R.attr.enabled,
-            android.R.attr.text,
-            android.R.attr.textColor,
-            android.R.attr.textSize,
-            android.R.attr.textColorHint,
-            android.R.attr.typeface
-        ).toIntArray()
-
-        // wire up standard android attributes
-        context.theme.obtainStyledAttributes(attrs, androidAttributes, defStyleAttr, 0)
-            .apply {
-                try {
-                    hint = getString(0)
-
-                    inputType = InputType.fromAndroidAttr(
-                        getInt(1, android.text.InputType.TYPE_CLASS_TEXT)
-                    )
-
-                    // todo: rename isEditable -> enabled?
-                    isEditable = getBoolean(2, true)
-
-                    setText(getString(3))
-
-                    textColor = getColor(4, Color.BLACK)
-
-                    textSize = getDimension(5, 16f * resources.displayMetrics.scaledDensity)
-
-                    // todo: rename hintTextColor -> textColorHint
-                    hintTextColor = getColor(6, Color.LTGRAY)
-
-                    typeface = resolveTypeface(
-                        getInt(7, 0),
-                        defStyleAttr
-                    )
-                } finally {
-                    recycle()
-                }
-            }
-
         // wire up custom attributes
         context.theme.obtainStyledAttributes(attrs, R.styleable.TextElement, defStyleAttr, 0)
             .apply {
@@ -111,7 +69,6 @@ open class TextElement @JvmOverloads constructor(
                         )
                     )
 
-                    // todo: rename isEditable -> enabled?
                     isEditable = getBoolean(R.styleable.TextElement_android_enabled, true)
 
                     setText(getString(R.styleable.TextElement_android_text))
@@ -120,7 +77,6 @@ open class TextElement @JvmOverloads constructor(
 
                     textSize = getDimension(R.styleable.TextElement_android_textSize, 16f * resources.displayMetrics.scaledDensity)
 
-                    // todo: rename hintTextColor -> textColorHint
                     hintTextColor = getColor(R.styleable.TextElement_android_textColorHint, Color.LTGRAY)
 
                     typeface = resolveTypeface(

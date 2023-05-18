@@ -1,3 +1,15 @@
+## [2.0.0](https://github.com/Basis-Theory/basistheory-android/compare/1.14.0...2.0.0) (2023-05-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* Custom XML attributes have been replaced with either standard android:* attributes or prefixed with bt_* to avoid collisions with other attributes declared in third party libraries
+
+### Bug Fixes
+
+* Replace and prefix custom attributes to prevent collisions ([#65](https://github.com/Basis-Theory/basistheory-android/issues/65)) ([9edb650](https://github.com/Basis-Theory/basistheory-android/commit/9edb6503bec82fa30cfaaf20faa89173f542f72d))
+
+
 ## [1.14.0](https://github.com/Basis-Theory/basistheory-android/compare/1.13.1...1.14.0) (2023-05-15)
 
 

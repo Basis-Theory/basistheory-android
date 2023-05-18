@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:bt="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -34,18 +34,18 @@
                     android:layout_height="wrap_content"
                     android:padding="5dp"
                     android:layout_marginBottom="20dp"
-                    bt:removeDefaultStyles="false"
-                    bt:hint="Name" />
+                    android:hint="@string/name"
+                    app:bt_removeDefaultStyles="false" />
 
                 <com.basistheory.android.view.TextElement
                     android:id="@+id/socialSecurityNumber"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    bt:removeDefaultStyles="false"
-                    bt:inputType="number"
-                    bt:mask="###-##-####"
-                    bt:hint="Social Security Number" />
+                    android:hint="@string/social_security_number"
+                    android:inputType="number"
+                    app:bt_removeDefaultStyles="false"
+                    app:bt_mask="###-##-####" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"

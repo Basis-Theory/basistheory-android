@@ -17,4 +17,16 @@
     <string name="reset">Reset</string>
     <string name="style1">Style 1</string>
     <string name="style2">Style 2</string>
+    <string name="name">Name</string>
+    <string name="social_security_number">Social Security Number</string>
+    <string name="card_number">Card Number</string>
+    <string name="expiration_date">Expiration Date</string>
+    <string name="cvc">CVC</string>
+    <string name="revealed_card_number">Revealed Card Number</string>
+    <string name="revealed_expiration_date">Revealed Expiration Date</string>
+    <string name="revealed_cvc">Revealed CVC</string>
+    <string name="order_number">Order Number</string>
+    <string name="password">Password</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="pin">PIN</string>
 </resources>

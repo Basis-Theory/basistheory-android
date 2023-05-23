@@ -23,5 +23,9 @@
         <item
             android:id="@+id/nav_styling"
             android:title="@string/title_styling" />
+
+        <item
+            android:id="@+id/nav_raw_proxy_response"
+            android:title="@string/title_raw_proxy_response" />
     </group>
 </menu>

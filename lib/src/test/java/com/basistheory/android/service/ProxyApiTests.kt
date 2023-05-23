@@ -23,6 +23,7 @@ import strikt.api.expectThat
 import strikt.assertions.*
 import java.util.*
 
+
 @RunWith(JUnitParamsRunner::class)
 class ProxyApiTests {
 
@@ -153,6 +154,24 @@ class ProxyApiTests {
 
         expectThat(result.tryGetElementValueReference("pii.name.first_name")).isNotNull()
         expectThat(result.tryGetElementValueReference("pii.name.last_name")).isNotNull()
+    }
+
+    @Test
+    fun `should return raw response when BT_EXPOSE_RAW_PROXY_RESPONSE_HEADER is present`() {
+        val callSlot = slot<Call>()
+        every { apiClient.execute<Any>(capture(callSlot), any()) } returns ApiResponse(
+            200,
+            mapOf(BT_EXPOSE_RAW_PROXY_RESPONSE_HEADER to listOf("true")),
+            mapOf(
+                "test" to "something something",
+            )
+        )
+
+        val result = runBlocking {
+            proxyApi.post(proxyRequest)
+        }
+
+        expectThat(result.toString()).isEqualTo("{test=something something}")
     }
 
     @Test

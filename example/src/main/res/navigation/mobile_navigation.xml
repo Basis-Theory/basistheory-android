@@ -41,4 +41,10 @@
         android:label="@string/title_styling"
         tools:layout="@layout/fragment_styling" />
 
+    <fragment
+        android:id="@+id/nav_raw_proxy_response"
+        android:name="com.basistheory.android.example.view.raw_proxy_response.RawProxyResponseFragment"
+        android:label="@string/title_raw_proxy_response"
+        tools:layout="@layout/fragment_raw_proxy_response" />
+
 </navigation>

@@ -1,5 +1,6 @@
 package com.basistheory.android.service
 
+import android.util.Log
 import com.basistheory.ApiClient
 import com.basistheory.android.model.ElementValueReference
 import com.basistheory.android.util.transformResponseToValueReferences
@@ -32,6 +33,8 @@ enum class HttpMethod {
     PUT,
     DELETE
 }
+
+const val BT_EXPOSE_RAW_PROXY_RESPONSE_HEADER = "bt-expose-raw-proxy-response"
 
 class ProxyRequest {
     var path: String? = null
@@ -95,9 +98,14 @@ class ProxyApi(
             null
         )
         val returnType: Type = object : com.google.gson.reflect.TypeToken<Any?>() {}.type
-        val response = apiClient.execute<Any>(call, returnType).data
+        val response = apiClient.execute<Any>(call, returnType)
 
-        return transformResponseToValueReferences(response)
+
+        if (response.headers.containsKey(BT_EXPOSE_RAW_PROXY_RESPONSE_HEADER)) {
+            return response.data
+        }
+
+        return transformResponseToValueReferences(response.data)
     }
 
     private fun Map<String, String>.toPairs(): List<com.basistheory.Pair> =

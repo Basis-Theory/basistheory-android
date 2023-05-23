@@ -1,3 +1,11 @@
+## [2.1.0](https://github.com/Basis-Theory/basistheory-android/compare/2.0.0...2.1.0) (2023-05-23)
+
+
+### Features
+
+* adds example fragment for proxy non-sensitive response ([#70](https://github.com/Basis-Theory/basistheory-android/issues/70)) ([8520f80](https://github.com/Basis-Theory/basistheory-android/commit/8520f8072a957eba84ce5dad56e554e0d1e10d6c))
+
+
 ## [2.0.0](https://github.com/Basis-Theory/basistheory-android/compare/1.14.0...2.0.0) (2023-05-18)
 
 

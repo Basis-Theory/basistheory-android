@@ -71,7 +71,7 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'org.threeten:threetenbp:1.6.8'
-    implementation 'com.github.basis-theory:basistheory-java:0.4.0'
+    implementation 'com.github.basis-theory:basistheory-java:eng-4745-support-transactions-SNAPSHOT'
     implementation 'com.squareup.okhttp3:okhttp:4.11.0'
     implementation 'com.google.code.gson:gson:2.10.1'
     testImplementation 'junit:junit:4.13.2'

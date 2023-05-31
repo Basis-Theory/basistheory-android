@@ -1,3 +1,11 @@
+### [2.1.1](https://github.com/Basis-Theory/basistheory-android/compare/2.1.0...2.1.1) (2023-05-31)
+
+
+### Bug Fixes
+
+* Mapping collections in proxy requests/responses to/from ElementValueReferences ([#71](https://github.com/Basis-Theory/basistheory-android/issues/71)) ([2d7e4e8](https://github.com/Basis-Theory/basistheory-android/commit/2d7e4e8bd51e6f07cf1efaa672f8adf1b565291f))
+
+
 ## [2.1.0](https://github.com/Basis-Theory/basistheory-android/compare/2.0.0...2.1.0) (2023-05-23)
 
 

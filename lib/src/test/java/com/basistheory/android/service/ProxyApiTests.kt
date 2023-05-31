@@ -134,7 +134,12 @@ class ProxyApiTests {
                     "name" to linkedMapOf(
                         "first_name" to "Drewsue",
                         "last_name" to "Webuino"
-                    )
+                    ),
+                    "phone_numbers" to arrayListOf("+1 111 222 3333", "+1 999 888 7777"),
+                    "aliases" to arrayListOf(linkedMapOf(
+                        "first_name" to "John",
+                        "last_name" to "Doe"
+                    ))
                 )
             )
         )
@@ -154,6 +159,8 @@ class ProxyApiTests {
 
         expectThat(result.tryGetElementValueReference("pii.name.first_name")).isNotNull()
         expectThat(result.tryGetElementValueReference("pii.name.last_name")).isNotNull()
+        expectThat(result.tryGetElementValueReference("pii.phone_numbers[0]")).isNotNull()
+        expectThat(result.tryGetElementValueReference("pii.aliases[0].first_name")).isNotNull()
     }
 
     @Test
@@ -181,6 +188,30 @@ class ProxyApiTests {
             200,
             emptyMap(),
             arrayOf(
+                "foo",
+                null,
+                "bar",
+                null,
+                "yaz",
+                "qux"
+            )
+        )
+
+        val result = runBlocking {
+            proxyApi.post(proxyRequest)
+        }
+
+        expectThat(
+            (result as List<Any?>).filterNotNull().all { it is ElementValueReference }).isTrue()
+    }
+
+    @Test
+    fun `should transform array list proxy response to element value references`() {
+        val callSlot = slot<Call>()
+        every { apiClient.execute<Any>(capture(callSlot), any()) } returns ApiResponse(
+            200,
+            emptyMap(),
+            arrayListOf(
                 "foo",
                 null,
                 "bar",

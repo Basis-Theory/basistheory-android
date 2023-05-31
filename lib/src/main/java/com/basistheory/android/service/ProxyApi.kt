@@ -118,9 +118,19 @@ fun Any?.tryGetElementValueReference(path: String): ElementValueReference? {
     if (this == null || path.isEmpty()) return null
 
     val pathSegments = path.split(".")
-    val map = this as? Map<*, *> ?: return null
+    val matchResult = Regex("^(\\w*)(?:\\[(\\d+)])?$").matchEntire(pathSegments.first())
+    val pathSegment = matchResult?.groups?.elementAtOrNull(1)?.value
+    val indexSegment = matchResult?.groups?.elementAtOrNull(2)?.value?.toIntOrNull()
 
-    val value = map[pathSegments.first()]
+    val value = pathSegment?.let {
+        val map = this as? Map<*, *> ?: return null
+        map[pathSegment]?.let {
+            if (indexSegment != null) {
+                val collection = it as? Collection<*> ?: return null
+                collection.elementAt(indexSegment)
+            } else it
+        }
+    }
 
     return if (pathSegments.count() > 1)
         value?.tryGetElementValueReference(pathSegments.drop(1).joinToString("."))

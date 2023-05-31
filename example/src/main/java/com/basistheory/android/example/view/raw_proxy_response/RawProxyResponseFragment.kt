@@ -43,6 +43,13 @@ class RawProxyResponseFragment : Fragment() {
             )
             body = object {
                 val text = binding.textElement
+                // echoed back in response to mimic proxy responses containing arrays
+                val array = arrayListOf<Any>(
+                    object {
+                        val id = 1
+                        val description = "value"
+                    }
+                )
             }
         }
 

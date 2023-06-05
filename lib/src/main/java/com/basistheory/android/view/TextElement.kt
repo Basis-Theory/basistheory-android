@@ -279,9 +279,9 @@ open class TextElement @JvmOverloads constructor(
 
         _editText.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
             if (hasFocus)
-                _eventListeners.focus.forEach { it(FocusEvent()) }
+                _eventListeners.focus.iterator().forEach { it(FocusEvent()) }
             else
-                _eventListeners.blur.forEach { it(BlurEvent()) }
+                _eventListeners.blur.iterator().forEach { it(BlurEvent()) }
         }
     }
 
@@ -319,7 +319,7 @@ open class TextElement @JvmOverloads constructor(
     protected fun publishChangeEvent() {
         val event = createElementChangeEvent()
 
-        _eventListeners.change.forEach {
+        _eventListeners.change.iterator().forEach {
             it(event)
         }
     }

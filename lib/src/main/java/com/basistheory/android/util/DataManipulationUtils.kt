@@ -9,6 +9,8 @@ fun transformResponseToValueReferences(data: Any?): Any? =
     else if (data::class.java.isPrimitiveType()) data.toString().toElementValueReference()
     else if (data::class.java.isArray) {
         (data as Array<*>).map { transformResponseToValueReferences(it) }
+    } else if (data is Collection<*>) {
+        data.map { transformResponseToValueReferences(it) }
     } else {
         val map = (data as Map<*, *>).toMutableMap()
         map.forEach { (key, value) -> map[key] = transformResponseToValueReferences(value) }
@@ -23,8 +25,15 @@ internal fun replaceElementRefs(value: Any?): Any? {
     else if (fieldType.isArray) {
         val array = value as Array<*>
         array.map {
-            it?.let { arrayValue ->
-                replaceElementRefs(arrayValue)
+            it?.let { item ->
+                replaceElementRefs(item)
+            }
+        }
+    }
+    else if (value is Collection<*>) {
+        value.map {
+            it?.let { item ->
+                replaceElementRefs(item)
             }
         }
     } else {

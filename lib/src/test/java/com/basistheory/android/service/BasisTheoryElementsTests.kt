@@ -305,6 +305,11 @@ class BasisTheoryElementsTests {
                         phoneNumberElement,
                         null
                     )
+                    val arrayList = arrayListOf(
+                        nameElement,
+                        phoneNumberElement,
+                        null
+                    )
                 }
             }
 
@@ -326,6 +331,11 @@ class BasisTheoryElementsTests {
                         "phoneNumber" to phoneNumber
                     ),
                     "array" to arrayListOf(
+                        name,
+                        phoneNumber,
+                        null
+                    ),
+                    "arrayList" to arrayListOf(
                         name,
                         phoneNumber,
                         null

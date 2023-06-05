@@ -1,5 +1,6 @@
 package com.basistheory.android.service
 
+import android.util.Log
 import com.basistheory.ApiClient
 import com.basistheory.android.model.ElementValueReference
 import com.basistheory.android.util.transformResponseToValueReferences
@@ -32,6 +33,8 @@ enum class HttpMethod {
     PUT,
     DELETE
 }
+
+const val BT_EXPOSE_RAW_PROXY_RESPONSE_HEADER = "bt-expose-raw-proxy-response"
 
 class ProxyRequest {
     var path: String? = null
@@ -95,9 +98,14 @@ class ProxyApi(
             null
         )
         val returnType: Type = object : com.google.gson.reflect.TypeToken<Any?>() {}.type
-        val response = apiClient.execute<Any>(call, returnType).data
+        val response = apiClient.execute<Any>(call, returnType)
 
-        return transformResponseToValueReferences(response)
+
+        if (response.headers.containsKey(BT_EXPOSE_RAW_PROXY_RESPONSE_HEADER)) {
+            return response.data
+        }
+
+        return transformResponseToValueReferences(response.data)
     }
 
     private fun Map<String, String>.toPairs(): List<com.basistheory.Pair> =
@@ -110,9 +118,19 @@ fun Any?.tryGetElementValueReference(path: String): ElementValueReference? {
     if (this == null || path.isEmpty()) return null
 
     val pathSegments = path.split(".")
-    val map = this as? Map<*, *> ?: return null
+    val matchResult = Regex("^(\\w*)(?:\\[(\\d+)])?$").matchEntire(pathSegments.first())
+    val pathSegment = matchResult?.groups?.elementAtOrNull(1)?.value
+    val indexSegment = matchResult?.groups?.elementAtOrNull(2)?.value?.toIntOrNull()
 
-    val value = map[pathSegments.first()]
+    val value = pathSegment?.let {
+        val map = this as? Map<*, *> ?: return null
+        map[pathSegment]?.let {
+            if (indexSegment != null) {
+                val collection = it as? Collection<*> ?: return null
+                collection.elementAt(indexSegment)
+            } else it
+        }
+    }
 
     return if (pathSegments.count() > 1)
         value?.tryGetElementValueReference(pathSegments.drop(1).joinToString("."))

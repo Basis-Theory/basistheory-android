@@ -1,3 +1,11 @@
+### [2.1.2](https://github.com/Basis-Theory/basistheory-android/compare/2.1.1...2.1.2) (2023-06-05)
+
+
+### Bug Fixes
+
+* support kotlin 1.8.21 ([#73](https://github.com/Basis-Theory/basistheory-android/issues/73)) ([b998fb4](https://github.com/Basis-Theory/basistheory-android/commit/b998fb44e7f707f8c1436ca368d9371788e1f831))
+
+
 ### [2.1.1](https://github.com/Basis-Theory/basistheory-android/compare/2.1.0...2.1.1) (2023-05-31)
 
 

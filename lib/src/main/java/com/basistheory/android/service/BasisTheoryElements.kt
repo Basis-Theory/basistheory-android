@@ -1,13 +1,13 @@
 package com.basistheory.android.service
 
+import HttpClient
 import com.basistheory.CreateSessionResponse
 import com.basistheory.CreateTokenRequest
 import com.basistheory.CreateTokenResponse
 import com.basistheory.Token
 import com.basistheory.android.model.ElementValueReference
-import com.basistheory.android.util.isPrimitiveType
-import com.basistheory.android.util.toMap
-import com.basistheory.android.util.transformResponseToValueReferences
+import com.basistheory.android.util.*
+import com.basistheory.android.util.getElementsValues
 import com.basistheory.android.util.replaceElementRefs
 import com.basistheory.android.util.tryGetTextToTokenize
 import com.basistheory.android.view.TextElement
@@ -20,16 +20,13 @@ class BasisTheoryElements internal constructor(
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
     val proxy: ProxyApi = apiClientProvider.getProxyApi(dispatcher)
+    val client = HttpClient(dispatcher)
 
     @JvmOverloads
     suspend fun tokenize(body: Any, apiKeyOverride: String? = null): Any =
         withContext(dispatcher) {
             val tokenizeApiClient = apiClientProvider.getTokenizeApi(apiKeyOverride)
-            val request =
-                if (body::class.java.isPrimitiveType()) body
-                else if (body is TextElement) body.getTransformedText()
-                else if (body is ElementValueReference) body.getValue()
-                else replaceElementRefs(body)
+            val request = getElementsValues(body)
 
             tokenizeApiClient.tokenize(request)
         }

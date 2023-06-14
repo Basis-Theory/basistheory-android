@@ -136,7 +136,6 @@ class HttpClientTests {
             "type=card&billing_details%5Bname%5D=Peter+Panda&card%5Bnumber%5D=1234567890&card%5Bexp_month%5D=12&card%5Bexp_year%5D=2023&card%5Bcvc%5D=123",
             request.body.readUtf8()
         )
-
     }
 
     @Test
@@ -185,7 +184,7 @@ class HttpClientTests {
             val foo = "bar"
         }
 
-        server.enqueue(MockResponse().setBody("Everything is broken").setResponseCode(500))
+        server.enqueue(MockResponse().setBody("Everything is broken").setResponseCode(200))
 
         val url = server.url(endpoint).toString()
 

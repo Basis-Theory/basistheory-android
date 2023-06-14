@@ -42,7 +42,7 @@ class HttpClient(private val dispatcher: CoroutineDispatcher = Dispatchers.IO) :
             send(url, HttpMethod.DELETE, null, headers)
         }
 
-    private fun requestBuilder(
+    private fun buildRequest(
         url: String,
         method: HttpMethod,
         body: Any?,
@@ -74,7 +74,7 @@ class HttpClient(private val dispatcher: CoroutineDispatcher = Dispatchers.IO) :
         body: Any?,
         headers: Map<String, String>?
     ): String = withContext(dispatcher) {
-        val req = requestBuilder(url, method, body, headers ?: emptyMap())
+        val req = buildRequest(url, method, body, headers ?: emptyMap())
         val call = client.newCall(req)
         val response = call.execute()
 

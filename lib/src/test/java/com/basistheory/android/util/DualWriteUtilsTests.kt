@@ -11,8 +11,6 @@ import org.junit.Test
 import java.io.IOException
 
 class DualWriteUtilsTests {
-    private val faker = Faker()
-
     @Test
     fun testMapBodyToContentType_Json() {
         val contentType = "application/json"
@@ -28,8 +26,6 @@ class DualWriteUtilsTests {
         // RequestBody appends the charset by default
         assertEquals(expectedRequestBody.contentType(), "$contentType; charset=utf-8".toMediaType())
         assertEquals(expectedRequestBody.contentLength(), requestBody?.contentLength())
-
-
     }
 
     @Test
@@ -98,5 +94,4 @@ class DualWriteUtilsTests {
 
         assertEquals(expectedEncodedString, encodedString)
     }
-
 }

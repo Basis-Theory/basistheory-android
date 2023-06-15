@@ -8,6 +8,7 @@
     <string name="title_reveal">Reveal Data</string>
     <string name="title_styling">Custom Styling</string>
     <string name="title_raw_proxy_response">Raw Proxy Response</string>
+    <string name="title_dual_write">HTTP client</string>
 
     <string name="autofill">Autofill</string>
     <string name="tokenize">Tokenize</string>
@@ -31,4 +32,12 @@
     <string name="password">Password</string>
     <string name="phone_number">Phone Number</string>
     <string name="pin">PIN</string>
+
+
+
+    <string name="post">POST</string>
+    <string name="get">GET</string>
+    <string name="delete">DELETE</string>
+    <string name="patch">PATCH</string>
+    <string name="put">PUT</string>
 </resources>

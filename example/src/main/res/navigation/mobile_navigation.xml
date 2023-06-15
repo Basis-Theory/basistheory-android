@@ -47,4 +47,10 @@
         android:label="@string/title_raw_proxy_response"
         tools:layout="@layout/fragment_raw_proxy_response" />
 
+    <fragment
+        android:id="@+id/nav_dual_write"
+        android:name="com.basistheory.android.example.view.dual_write.DualWriteFragment"
+        android:label="@string/title_dual_write"
+        tools:layout="@layout/fragment_dual_write" />
+
 </navigation>

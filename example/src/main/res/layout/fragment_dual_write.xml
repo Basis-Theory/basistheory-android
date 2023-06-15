@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.basistheory.android.example.viewmodel.CardFragmentViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.basistheory.android.example.view.dual_write.DualWriteFragment">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:orientation="vertical">
+
+                <com.basistheory.android.view.CardNumberElement
+                    android:id="@+id/card_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_edit_text"
+                    android:padding="5dp"
+                    android:hint="@string/card_number"
+                    android:textColor="@{ viewModel.cardNumber.isInvalid ? @color/red : @color/gray_800 }" />
+
+                <com.basistheory.android.view.CardExpirationDateElement
+                    android:id="@+id/expiration_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/rounded_edit_text"
+                    android:padding="5dp"
+                    android:hint="@string/expiration_date"
+                    android:textColor="@{ viewModel.cardExpiration.isInvalid ? @color/red : @color/gray_800 }" />
+
+                <com.basistheory.android.view.CardVerificationCodeElement
+                    android:id="@+id/cvc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/rounded_edit_text"
+                    android:padding="5dp"
+                    android:hint="@string/cvc"
+                    android:textColor="@{ viewModel.cardCvc.isInvalid ? @color/red : @color/gray_800 }" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/post_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:backgroundTint="@color/primary"
+                        android:enabled="@{ viewModel.canSubmit }"
+                        android:text="@string/post" />
+
+                    <Button
+                        android:id="@+id/autofill_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="20dp"
+                        android:backgroundTint="@color/primary"
+                        android:text="@string/autofill" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/error_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:fontFamily="monospace"
+                    android:text="@{ viewModel.errorMessage }"
+                    android:textColor="@color/red"
+                    android:visibility="@{ viewModel.errorMessage != null ? View.VISIBLE : View.GONE }" />
+
+                <TextView
+                    android:id="@+id/result"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:fontFamily="monospace"
+                    android:text="@{ viewModel.result }"
+                    android:visibility="@{ viewModel.result != null ? View.VISIBLE : View.GONE }" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

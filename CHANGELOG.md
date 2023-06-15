@@ -1,3 +1,11 @@
+## [2.2.0](https://github.com/Basis-Theory/basistheory-android/compare/2.1.2...2.2.0) (2023-06-15)
+
+
+### Features
+
+* adds bt http client ([#74](https://github.com/Basis-Theory/basistheory-android/issues/74)) ([d8d071c](https://github.com/Basis-Theory/basistheory-android/commit/d8d071ccc1039cdf1d9f5c577dd0173e55f26999))
+
+
 ### [2.1.2](https://github.com/Basis-Theory/basistheory-android/compare/2.1.1...2.1.2) (2023-06-05)
 
 

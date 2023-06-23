@@ -1,6 +1,5 @@
 package com.basistheory.android.view
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
@@ -18,6 +17,7 @@ import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.os.bundleOf
 import com.basistheory.android.R
+import com.basistheory.android.context.registerExpressionValue
 import com.basistheory.android.event.BlurEvent
 import com.basistheory.android.event.ChangeEvent
 import com.basistheory.android.event.ElementEventListeners
@@ -73,9 +73,13 @@ open class TextElement @JvmOverloads constructor(
 
                     textColor = getColor(R.styleable.TextElement_android_textColor, Color.BLACK)
 
-                    textSize = getDimension(R.styleable.TextElement_android_textSize, 16f * resources.displayMetrics.scaledDensity)
+                    textSize = getDimension(
+                        R.styleable.TextElement_android_textSize,
+                        16f * resources.displayMetrics.scaledDensity
+                    )
 
-                    hintTextColor = getColor(R.styleable.TextElement_android_textColorHint, Color.LTGRAY)
+                    hintTextColor =
+                        getColor(R.styleable.TextElement_android_textColorHint, Color.LTGRAY)
 
                     typeface = resolveTypeface(
                         getInt(R.styleable.TextElement_android_typeface, 0),
@@ -106,6 +110,8 @@ open class TextElement @JvmOverloads constructor(
         _editText.text?.toString().let {
             transform?.apply(it) ?: it
         }
+
+    override fun toString(): String = registerExpressionValue(getText())
 
     fun setText(value: String?) =
         _editText.setText(value)
@@ -337,3 +343,4 @@ open class TextElement @JvmOverloads constructor(
         private const val STATE_INPUT = "state_input"
     }
 }
+

@@ -74,6 +74,11 @@ dependencies {
     implementation 'com.github.basis-theory:basistheory-java:0.5.0'
     implementation 'com.squareup.okhttp3:okhttp:4.11.0'
     implementation 'com.google.code.gson:gson:2.10.1'
+
+    implementation platform('com.fasterxml.jackson:jackson-bom:2.14.2')
+
+    implementation 'nl.big-o:liqp:0.8.3.3'
+
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'pl.pragmatists:JUnitParams:1.1.1'
     testImplementation 'org.robolectric:robolectric:4.10.3'

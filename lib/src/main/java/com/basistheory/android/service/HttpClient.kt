@@ -1,3 +1,4 @@
+import com.basistheory.android.service.ExpressionsEvaluator
 import com.basistheory.android.service.HttpMethod
 import com.basistheory.android.util.*
 import kotlinx.coroutines.CoroutineDispatcher
@@ -49,10 +50,16 @@ class HttpClient(private val dispatcher: CoroutineDispatcher = Dispatchers.IO) :
         headers: Map<String, String>
     ): Request {
         val contentType = headers["Content-Type"] ?: "application/json"
-
-        val requestBody = body?.let { getElementsValues(it) }?.let {
-            mapObjToRequestBody(contentType, it)
-        }
+        val requestBody = body
+            ?.let { getElementsValues(it) }
+            ?.let {
+                ExpressionsEvaluator.evaluate(it)
+                    .also {
+                        ExpressionsEvaluator.clear()
+                    }
+            }?.let {
+                mapObjToRequestBody(contentType, it)
+            }
 
         val req = Request.Builder()
             .url(url)

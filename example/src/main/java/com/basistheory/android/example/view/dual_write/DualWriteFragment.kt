@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.basistheory.android.example.databinding.FragmentDualWriteBinding
 import com.basistheory.android.example.viewmodel.CardFragmentViewModel
-import com.basistheory.android.service.HttpMethod
 
 class DualWriteFragment : Fragment() {
     private val binding: FragmentDualWriteBinding by lazy {
@@ -50,13 +49,13 @@ class DualWriteFragment : Fragment() {
         ), object {
             val type = "card"
             val billing_details = object {
-                val name = "Peter Panda"
+                val name =  "{{ 'Peter' | upcase }} {{ 'PANDA' | downcase }}"
             }
             val card = object {
                 val number = binding.cardNumber
                 val exp_month = binding.expirationDate.month()
                 val exp_year = binding.expirationDate.year()
-                val cvc = binding.cvc
+                val cvc = "{{ ${binding.cvc} }}"
             }
         }
     ).observe(viewLifecycleOwner) {}

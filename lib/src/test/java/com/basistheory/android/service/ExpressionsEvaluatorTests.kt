@@ -1,11 +1,18 @@
 package com.basistheory.android.service
 
 import com.basistheory.android.context.*
+import com.basistheory.android.util.registerExpressionFilters
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Test
 
 class ExpressionsEvaluatorTest {
+
+    @Before
+    fun setUp() {
+        registerExpressionFilters()
+    }
     @After
     fun tearDown() {
         ExpressionsEvaluator.clear()
@@ -73,5 +80,17 @@ class ExpressionsEvaluatorTest {
         val result = ExpressionsEvaluator.evaluate(list)
 
         assertEquals(expectedList, result)
+    }
+
+    @Test
+    fun `evaluate simple expression with custom pad filters`() {
+        val expression = "{{ number | pad_left: 3, '0' | pad_right: 4, '0' }}"
+        val expressionsContext = mapOf("number" to 12)
+
+        setExpressionsContext(expressionsContext)
+
+        val result = ExpressionsEvaluator.evaluate(expression)
+
+        assertEquals("0120", result)
     }
 }

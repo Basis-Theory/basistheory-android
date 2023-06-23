@@ -19,6 +19,12 @@ class BasisTheoryElements internal constructor(
     private val apiClientProvider: ApiClientProvider,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
+
+
+    init {
+        registerExpressionFilters()
+    }
+
     val proxy: ProxyApi = apiClientProvider.getProxyApi(dispatcher)
     val client = HttpClient(dispatcher)
 

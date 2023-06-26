@@ -1,11 +1,15 @@
 package com.basistheory.android.view
 
 import android.content.Context
+import android.os.Build
 import android.util.AttributeSet
+import androidx.annotation.RequiresApi
 import com.basistheory.android.model.ElementValueReference
 import com.basistheory.android.model.InputType
 import com.basistheory.android.view.mask.ElementMask
 import com.basistheory.android.view.validation.FutureDateValidator
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class CardExpirationDateElement @JvmOverloads constructor(
     context: Context,
@@ -16,6 +20,9 @@ class CardExpirationDateElement @JvmOverloads constructor(
     fun month(): ElementValueReference = ElementValueReference(this, ::getMonthValue)
 
     fun year(): ElementValueReference = ElementValueReference(this, ::getYearValue)
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun format(dateFormat: String): ElementValueReference = ElementValueReference(this, getFormattedValue(dateFormat))
 
     fun setValueRef(
         monthRef: ElementValueReference,
@@ -50,6 +57,15 @@ class CardExpirationDateElement @JvmOverloads constructor(
         return if (month.toInt() < 1 || month.toInt() > 12)
             "${paddedValue.firstOrNull()}${paddedValue.takeLast(paddedValue.length - month.length)}}"
         else paddedValue
+    }
+
+    // TODO: check about this
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun getFormattedValue(dateFormat: String): () -> String? {
+        var formatter = DateTimeFormatter.ofPattern(dateFormat)
+        var date = LocalDate.parse(getTransformedText())
+
+        return { date.format(formatter) }
     }
 
     private fun getMonthValue(): String? =

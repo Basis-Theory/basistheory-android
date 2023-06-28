@@ -9,6 +9,7 @@ import com.basistheory.android.model.InputType
 import com.basistheory.android.view.mask.ElementMask
 import com.basistheory.android.view.validation.FutureDateValidator
 import java.time.LocalDate
+import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
 class CardExpirationDateElement @JvmOverloads constructor(
@@ -21,7 +22,6 @@ class CardExpirationDateElement @JvmOverloads constructor(
 
     fun year(): ElementValueReference = ElementValueReference(this, ::getYearValue)
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun format(dateFormat: String): ElementValueReference = ElementValueReference(this, getFormattedValue(dateFormat))
 
     fun setValueRef(
@@ -59,11 +59,15 @@ class CardExpirationDateElement @JvmOverloads constructor(
         else paddedValue
     }
 
-    // TODO: check about this
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun getFormattedValue(dateFormat: String): () -> String? {
-        var formatter = DateTimeFormatter.ofPattern(dateFormat)
-        var date = LocalDate.parse(getTransformedText())
+        val year = getYearValue()
+        val month = getMonthValue()
+        if (year == null || month == null) {
+            return { null }
+        }
+
+        val formatter = DateTimeFormatter.ofPattern(dateFormat)
+        val date = YearMonth.of(Integer.parseInt(year), Integer.parseInt(month))
 
         return { date.format(formatter) }
     }

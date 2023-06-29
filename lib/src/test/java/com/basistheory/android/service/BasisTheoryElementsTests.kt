@@ -268,8 +268,13 @@ class BasisTheoryElementsTests {
             bt.tokenize(cardExpElement.format("yyyy"))
             verify { tokenizeApi.tokenize(year) }
 
-            bt.tokenize(cardExpElement.format("M"))
-            verify { tokenizeApi.tokenize(month.takeLast(1)) }
+            if (month.take(1) == "0") {
+                bt.tokenize(cardExpElement.format("M"))
+                verify { tokenizeApi.tokenize(month.takeLast(1)) }
+            } else {
+                bt.tokenize(cardExpElement.format("M"))
+                verify { tokenizeApi.tokenize(month) }
+            }
 
             bt.tokenize(cardExpElement.format("yyyyMM"))
             verify { tokenizeApi.tokenize(year + month) }

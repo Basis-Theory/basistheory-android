@@ -54,7 +54,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'org.threeten:threetenbp:1.6.8'
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.25'
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.26'
     implementation 'com.github.basis-theory:basistheory-java:0.5.0'
 
     androidTestImplementation 'junit:junit:4.13.2'

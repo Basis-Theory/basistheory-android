@@ -1,3 +1,11 @@
+## [2.3.0](https://github.com/Basis-Theory/basistheory-android/compare/2.2.0...2.3.0) (2023-07-06)
+
+
+### Features
+
+* adds format fn on CardExpirationDate element ([#78](https://github.com/Basis-Theory/basistheory-android/issues/78)) ([6cc98f9](https://github.com/Basis-Theory/basistheory-android/commit/6cc98f935012b572876ea841e419a9b14baf1e1e))
+
+
 ## [2.2.0](https://github.com/Basis-Theory/basistheory-android/compare/2.1.2...2.2.0) (2023-06-15)
 
 

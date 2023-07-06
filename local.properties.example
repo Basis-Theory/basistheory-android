@@ -8,3 +8,4 @@ sdk.dir=/Users/[replace]/Library/Android/sdk
 com.basistheory.android.example.apiUrl=https://api.basistheory.com
 # [required] A Basis Theory API key with `token:create` permission on the `/` container
 com.basistheory.android.example.apiKey=[replace]
+com.basistheory.android.compose.example.apiKey=[replace]

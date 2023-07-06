@@ -26,7 +26,7 @@ import kotlinx.coroutines.runBlocking
 class MainActivity : AppCompatActivity() {
 
     private val bt = BasisTheoryElements.builder()
-        .apiKey("key_7jc18XCxYYozHbepjpWHqU")
+        .apiKey(BuildConfig.BASIS_THEORY_API_KEY)
         .build()
 
     private lateinit var cardNumberElement: CardNumberElement

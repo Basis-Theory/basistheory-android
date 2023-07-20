@@ -1,3 +1,11 @@
+## [2.4.0](https://github.com/Basis-Theory/basistheory-android/compare/2.3.0...2.4.0) (2023-07-20)
+
+
+### Features
+
+* updating dependencies ([#85](https://github.com/Basis-Theory/basistheory-android/issues/85)) ([016ae3f](https://github.com/Basis-Theory/basistheory-android/commit/016ae3f22aa68639e5c69a2ccf0332eee8eb9719))
+
+
 ## [2.3.0](https://github.com/Basis-Theory/basistheory-android/compare/2.2.0...2.3.0) (2023-07-06)
 
 

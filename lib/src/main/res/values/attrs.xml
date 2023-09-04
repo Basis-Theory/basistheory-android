@@ -9,6 +9,7 @@
         <attr name="android:textSize" />
         <attr name="android:textColorHint" />
         <attr name="android:typeface" />
+        <attr name="android:gravity" />
 
         <attr name="bt_mask" format="string" />
         <attr name="bt_removeDefaultStyles" format="boolean" />

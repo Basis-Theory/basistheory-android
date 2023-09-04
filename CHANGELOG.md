@@ -1,3 +1,11 @@
+## [2.5.0](https://github.com/Basis-Theory/basistheory-android/compare/2.4.0...2.5.0) (2023-09-04)
+
+
+### Features
+
+* add gravity attribute to TextElement ([#92](https://github.com/Basis-Theory/basistheory-android/issues/92)) ([110fe97](https://github.com/Basis-Theory/basistheory-android/commit/110fe97b71d8502ee0438567c7e4701ce0e826f8))
+
+
 ## [2.4.0](https://github.com/Basis-Theory/basistheory-android/compare/2.3.0...2.4.0) (2023-07-20)
 
 

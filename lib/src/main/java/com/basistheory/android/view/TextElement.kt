@@ -10,6 +10,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -81,6 +82,8 @@ open class TextElement @JvmOverloads constructor(
                         getInt(R.styleable.TextElement_android_typeface, 0),
                         defStyleAttr
                     )
+
+                    gravity = Gravity.START
 
                     // map custom attributes
                     mask = getString(R.styleable.TextElement_bt_mask)?.let { ElementMask(it) }
@@ -176,6 +179,12 @@ open class TextElement @JvmOverloads constructor(
         get() = _editText.typeface
         set(value) {
             _editText.typeface = value
+        }
+
+    var gravity: Int
+        get() = _editText.gravity
+        set(value) {
+            _editText.gravity = value
         }
 
     var hint: CharSequence?

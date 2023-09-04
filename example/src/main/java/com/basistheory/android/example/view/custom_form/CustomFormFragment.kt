@@ -1,6 +1,7 @@
 package com.basistheory.android.example.view.custom_form
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,6 +51,8 @@ class CustomFormFragment : Fragment() {
                 digitRegex
             )
         )
+
+        binding.pin.gravity = Gravity.CENTER
 
         binding.orderNumber.mask = ElementMask(
             listOf(charRegex, charRegex, charRegex, "-", digitRegex, digitRegex, digitRegex)

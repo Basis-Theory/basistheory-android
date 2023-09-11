@@ -9,6 +9,7 @@ import com.basistheory.TokenizeApi
 import com.basistheory.TokensApi
 import com.basistheory.ApiResponse
 import com.basistheory.ApiClient
+import com.basistheory.android.constants.ElementValueType
 import com.basistheory.android.model.ElementValueReference
 import com.basistheory.android.model.exceptions.IncompleteElementException
 import com.basistheory.android.view.CardExpirationDateElement
@@ -56,6 +57,11 @@ class BasisTheoryElementsTests {
     private lateinit var cardNumberElement: CardNumberElement
     private lateinit var cardExpElement: CardExpirationDateElement
     private lateinit var cvcElement: CardVerificationCodeElement
+
+    private lateinit var textElement: TextElement
+    private lateinit var intElement: TextElement
+    private lateinit var doubleElement: TextElement
+    private lateinit var boolElement: TextElement
 
     // faker's test card numbers are not all considered complete by our elements; use these in tests below
     private val testCardNumbers = listOf(
@@ -115,6 +121,11 @@ class BasisTheoryElementsTests {
         cardNumberElement = CardNumberElement(activity).also { it.id = View.generateViewId() }
         cardExpElement = CardExpirationDateElement(activity).also { it.id = View.generateViewId() }
         cvcElement = CardVerificationCodeElement(activity).also { it.id = View.generateViewId() }
+
+        textElement = TextElement(activity).also { it.id = View.generateViewId() }
+        intElement = TextElement(activity).also { it.id = View.generateViewId() }
+        doubleElement = TextElement(activity).also { it.id = View.generateViewId() }
+        boolElement = TextElement(activity).also { it.id = View.generateViewId() }
     }
 
     @Test
@@ -373,6 +384,60 @@ class BasisTheoryElementsTests {
         }
 
     @Test
+    fun `tokenize should respect getValueType type when sending values to the API`() = runBlocking {
+        every { provider.getTokenizeApi(any()) } returns tokenizeApi
+
+        val testString = faker.name().firstName()
+        val testInt = faker.number().numberBetween(1, 10)
+        val testDouble = faker.number().randomDouble(2, 10, 99)
+        val testBoolean = faker.bool().bool()
+
+        // individual
+        textElement.setText(testString)
+        bt.tokenize(textElement)
+        verify { tokenizeApi.tokenize(testString) }
+
+        intElement.setText(testInt.toString())
+        intElement.getValueType = ElementValueType.INTEGER
+        bt.tokenize(intElement)
+        verify { tokenizeApi.tokenize(testInt) }
+
+        doubleElement.setText(testDouble.toString())
+        doubleElement.getValueType = ElementValueType.DOUBLE
+        bt.tokenize(doubleElement)
+        verify { tokenizeApi.tokenize(testDouble) }
+
+        boolElement.setText(testBoolean.toString())
+        boolElement.getValueType = ElementValueType.BOOLEAN
+        bt.tokenize(boolElement)
+        verify { tokenizeApi.tokenize(testBoolean) }
+
+        // grouped
+        val request = object {
+            val type = "token"
+            val data = object {
+                val text = textElement
+                val int = intElement
+                val double = doubleElement
+                val bool = boolElement
+            }
+        }
+
+        bt.tokenize(request)
+
+        val expectedRequest = mapOf<String, Any?>(
+            "type" to request.type,
+            "data" to mapOf(
+                "text" to testString,
+                "int" to testInt,
+                "double" to testDouble,
+                "bool" to testBoolean
+            )
+        )
+        verify { tokenizeApi.tokenize(expectedRequest) }
+    }
+
+    @Test
     fun `createToken should pass api key override to ApiClientProvider`() = runBlocking {
         val apiKeyOverride = UUID.randomUUID().toString()
 
@@ -576,6 +641,55 @@ class BasisTheoryElementsTests {
 
             verify { tokensApi.create(expectedCreateTokenRequest) }
         }
+
+    @Test
+    fun `create token should respect getValueType type when sending values to the API`() = runBlocking {
+        every { provider.getTokensApi(any()) } returns tokensApi
+
+        val testString = faker.name().firstName()
+        val testInt = faker.number().numberBetween(1, 10)
+        val testDouble = faker.number().randomDouble(2, 10, 99)
+        val testBoolean = faker.bool().bool()
+
+        textElement.setText(testString)
+
+        intElement.setText(testInt.toString())
+        intElement.getValueType = ElementValueType.INTEGER
+
+        doubleElement.setText(testDouble.toString())
+        doubleElement.getValueType = ElementValueType.DOUBLE
+
+        boolElement.setText(testBoolean.toString())
+        boolElement.getValueType = ElementValueType.BOOLEAN
+
+        val request = object {
+            val type = "token"
+            val data = object {
+                val text = textElement
+                val int = intElement
+                val double = doubleElement
+                val bool = boolElement
+            }
+        }
+
+        val createTokenRequest = createTokenRequest(request)
+
+        bt.createToken(createTokenRequest)
+
+        val expectedRequest = mapOf<String, Any?>(
+            "type" to request.type,
+            "data" to mapOf(
+                "text" to testString,
+                "int" to testInt,
+                "double" to testDouble,
+                "bool" to testBoolean
+            )
+        )
+
+        val expectedCreateTokenRequest = createTokenRequest(expectedRequest)
+
+        verify { tokensApi.create(expectedCreateTokenRequest) }
+    }
 
     @Test
     fun `proxy should replace Element refs within request object with underlying data values`() {

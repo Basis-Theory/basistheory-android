@@ -1,13 +1,20 @@
 package com.basistheory.android.model
 
+import com.basistheory.android.constants.ElementValueType
 import com.basistheory.android.model.exceptions.IncompleteElementException
 import com.basistheory.android.view.TextElement
 
 class ElementValueReference(private val valueGetter: () -> String?) {
     private var _element: TextElement? = null
+    private var _getValueType: ElementValueType? = ElementValueType.STRING;
 
-    constructor(element: TextElement, valueGetter: () -> String?) : this(valueGetter) {
+    constructor(
+        element: TextElement,
+        valueGetter: () -> String?,
+        getValueType: ElementValueType?
+    ) : this(valueGetter) {
         _element = element
+        _getValueType = getValueType
     }
 
     internal fun getValue(): String? {
@@ -16,4 +23,7 @@ class ElementValueReference(private val valueGetter: () -> String?) {
 
         return valueGetter()
     }
+
+    var getValueType: ElementValueType? = ElementValueType.STRING
+        get() = _getValueType
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.util.AttributeSet
 import androidx.annotation.RequiresApi
+import com.basistheory.android.constants.ElementValueType
 import com.basistheory.android.model.ElementValueReference
 import com.basistheory.android.model.InputType
 import com.basistheory.android.view.mask.ElementMask
@@ -18,11 +19,14 @@ class CardExpirationDateElement @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : TextElement(context, attrs, defStyleAttr) {
 
-    fun month(): ElementValueReference = ElementValueReference(this, ::getMonthValue)
+    fun month(): ElementValueReference =
+        ElementValueReference(this, ::getMonthValue, ElementValueType.INTEGER)
 
-    fun year(): ElementValueReference = ElementValueReference(this, ::getYearValue)
+    fun year(): ElementValueReference =
+        ElementValueReference(this, ::getYearValue, ElementValueType.INTEGER)
 
-    fun format(dateFormat: String): ElementValueReference = ElementValueReference(this, getFormattedValue(dateFormat))
+    fun format(dateFormat: String): ElementValueReference =
+        ElementValueReference(this, getFormattedValue(dateFormat), getValueType)
 
     fun setValueRef(
         monthRef: ElementValueReference,

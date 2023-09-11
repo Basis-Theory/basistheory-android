@@ -5,6 +5,7 @@ import com.basistheory.CreateSessionResponse
 import com.basistheory.CreateTokenRequest
 import com.basistheory.CreateTokenResponse
 import com.basistheory.Token
+import com.basistheory.android.constants.ElementValueType
 import com.basistheory.android.model.ElementValueReference
 import com.basistheory.android.util.*
 import com.basistheory.android.util.getElementsValues
@@ -41,8 +42,8 @@ class BasisTheoryElements internal constructor(
             val data =
                 if (createTokenRequest.data == null) null
                 else if (createTokenRequest.data!!::class.java.isPrimitiveType()) createTokenRequest.data
-                else if (createTokenRequest.data is TextElement) (createTokenRequest.data as TextElement).tryGetTextToTokenize()
-                else if (createTokenRequest.data is ElementValueReference) (createTokenRequest.data as ElementValueReference).getValue()
+                else if (createTokenRequest.data is TextElement) (createTokenRequest.data as TextElement).tryGetTextToTokenize().toValueType((createTokenRequest.data as TextElement).getValueType)
+                else if (createTokenRequest.data is ElementValueReference) (createTokenRequest.data as ElementValueReference).getValue().toValueType((createTokenRequest.data as ElementValueReference).getValueType)
                 else replaceElementRefs(createTokenRequest.data!!.toMap())
 
             createTokenRequest.data = data
@@ -73,6 +74,26 @@ class BasisTheoryElements internal constructor(
     companion object {
         @JvmStatic
         fun builder(): BasisTheoryElementsBuilder = BasisTheoryElementsBuilder()
+    }
+}
+
+fun String?.toValueType(getValueType: ElementValueType?): Any? {
+    return when(getValueType) {
+        ElementValueType.INTEGER -> {
+            this?.toInt()
+        }
+
+        ElementValueType.DOUBLE -> {
+            this?.toDouble()
+        }
+
+        ElementValueType.BOOLEAN -> {
+            this?.toBoolean()
+        }
+
+        else -> {
+            this;
+        }
     }
 }
 

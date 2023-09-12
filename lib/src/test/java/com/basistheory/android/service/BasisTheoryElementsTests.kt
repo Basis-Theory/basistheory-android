@@ -268,10 +268,10 @@ class BasisTheoryElementsTests {
             cardExpElement.setText("$month/${year.takeLast(2)}")
 
             bt.tokenize(cardExpElement.month())
-            verify { tokenizeApi.tokenize(month) }
+            verify { tokenizeApi.tokenize(expDate.monthValue) }
 
             bt.tokenize(cardExpElement.year())
-            verify { tokenizeApi.tokenize(year) }
+            verify { tokenizeApi.tokenize(expDate.year) }
 
             bt.tokenize(cardExpElement.format("MM"))
             verify { tokenizeApi.tokenize(month) }
@@ -359,8 +359,8 @@ class BasisTheoryElementsTests {
                     "name" to name,
                     "card" to mapOf(
                         "number" to cardNumber.replace(Regex("""[^\d]"""), ""),
-                        "expMonth" to expMonth,
-                        "expYear" to expYear,
+                        "expMonth" to expDate.monthValue,
+                        "expYear" to expDate.year,
                         "cvc" to cvc
                     ),
                     "nested" to mapOf(
@@ -557,12 +557,12 @@ class BasisTheoryElementsTests {
 
             bt.createToken(createTokenRequestMonth)
 
-            val expectedMonthRequest = createTokenRequest(month)
+            val expectedMonthRequest = createTokenRequest(expDate.monthValue)
             verify { tokensApi.create(expectedMonthRequest) }
 
             bt.createToken(createTokenRequestYear)
 
-            val expectedYearRequest = createTokenRequest(year)
+            val expectedYearRequest = createTokenRequest(expDate.year)
             verify { tokensApi.create(expectedYearRequest) }
         }
 
@@ -621,8 +621,8 @@ class BasisTheoryElementsTests {
                     "name" to name,
                     "card" to mapOf(
                         "number" to cardNumber.replace(Regex("""[^\d]"""), ""),
-                        "expMonth" to expMonth,
-                        "expYear" to expYear,
+                        "expMonth" to expDate.monthValue,
+                        "expYear" to expDate.year,
                         "cvc" to cvc
                     ),
                     "nested" to mapOf(
@@ -643,7 +643,7 @@ class BasisTheoryElementsTests {
         }
 
     @Test
-    fun `create token should respect getValueType type when sending values to the API`() = runBlocking {
+    fun `createToken should respect getValueType type when sending values to the API`() = runBlocking {
         every { provider.getTokensApi(any()) } returns tokensApi
 
         val testString = faker.name().firstName()

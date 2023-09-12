@@ -6,7 +6,7 @@ import com.basistheory.android.view.TextElement
 
 class ElementValueReference(private val valueGetter: () -> String?) {
     private var _element: TextElement? = null
-    private var _getValueType: ElementValueType? = ElementValueType.STRING;
+    private var _getValueType: ElementValueType = ElementValueType.STRING;
 
     constructor(
         element: TextElement,
@@ -14,7 +14,7 @@ class ElementValueReference(private val valueGetter: () -> String?) {
         getValueType: ElementValueType?
     ) : this(valueGetter) {
         _element = element
-        _getValueType = getValueType
+        _getValueType = getValueType ?: ElementValueType.STRING
     }
 
     internal fun getValue(): String? {
@@ -24,6 +24,6 @@ class ElementValueReference(private val valueGetter: () -> String?) {
         return valueGetter()
     }
 
-    var getValueType: ElementValueType? = ElementValueType.STRING
+    var getValueType: ElementValueType = ElementValueType.STRING
         get() = _getValueType
 }

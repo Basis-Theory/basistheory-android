@@ -1,3 +1,15 @@
+## [3.0.0](https://github.com/Basis-Theory/basistheory-android/compare/2.5.0...3.0.0) (2023-09-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* the value for the month() and year() methods of CardExpirationDateElement is now converted to Int before sending to the API to match the APIs 'card' contract instead of String as it was before.
+
+### Features
+
+* add type conversion when submitting element values ([#93](https://github.com/Basis-Theory/basistheory-android/issues/93)) ([961d5e3](https://github.com/Basis-Theory/basistheory-android/commit/961d5e32f8e4eae6ada3f91a4423eafefb6ebcc6))
+
+
 ## [2.5.0](https://github.com/Basis-Theory/basistheory-android/compare/2.4.0...2.5.0) (2023-09-04)
 
 

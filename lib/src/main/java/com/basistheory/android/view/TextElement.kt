@@ -19,6 +19,7 @@ import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.os.bundleOf
 import com.basistheory.android.R
+import com.basistheory.android.constants.ElementValueType
 import com.basistheory.android.event.BlurEvent
 import com.basistheory.android.event.ChangeEvent
 import com.basistheory.android.event.ElementEventListeners
@@ -45,6 +46,7 @@ open class TextElement @JvmOverloads constructor(
     private var _isMaskSatisfied: Boolean = true
     private var _isEmpty: Boolean = true
     private var _inputType: InputType = InputType.TEXT
+    private var _getValueType: ElementValueType = ElementValueType.STRING;
 
     internal var inputAction: InputAction = InputAction.INSERT
 
@@ -207,6 +209,12 @@ open class TextElement @JvmOverloads constructor(
 
             if (value.isConcealed)
                 _editText.transformationMethod = FullyHiddenTransformationMethod()
+        }
+
+    var getValueType: ElementValueType
+        get() = _getValueType
+        set(value) {
+            _getValueType = value
         }
 
     var removeDefaultStyles: Boolean

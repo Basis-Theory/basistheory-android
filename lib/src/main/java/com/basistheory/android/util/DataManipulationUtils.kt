@@ -2,6 +2,7 @@ package com.basistheory.android.util
 
 import com.basistheory.android.model.ElementValueReference
 import com.basistheory.android.model.exceptions.IncompleteElementException
+import com.basistheory.android.service.toValueType
 import com.basistheory.android.view.TextElement
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody
@@ -41,8 +42,8 @@ internal fun replaceElementRefs(value: Any?): Any? {
         }
     } else {
         when (value) {
-            is TextElement -> value.tryGetTextToTokenize()
-            is ElementValueReference -> value.getValue()
+            is TextElement -> value.tryGetTextToTokenize().toValueType(value.getValueType)
+            is ElementValueReference -> value.getValue().toValueType(value.getValueType)
             else -> {
                 val children =
                     if (value as? MutableMap<String, Any?> != null) value.toMutableMap() else value.toMap()
@@ -71,8 +72,8 @@ internal fun getElementsValues(body: Any) =
     body.let {
         when {
             it::class.java.isPrimitiveType() -> it.toString()
-            it is TextElement -> it.getTransformedText()
-            it is ElementValueReference -> it.getValue()
+            it is TextElement -> it.getTransformedText().toValueType(it.getValueType)
+            it is ElementValueReference -> it.getValue().toValueType(it.getValueType)
             else -> replaceElementRefs(it.toMap())
         }
     }

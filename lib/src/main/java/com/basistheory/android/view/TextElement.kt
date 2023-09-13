@@ -1,17 +1,23 @@
 package com.basistheory.android.view
 
 import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.Parcelable
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View.OnFocusChangeListener
+import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
@@ -32,6 +38,7 @@ import com.basistheory.android.view.method.FullyHiddenTransformationMethod
 import com.basistheory.android.view.transform.ElementTransform
 import com.basistheory.android.view.validation.ElementValidator
 
+
 open class TextElement @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -47,6 +54,8 @@ open class TextElement @JvmOverloads constructor(
     private var _isEmpty: Boolean = true
     private var _inputType: InputType = InputType.TEXT
     private var _getValueType: ElementValueType = ElementValueType.STRING;
+    private var copyIcon = resources.getDrawable(R.drawable.copy, null)
+    private var checkIcon = resources.getDrawable(R.drawable.check, null)
 
     internal var inputAction: InputAction = InputAction.INSERT
 
@@ -55,6 +64,10 @@ open class TextElement @JvmOverloads constructor(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT
         )
+
+        // TODO: Move to setter.
+        setupCopy()
+
         super.addView(_editText)
 
         context.theme.obtainStyledAttributes(attrs, R.styleable.TextElement, defStyleAttr, 0)
@@ -352,5 +365,51 @@ open class TextElement @JvmOverloads constructor(
     internal companion object {
         private const val STATE_SUPER = "state_super"
         private const val STATE_INPUT = "state_input"
+    }
+
+
+    @SuppressLint("ClickableViewAccessibility") // accessibility handled by adding both touch and click listeners
+    private fun setupCopy() {
+        _editText.setCompoundDrawablesWithIntrinsicBounds(null, null, copyIcon, null)
+
+        val drawableRight = 2
+        val icon = _editText.compoundDrawables[drawableRight]
+        val iconTouchArea = icon.bounds.width()
+
+        _editText.setOnClickListener {
+            val clickX = it.x.toInt()
+
+            if (clickX >= _editText.right - iconTouchArea) {
+                copyTextToClipboard()
+            }
+        }
+
+        _editText.setOnTouchListener(OnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_UP) {
+
+                if (event.rawX >= _editText.right - iconTouchArea) {
+                    copyTextToClipboard()
+                    return@OnTouchListener true
+                }
+            }
+            false
+        })
+    }
+
+    private fun copyTextToClipboard() {
+        // copy to clipboard
+        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip: ClipData = ClipData.newPlainText("Value", getText())
+        clipboard.setPrimaryClip(clip)
+
+        // update icon
+        _editText.setCompoundDrawablesWithIntrinsicBounds(null, null, checkIcon, null)
+
+        // update back
+        val handler = Handler(Looper.getMainLooper())
+        val runnable = Runnable {
+            _editText.setCompoundDrawablesWithIntrinsicBounds(null, null, copyIcon, null)
+        }
+        handler.postDelayed(runnable, 1000)
     }
 }

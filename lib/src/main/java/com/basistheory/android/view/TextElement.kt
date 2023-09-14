@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -23,6 +24,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import com.basistheory.android.R
 import com.basistheory.android.constants.ElementValueType
@@ -38,7 +40,6 @@ import com.basistheory.android.view.method.FullyHiddenTransformationMethod
 import com.basistheory.android.view.transform.ElementTransform
 import com.basistheory.android.view.validation.ElementValidator
 
-
 open class TextElement @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -53,9 +54,10 @@ open class TextElement @JvmOverloads constructor(
     private var _isMaskSatisfied: Boolean = true
     private var _isEmpty: Boolean = true
     private var _inputType: InputType = InputType.TEXT
-    private var _getValueType: ElementValueType = ElementValueType.STRING;
-    private var copyIcon = resources.getDrawable(R.drawable.copy, null)
-    private var checkIcon = resources.getDrawable(R.drawable.check, null)
+    private var _getValueType: ElementValueType = ElementValueType.STRING
+    private var _enableCopy: Boolean = false
+    private var copyIcon = ResourcesCompat.getDrawable(resources, R.drawable.copy, null)
+    private var checkIcon = ResourcesCompat.getDrawable(resources, R.drawable.check, null)
 
     internal var inputAction: InputAction = InputAction.INSERT
 
@@ -64,9 +66,6 @@ open class TextElement @JvmOverloads constructor(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT
         )
-
-        // TODO: Move to setter.
-        setupCopy()
 
         super.addView(_editText)
 
@@ -99,6 +98,8 @@ open class TextElement @JvmOverloads constructor(
                     )
 
                     gravity = Gravity.START
+
+                    enableCopy = false
 
                     // map custom attributes
                     mask = getString(R.styleable.TextElement_bt_mask)?.let { ElementMask(it) }
@@ -147,6 +148,10 @@ open class TextElement @JvmOverloads constructor(
             endDrawable,
             bottomDrawable
         )
+    }
+
+    fun getDrawables(): Array<Drawable?> {
+        return _editText.compoundDrawables
     }
 
     val isComplete: Boolean
@@ -234,6 +239,26 @@ open class TextElement @JvmOverloads constructor(
         get() = _editText.background == null
         set(value) {
             _editText.background = if (value) null else _defaultBackground
+        }
+
+    var enableCopy: Boolean = false
+        set(value) {
+            field = value
+            if (value && !_enableCopy) {
+                _enableCopy = true
+                setupCopy()
+            } else if (_enableCopy && !value) {
+                _enableCopy = false
+                removeCopy()
+            }
+        }
+
+    var copyIconColor: Int = Color.BLACK
+        set(value) {
+            field = value
+
+            copyIcon?.setTint(value)
+            checkIcon?.setTint(value)
         }
 
     fun addChangeEventListener(listener: (ChangeEvent) -> Unit) {
@@ -367,7 +392,6 @@ open class TextElement @JvmOverloads constructor(
         private const val STATE_INPUT = "state_input"
     }
 
-
     @SuppressLint("ClickableViewAccessibility") // accessibility handled by adding both touch and click listeners
     private fun setupCopy() {
         _editText.setCompoundDrawablesWithIntrinsicBounds(null, null, copyIcon, null)
@@ -375,6 +399,8 @@ open class TextElement @JvmOverloads constructor(
         val drawableRight = 2
         val icon = _editText.compoundDrawables[drawableRight]
         val iconTouchArea = icon.bounds.width()
+
+        copyIcon?.setTint(copyIconColor)
 
         _editText.setOnClickListener {
             val clickX = it.x.toInt()
@@ -411,5 +437,9 @@ open class TextElement @JvmOverloads constructor(
             _editText.setCompoundDrawablesWithIntrinsicBounds(null, null, copyIcon, null)
         }
         handler.postDelayed(runnable, 1000)
+    }
+
+    private fun removeCopy() {
+        _editText.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
     }
 }

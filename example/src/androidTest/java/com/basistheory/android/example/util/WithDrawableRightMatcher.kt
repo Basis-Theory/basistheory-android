@@ -1,7 +1,6 @@
 package com.basistheory.android.example.util
 
 import android.view.View
-import androidx.annotation.DrawableRes
 import com.basistheory.android.view.TextElement
 import org.hamcrest.Description
 import org.hamcrest.TypeSafeMatcher

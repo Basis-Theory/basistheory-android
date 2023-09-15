@@ -1,5 +1,6 @@
 package com.basistheory.android.example.view.custom_form
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -28,6 +29,9 @@ class CustomFormFragment : Fragment() {
 
         val digitRegex = Regex("""\d""")
         val charRegex = Regex("""[A-Za-z]""")
+
+        binding.name.copyIconColor = Color.BLUE
+        binding.name.enableCopy = true
 
         // illustrates that inputType can be set programmatically (or in xml)
         binding.phoneNumber.inputType = InputType.NUMBER

@@ -1,5 +1,7 @@
 package com.basistheory.android.example
 
+import android.content.ClipboardManager
+import android.content.Context
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -7,7 +9,10 @@ import androidx.test.espresso.contrib.DrawerActions.open
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.activityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import com.basistheory.android.example.util.clickOnRightDrawable
 import com.basistheory.android.example.util.waitUntilVisible
+import com.basistheory.android.example.util.withDrawableRight
 import com.basistheory.android.example.view.MainActivity
 import com.github.javafaker.Faker
 import org.hamcrest.Matchers.allOf
@@ -23,11 +28,19 @@ class CollectCustomFormTests {
     @get:Rule
     val activityRule = activityScenarioRule<MainActivity>()
 
+    private lateinit var appContext: Context
+    private lateinit var clipboardManager: ClipboardManager
+
     @Before
     fun before() {
         onView(withId(R.id.drawer_layout)).perform(open())
         onView(withId(R.id.nav_custom_form)).perform(click())
+
+        appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        clipboardManager = appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     }
+
+
 
     @Test
     fun canAutofill() {
@@ -72,5 +85,24 @@ class CollectCustomFormTests {
                     )
                 )
             )
+    }
+
+    @Test
+    fun canCopy() {
+        val textToCopy = Faker().name().firstName()
+        onView(withId(R.id.name)).perform(waitUntilVisible())
+        onView(withId(R.id.name)).perform(scrollTo(), typeText(textToCopy))
+
+        // check icon exists
+        onView(withId(R.id.name)).check(matches(withDrawableRight()))
+
+        // click on it
+        onView(withId(R.id.name)).perform(clickOnRightDrawable())
+
+        // check value got added to clipboard
+        val clipData = clipboardManager.primaryClip
+        val clipboardText = clipData?.getItemAt(0)?.text.toString()
+
+        assert(clipboardText == textToCopy)
     }
 }

@@ -1,3 +1,11 @@
+## [3.1.0](https://github.com/Basis-Theory/basistheory-android/compare/3.0.0...3.1.0) (2023-09-15)
+
+
+### Features
+
+* add enableCopy option and getDrawables to TextElement ([#94](https://github.com/Basis-Theory/basistheory-android/issues/94)) ([87a8404](https://github.com/Basis-Theory/basistheory-android/commit/87a8404c9aabe67228ed20e8b20039cbef6f00ab))
+
+
 ## [3.0.0](https://github.com/Basis-Theory/basistheory-android/compare/2.5.0...3.0.0) (2023-09-12)
 
 

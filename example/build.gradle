@@ -67,7 +67,7 @@ dependencies {
 
 configurations.all {
     resolutionStrategy {
-        force 'org.yaml:snakeyaml:2.1'
+        force 'org.yaml:snakeyaml:2.0'
     }
 }
 

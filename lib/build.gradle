@@ -69,9 +69,9 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.7.0'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.2'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.2'
-    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+    implementation 'org.apache.commons:commons-lang3:3.13.0'
     implementation 'org.threeten:threetenbp:1.6.8'
     implementation 'com.github.basis-theory:basistheory-java:1.0.0'
     implementation 'com.squareup.okhttp3:okhttp:4.11.0'
@@ -81,13 +81,13 @@ dependencies {
     testImplementation 'org.robolectric:robolectric:4.10.3'
     testImplementation 'io.strikt:strikt-core:0.34.1'
     testImplementation 'com.github.javafaker:javafaker:1.0.2'
-    testImplementation 'io.mockk:mockk:1.13.5'
+    testImplementation 'io.mockk:mockk:1.13.8'
     testImplementation("com.squareup.okhttp3:mockwebserver:4.11.0")
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
 }
 
 configurations.all {
     resolutionStrategy {
-        force 'org.yaml:snakeyaml:1.33'
+        force 'org.yaml:snakeyaml:2.2'
     }
 }

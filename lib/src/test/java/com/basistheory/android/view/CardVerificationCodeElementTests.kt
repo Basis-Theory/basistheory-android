@@ -9,10 +9,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import strikt.api.expectThat
 import strikt.assertions.*
-import kotlin.text.get
 
+@Config(sdk = [33]) // TODO remove once Roboelectric releases a new version supporting SDK 34 https://github.com/robolectric/robolectric/issues/8404
 @RunWith(RobolectricTestRunner::class)
 class CardVerificationCodeElementTests {
     private lateinit var cvcElement: CardVerificationCodeElement
@@ -84,7 +85,8 @@ class CardVerificationCodeElementTests {
 
     @Test
     fun `setting card number element multiple times does not duplicate listeners`() {
-        val cardNumberElement = spyk(CardNumberElement(Robolectric.buildActivity(Activity::class.java).get()))
+        val cardNumberElement =
+            spyk(CardNumberElement(Robolectric.buildActivity(Activity::class.java).get()))
         cvcElement.cardNumberElement = cardNumberElement
         cvcElement.cardNumberElement = cardNumberElement
 

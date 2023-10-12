@@ -3,7 +3,7 @@ package com.basistheory.android.util
 import com.basistheory.android.model.ElementValueReference
 import com.basistheory.android.service.getElementValueReference
 import com.basistheory.android.service.getValue
-import com.github.javafaker.Faker
+import net.datafaker.Faker
 import org.junit.Test
 import strikt.api.expectThat
 import strikt.assertions.isA

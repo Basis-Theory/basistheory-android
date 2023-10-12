@@ -14,7 +14,7 @@ import com.basistheory.android.example.util.clickOnRightDrawable
 import com.basistheory.android.example.util.waitUntilVisible
 import com.basistheory.android.example.util.withDrawableRight
 import com.basistheory.android.example.view.MainActivity
-import com.github.javafaker.Faker
+import net.datafaker.Faker
 import org.hamcrest.Matchers.allOf
 import org.junit.Assert.*
 import org.junit.Before

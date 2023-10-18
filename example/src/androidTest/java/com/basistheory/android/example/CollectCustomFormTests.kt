@@ -14,7 +14,7 @@ import com.basistheory.android.example.util.clickOnRightDrawable
 import com.basistheory.android.example.util.waitUntilVisible
 import com.basistheory.android.example.util.withDrawableRight
 import com.basistheory.android.example.view.MainActivity
-import net.datafaker.Faker
+import com.github.javafaker.Faker
 import org.hamcrest.Matchers.allOf
 import org.junit.Assert.*
 import org.junit.Before
@@ -54,7 +54,7 @@ class CollectCustomFormTests {
     }
 
     @Test
-    fun canTokenize() {
+    fun ÏcanTokenize() {
         val name = Faker().name().fullName()
         val phoneNumber = "2345678900"
         val orderNumber = "ABC123"

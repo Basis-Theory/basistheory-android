@@ -16,6 +16,7 @@ import com.basistheory.android.view.CardExpirationDateElement
 import com.basistheory.android.view.CardNumberElement
 import com.basistheory.android.view.CardVerificationCodeElement
 import com.basistheory.android.view.TextElement
+import com.github.javafaker.Faker
 import io.mockk.Called
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
@@ -27,7 +28,6 @@ import io.mockk.verify
 import io.mockk.slot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import net.datafaker.Faker
 import okhttp3.Call
 import okio.Buffer
 import org.junit.Before

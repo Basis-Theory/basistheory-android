@@ -3,8 +3,8 @@ package com.basistheory.android.service
 import com.basistheory.ApiClient
 import com.basistheory.android.BuildConfig
 import com.basistheory.auth.ApiKeyAuth
+import com.github.javafaker.Faker
 import kotlinx.coroutines.Dispatchers
-import net.datafaker.Faker
 import org.junit.Test
 import strikt.api.expectCatching
 import strikt.api.expectThat

@@ -1,7 +1,7 @@
 package com.basistheory.android.util
 
 import com.basistheory.android.view.TextElement
-import net.datafaker.Faker
+import com.github.javafaker.Faker
 import org.junit.Test
 import strikt.api.expectCatching
 import strikt.api.expectThat

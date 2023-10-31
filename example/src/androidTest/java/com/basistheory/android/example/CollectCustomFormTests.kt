@@ -54,7 +54,7 @@ class CollectCustomFormTests {
     }
 
     @Test
-    fun ÏcanTokenize() {
+    fun canTokenize() {
         val name = Faker().name().fullName()
         val phoneNumber = "2345678900"
         val orderNumber = "ABC123"

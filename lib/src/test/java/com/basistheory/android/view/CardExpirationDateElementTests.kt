@@ -8,6 +8,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
 import strikt.assertions.isFalse
@@ -15,6 +16,7 @@ import strikt.assertions.isTrue
 import strikt.assertions.single
 import java.time.LocalDate
 
+@Config(sdk = [33]) // TODO remove once Roboelectric releases a new version supporting SDK 34 https://github.com/robolectric/robolectric/issues/8404
 @RunWith(RobolectricTestRunner::class)
 class CardExpirationDateElementTests {
     private lateinit var cardExpirationDateElement: CardExpirationDateElement

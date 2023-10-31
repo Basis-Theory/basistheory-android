@@ -1,11 +1,7 @@
 package com.basistheory.android.event
 
 import android.app.Activity
-import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.widget.EditText
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import com.basistheory.android.view.TextElement
 import org.junit.Before
 import org.junit.Test
@@ -13,10 +9,11 @@ import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.android.controller.ActivityController
+import org.robolectric.annotation.Config
 import strikt.api.expectThat
 import strikt.assertions.*
 
-
+@Config(sdk = [33]) // TODO remove once Roboelectric releases a new version supporting SDK 34 https://github.com/robolectric/robolectric/issues/8404
 @RunWith(RobolectricTestRunner::class)
 class FocusEventTests {
     private lateinit var activityController: ActivityController<Activity>

@@ -11,9 +11,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import strikt.api.expectThat
 import strikt.assertions.*
 
+@Config(sdk = [33]) // TODO remove once Roboelectric releases a new version supporting SDK 34 https://github.com/robolectric/robolectric/issues/8404
 @RunWith(RobolectricTestRunner::class)
 class TextElementTests {
     private lateinit var textElement: TextElement

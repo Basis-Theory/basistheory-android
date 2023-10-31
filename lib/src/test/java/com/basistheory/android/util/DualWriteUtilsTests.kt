@@ -1,7 +1,6 @@
 import com.basistheory.android.util.mapObjToRequestBody
 import com.basistheory.android.util.convertObjectToFormUrlEncoded
 import com.basistheory.android.util.encodeParamsToFormUrlEncoded
-import com.github.javafaker.Faker
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody

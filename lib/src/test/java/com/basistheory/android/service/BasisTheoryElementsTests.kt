@@ -2,16 +2,17 @@ package com.basistheory.android.service
 
 import android.app.Activity
 import android.view.View
-import com.basistheory.CreateTokenRequest
+import com.basistheory.ApiClient
+import com.basistheory.ApiResponse
 import com.basistheory.SessionsApi
 import com.basistheory.Token
 import com.basistheory.TokenizeApi
 import com.basistheory.TokensApi
-import com.basistheory.ApiResponse
-import com.basistheory.ApiClient
 import com.basistheory.android.constants.ElementValueType
+import com.basistheory.android.model.CreateTokenRequest
 import com.basistheory.android.model.ElementValueReference
 import com.basistheory.android.model.exceptions.IncompleteElementException
+import com.basistheory.android.model.toJava
 import com.basistheory.android.view.CardExpirationDateElement
 import com.basistheory.android.view.CardNumberElement
 import com.basistheory.android.view.CardVerificationCodeElement
@@ -23,9 +24,9 @@ import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.impl.annotations.SpyK
 import io.mockk.junit4.MockKRule
+import io.mockk.slot
 import io.mockk.spyk
 import io.mockk.verify
-import io.mockk.slot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import okhttp3.Call
@@ -46,6 +47,7 @@ import strikt.assertions.isNotEqualTo
 import strikt.assertions.isNull
 import java.time.Instant
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
 import javax.inject.Inject
@@ -445,7 +447,7 @@ class BasisTheoryElementsTests {
 
         every { provider.getTokensApi(any()) } returns tokensApi
 
-        bt.createToken(CreateTokenRequest(), apiKeyOverride)
+        bt.createToken(CreateTokenRequest(type = "token", data = ""), apiKeyOverride)
 
         verify { provider.getTokensApi(apiKeyOverride) }
     }
@@ -459,7 +461,7 @@ class BasisTheoryElementsTests {
             val createTokenRequest = createTokenRequest(name)
             bt.createToken(createTokenRequest)
 
-            verify { tokensApi.create(createTokenRequest) }
+            verify { tokensApi.create(createTokenRequest.toJava()) }
         }
 
     @Test
@@ -507,7 +509,7 @@ class BasisTheoryElementsTests {
             )
             val expectedRequest = createTokenRequest(expectedData)
 
-            verify { tokensApi.create(expectedRequest) }
+            verify { tokensApi.create(expectedRequest.toJava()) }
         }
 
     @Test
@@ -524,7 +526,7 @@ class BasisTheoryElementsTests {
 
             val expectedRequest = createTokenRequest(name)
 
-            verify { tokensApi.create(expectedRequest) }
+            verify { tokensApi.create(expectedRequest.toJava()) }
         }
 
     @Test
@@ -541,7 +543,7 @@ class BasisTheoryElementsTests {
 
             val expectedRequest = createTokenRequest(cardNumber.replace(Regex("""[^\d]"""), ""))
 
-            verify { tokensApi.create(expectedRequest) }
+            verify { tokensApi.create(expectedRequest.toJava()) }
         }
 
     @Test
@@ -560,12 +562,12 @@ class BasisTheoryElementsTests {
             bt.createToken(createTokenRequestMonth)
 
             val expectedMonthRequest = createTokenRequest(expDate.monthValue)
-            verify { tokensApi.create(expectedMonthRequest) }
+            verify { tokensApi.create(expectedMonthRequest.toJava()) }
 
             bt.createToken(createTokenRequestYear)
 
             val expectedYearRequest = createTokenRequest(expDate.year)
-            verify { tokensApi.create(expectedYearRequest) }
+            verify { tokensApi.create(expectedYearRequest.toJava()) }
         }
 
     @Test
@@ -641,7 +643,7 @@ class BasisTheoryElementsTests {
 
             val expectedCreateTokenRequest = createTokenRequest(expectedData)
 
-            verify { tokensApi.create(expectedCreateTokenRequest) }
+            verify { tokensApi.create(expectedCreateTokenRequest.toJava()) }
         }
 
     @Test
@@ -690,7 +692,7 @@ class BasisTheoryElementsTests {
 
         val expectedCreateTokenRequest = createTokenRequest(expectedRequest)
 
-        verify { tokensApi.create(expectedCreateTokenRequest) }
+        verify { tokensApi.create(expectedCreateTokenRequest.toJava()) }
     }
 
     @Test
@@ -944,7 +946,7 @@ class BasisTheoryElementsTests {
         val tokenId = UUID.randomUUID().toString()
 
         every { provider.getTokensApi(any()) } returns tokensApi
-        every { tokensApi.getById(tokenId) } returns Token()
+        every { tokensApi.getById(tokenId) } returns fakeToken()
 
         bt.getToken(tokenId)
 
@@ -958,7 +960,7 @@ class BasisTheoryElementsTests {
         val apiKeyOverride = UUID.randomUUID().toString()
 
         every { provider.getTokensApi(any()) } returns tokensApi
-        every { tokensApi.getById(tokenId) } returns Token()
+        every { tokensApi.getById(tokenId) } returns fakeToken()
 
         bt.getToken(tokenId, apiKeyOverride)
 
@@ -976,10 +978,7 @@ class BasisTheoryElementsTests {
     }
 
     private fun createTokenRequest(data: Any): CreateTokenRequest =
-        CreateTokenRequest().apply {
-            this.type = "token"
-            this.data = data
-        }
+        CreateTokenRequest(type = "token", data = data)
 
     private fun incompleteCardThrowsIncompleteElementException(
         incompleteCardNumber: String
@@ -1002,4 +1001,15 @@ class BasisTheoryElementsTests {
 
         verify { tokensApi.create(any()) wasNot Called }
     }
+
+    private fun fakeToken(): Token =
+        Token().apply {
+            id = UUID.randomUUID().toString()
+            tenantId = UUID.randomUUID()
+            type = "token"
+            data = Faker.instance().name().firstName()
+            createdBy = UUID.randomUUID()
+            createdAt = OffsetDateTime.now()
+            containers = mutableListOf("/general")
+        }
 }

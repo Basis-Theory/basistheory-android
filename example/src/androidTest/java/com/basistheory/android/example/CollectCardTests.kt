@@ -63,7 +63,7 @@ class CollectCardTests {
             .check(
                 matches(
                     allOf(
-                        withSubstring(cardNumber), // displayed with mask, but transformed back to this value
+                        withSubstring(cardNumber), // needs an api key that reveals data
                         withSubstring(expMonth),
                         withSubstring(expYear),
                         withSubstring(cvc)

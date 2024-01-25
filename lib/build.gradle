@@ -72,7 +72,7 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
     implementation 'org.apache.commons:commons-lang3:3.13.0'
     implementation 'org.threeten:threetenbp:1.6.8'
-    implementation('com.github.basis-theory:basistheory-java:1.1.0') {
+    implementation('com.github.basis-theory:basistheory-java:2.0.0') {
         exclude group: 'javax.ws.rs', module: 'javax.ws.rs-api'
     }
     implementation 'com.squareup.okhttp3:okhttp:4.11.0'

@@ -1,12 +1,14 @@
 package com.basistheory.android.service
 
 import HttpClient
-import com.basistheory.CreateSessionResponse
-import com.basistheory.CreateTokenRequest
-import com.basistheory.CreateTokenResponse
-import com.basistheory.Token
 import com.basistheory.android.constants.ElementValueType
+import com.basistheory.android.model.CreateSessionResponse
+import com.basistheory.android.model.CreateTokenRequest
 import com.basistheory.android.model.ElementValueReference
+import com.basistheory.android.model.Token
+import com.basistheory.android.model.exceptions.ApiException
+import com.basistheory.android.model.toAndroid
+import com.basistheory.android.model.toJava
 import com.basistheory.android.util.*
 import com.basistheory.android.util.getElementsValues
 import com.basistheory.android.util.replaceElementRefs
@@ -36,26 +38,35 @@ class BasisTheoryElements internal constructor(
     suspend fun createToken(
         createTokenRequest: CreateTokenRequest,
         apiKeyOverride: String? = null
-    ): CreateTokenResponse =
-        withContext(dispatcher) {
-            val tokensApi = apiClientProvider.getTokensApi(apiKeyOverride)
-            val data =
-                if (createTokenRequest.data == null) null
-                else if (createTokenRequest.data!!::class.java.isPrimitiveType()) createTokenRequest.data
-                else if (createTokenRequest.data is TextElement) (createTokenRequest.data as TextElement).tryGetTextToTokenize().toValueType((createTokenRequest.data as TextElement).getValueType)
-                else if (createTokenRequest.data is ElementValueReference) (createTokenRequest.data as ElementValueReference).getValue().toValueType((createTokenRequest.data as ElementValueReference).getValueType)
-                else replaceElementRefs(createTokenRequest.data!!.toMap())
+    ): Token =
+        try {
+            withContext(dispatcher) {
+                val tokensApi = apiClientProvider.getTokensApi(apiKeyOverride)
+                val data =
+                    if (createTokenRequest.data::class.java.isPrimitiveType()) createTokenRequest.data
+                    else if (createTokenRequest.data is TextElement) (createTokenRequest.data as TextElement).tryGetTextToTokenize()
+                        .toValueType((createTokenRequest.data as TextElement).getValueType)
+                    else if (createTokenRequest.data is ElementValueReference) (createTokenRequest.data as ElementValueReference).getValue()
+                        .toValueType((createTokenRequest.data as ElementValueReference).getValueType)
+                    else replaceElementRefs(createTokenRequest.data.toMap())
 
-            createTokenRequest.data = data
+                createTokenRequest.data = data!!
 
-            tokensApi.create(createTokenRequest)
+                tokensApi.create(createTokenRequest.toJava()).toAndroid()
+            }
+        } catch (e: com.basistheory.ApiException) {
+            throw ApiException(e.code, e.responseHeaders, e.responseBody, e.message)
         }
 
     @JvmOverloads
     suspend fun createSession(apiKeyOverride: String? = null): CreateSessionResponse =
-        withContext(dispatcher) {
-            val sessionsApi = apiClientProvider.getSessionsApi(apiKeyOverride)
-            sessionsApi.create()
+        try {
+            withContext(dispatcher) {
+                val sessionsApi = apiClientProvider.getSessionsApi(apiKeyOverride)
+                sessionsApi.create().toAndroid()
+            }
+        } catch (e: com.basistheory.ApiException) {
+            throw ApiException(e.code, e.responseHeaders, e.responseBody, e.message)
         }
 
     @JvmOverloads
@@ -63,12 +74,16 @@ class BasisTheoryElements internal constructor(
         id: String,
         apiKeyOverride: String? = null
     ): Token =
-        withContext(dispatcher) {
-            val tokensApi = apiClientProvider.getTokensApi(apiKeyOverride)
+        try {
+            withContext(dispatcher) {
+                val tokensApi = apiClientProvider.getTokensApi(apiKeyOverride)
 
-            tokensApi.getById(id).also {
-                it.data = transformResponseToValueReferences(it.data)
+                tokensApi.getById(id).also {
+                    it.data = transformResponseToValueReferences(it.data)
+                }.toAndroid()
             }
+        } catch (e: com.basistheory.ApiException) {
+            throw ApiException(e.code, e.responseHeaders, e.responseBody, e.message)
         }
 
     companion object {
@@ -78,7 +93,7 @@ class BasisTheoryElements internal constructor(
 }
 
 fun String?.toValueType(getValueType: ElementValueType?): Any? {
-    return when(getValueType) {
+    return when (getValueType) {
         ElementValueType.INTEGER -> {
             this?.toInt()
         }

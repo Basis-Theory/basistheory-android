@@ -27,11 +27,15 @@ class BasisTheoryElements internal constructor(
 
     @JvmOverloads
     suspend fun tokenize(body: Any, apiKeyOverride: String? = null): Any =
-        withContext(dispatcher) {
-            val tokenizeApiClient = apiClientProvider.getTokenizeApi(apiKeyOverride)
-            val request = getElementsValues(body)
+        try {
+            withContext(dispatcher) {
+                val tokenizeApiClient = apiClientProvider.getTokenizeApi(apiKeyOverride)
+                val request = getElementsValues(body)
 
-            tokenizeApiClient.tokenize(request)
+                tokenizeApiClient.tokenize(request)
+            }
+        } catch (e: com.basistheory.ApiException) {
+            throw ApiException(e.code, e.responseHeaders, e.responseBody, e.message)
         }
 
     @JvmOverloads

@@ -11,6 +11,7 @@ import com.basistheory.TokensApi
 import com.basistheory.android.constants.ElementValueType
 import com.basistheory.android.model.CreateTokenRequest
 import com.basistheory.android.model.ElementValueReference
+import com.basistheory.android.model.exceptions.ApiException
 import com.basistheory.android.model.exceptions.IncompleteElementException
 import com.basistheory.android.model.toJava
 import com.basistheory.android.view.CardExpirationDateElement
@@ -647,53 +648,54 @@ class BasisTheoryElementsTests {
         }
 
     @Test
-    fun `createToken should respect getValueType type when sending values to the API`() = runBlocking {
-        every { provider.getTokensApi(any()) } returns tokensApi
+    fun `createToken should respect getValueType type when sending values to the API`() =
+        runBlocking {
+            every { provider.getTokensApi(any()) } returns tokensApi
 
-        val testString = faker.name().firstName()
-        val testInt = faker.number().numberBetween(1, 10)
-        val testDouble = faker.number().randomDouble(2, 10, 99)
-        val testBoolean = faker.bool().bool()
+            val testString = faker.name().firstName()
+            val testInt = faker.number().numberBetween(1, 10)
+            val testDouble = faker.number().randomDouble(2, 10, 99)
+            val testBoolean = faker.bool().bool()
 
-        textElement.setText(testString)
+            textElement.setText(testString)
 
-        intElement.setText(testInt.toString())
-        intElement.getValueType = ElementValueType.INTEGER
+            intElement.setText(testInt.toString())
+            intElement.getValueType = ElementValueType.INTEGER
 
-        doubleElement.setText(testDouble.toString())
-        doubleElement.getValueType = ElementValueType.DOUBLE
+            doubleElement.setText(testDouble.toString())
+            doubleElement.getValueType = ElementValueType.DOUBLE
 
-        boolElement.setText(testBoolean.toString())
-        boolElement.getValueType = ElementValueType.BOOLEAN
+            boolElement.setText(testBoolean.toString())
+            boolElement.getValueType = ElementValueType.BOOLEAN
 
-        val request = object {
-            val type = "token"
-            val data = object {
-                val text = textElement
-                val int = intElement
-                val double = doubleElement
-                val bool = boolElement
+            val request = object {
+                val type = "token"
+                val data = object {
+                    val text = textElement
+                    val int = intElement
+                    val double = doubleElement
+                    val bool = boolElement
+                }
             }
-        }
 
-        val createTokenRequest = createTokenRequest(request)
+            val createTokenRequest = createTokenRequest(request)
 
-        bt.createToken(createTokenRequest)
+            bt.createToken(createTokenRequest)
 
-        val expectedRequest = mapOf<String, Any?>(
-            "type" to request.type,
-            "data" to mapOf(
-                "text" to testString,
-                "int" to testInt,
-                "double" to testDouble,
-                "bool" to testBoolean
+            val expectedRequest = mapOf<String, Any?>(
+                "type" to request.type,
+                "data" to mapOf(
+                    "text" to testString,
+                    "int" to testInt,
+                    "double" to testDouble,
+                    "bool" to testBoolean
+                )
             )
-        )
 
-        val expectedCreateTokenRequest = createTokenRequest(expectedRequest)
+            val expectedCreateTokenRequest = createTokenRequest(expectedRequest)
 
-        verify { tokensApi.create(expectedCreateTokenRequest.toJava()) }
-    }
+            verify { tokensApi.create(expectedCreateTokenRequest.toJava()) }
+        }
 
     @Test
     fun `proxy should replace Element refs within request object with underlying data values`() {
@@ -917,6 +919,79 @@ class BasisTheoryElementsTests {
                 }
 
             verify { tokensApi.create(any()) wasNot Called }
+        }
+
+    @Test
+    fun `tokenize throws com_basistheory_android_model_exceptions_ApiException when an exception occurs`(): Unit =
+        runBlocking {
+            every { provider.getTokenizeApi(any()) } returns tokenizeApi
+
+            every { tokenizeApi.tokenize(any()) } throws com.basistheory.ApiException(
+                401,
+                "API Error"
+            )
+
+            val name = faker.name().fullName()
+
+            expectCatching { bt.tokenize(name, apiKeyOverride = name) }
+                .isFailure()
+                .isA<ApiException>().and {
+                    get { code }.isEqualTo(401)
+                }
+        }
+
+    @Test
+    fun `createToken throws com_basistheory_android_model_exceptions_ApiException when an exception occurs`(): Unit =
+        runBlocking {
+            every { provider.getTokensApi(any()) } returns tokensApi
+
+            every { tokensApi.create(any()) } throws com.basistheory.ApiException(401, "API Error")
+
+            val createTokenRequest = CreateTokenRequest(type = "token", data = "")
+
+            expectCatching {
+                bt.createToken(
+                    createTokenRequest,
+                    apiKeyOverride = faker.name().firstName()
+                )
+            }
+                .isFailure()
+                .isA<ApiException>().and {
+                    get { code }.isEqualTo(401)
+                }
+        }
+
+    @Test
+    fun `getToken throws com_basistheory_android_model_exceptions_ApiException when an exception occurs`(): Unit =
+        runBlocking {
+            every { provider.getTokensApi(any()) } returns tokensApi
+
+            every { tokensApi.getById(any()) } throws com.basistheory.ApiException(401, "API Error")
+
+            expectCatching {
+                bt.getToken(
+                    UUID.randomUUID().toString(),
+                    apiKeyOverride = faker.name().firstName()
+                )
+            }
+                .isFailure()
+                .isA<ApiException>().and {
+                    get { code }.isEqualTo(401)
+                }
+        }
+
+    @Test
+    fun `createSession throws com_basistheory_android_model_exceptions_ApiException when an exception occurs`(): Unit =
+        runBlocking {
+            every { provider.getSessionsApi(any()) } returns sessionsApi
+
+            every { sessionsApi.create() } throws com.basistheory.ApiException(401, "API Error")
+
+            expectCatching { bt.createSession(apiKeyOverride = faker.name().firstName()) }
+                .isFailure()
+                .isA<ApiException>().and {
+                    get { code }.isEqualTo(401)
+                }
         }
 
     @Test

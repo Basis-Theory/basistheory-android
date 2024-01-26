@@ -1,27 +1,25 @@
 package com.basistheory.android.model
 
-import com.google.gson.annotations.SerializedName
-
 class CreateTokenRequest(
-    @SerializedName("id") var id: String? = null,
+    var id: String? = null,
 
-    @SerializedName("type") var type: String,
+    var type: String,
 
-    @SerializedName("data") var data: Any,
+    var data: Any,
 
-    @SerializedName("mask") var mask: Any? = null,
+    var mask: Any? = null,
 
-    @SerializedName("fingerprint_expression") var fingerprintExpression: String? = null,
+    var fingerprintExpression: String? = null,
 
-    @SerializedName("deduplicate_token") var deduplicateToken: Boolean? = null,
+    var deduplicateToken: Boolean? = null,
 
-    @SerializedName("expires_at") var expiresAt: String? = null,
+    var expiresAt: String? = null,
 
-    @SerializedName("metadata") var metadata: Map<String, String>? = null,
+    var metadata: Map<String, String>? = null,
 
-    @SerializedName("containers") var containers: List<String>? = null,
+    var containers: List<String>? = null,
 
-    @SerializedName("search_indexes") var searchIndexes: List<String>? = null,
+    var searchIndexes: List<String>? = null,
 )
 
 internal fun CreateTokenRequest.toJava(): com.basistheory.CreateTokenRequest =

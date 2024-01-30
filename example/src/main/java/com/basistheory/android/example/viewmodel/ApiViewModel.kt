@@ -5,10 +5,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
-import com.basistheory.Token
 import com.basistheory.android.example.BuildConfig
 import com.basistheory.android.example.R
 import com.basistheory.android.example.util.prettyPrintJson
+import com.basistheory.android.model.Token
 import com.basistheory.android.service.BasisTheoryElements
 import com.basistheory.android.service.HttpMethod
 import com.basistheory.android.service.ProxyRequest

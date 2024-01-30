@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.basistheory.Token
 import com.basistheory.android.example.databinding.FragmentRevealBinding
 import com.basistheory.android.example.util.tokenExpirationTimestamp
 import com.basistheory.android.example.viewmodel.CardFragmentViewModel

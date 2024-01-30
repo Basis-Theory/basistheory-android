@@ -1,12 +1,11 @@
 package com.basistheory.android.service
 
-import android.util.Log
 import com.basistheory.ApiClient
 import com.basistheory.android.model.ElementValueReference
-import com.basistheory.android.util.transformResponseToValueReferences
 import com.basistheory.android.util.isPrimitiveType
-import com.basistheory.android.util.toMap
 import com.basistheory.android.util.replaceElementRefs
+import com.basistheory.android.util.toMap
+import com.basistheory.android.util.transformResponseToValueReferences
 import com.basistheory.android.view.TextElement
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

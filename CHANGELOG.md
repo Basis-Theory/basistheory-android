@@ -1,3 +1,15 @@
+## [4.0.0](https://github.com/Basis-Theory/basistheory-android/compare/3.2.0...4.0.0) (2024-01-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* removing dependency on java sdk models for consumers
+
+### Features
+
+* remove java sdk dependency for consumers ([#98](https://github.com/Basis-Theory/basistheory-android/issues/98)) ([3ed978a](https://github.com/Basis-Theory/basistheory-android/commit/3ed978af38f74f65f6124460893f7146ef1700f0))
+
+
 ## [3.2.0](https://github.com/Basis-Theory/basistheory-android/compare/3.1.0...3.2.0) (2023-10-31)
 
 

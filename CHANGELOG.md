@@ -1,3 +1,11 @@
+### [4.0.1](https://github.com/Basis-Theory/basistheory-android/compare/4.0.0...4.0.1) (2024-02-01)
+
+
+### Bug Fixes
+
+* handle revealing january expiration month as a single digit ([#99](https://github.com/Basis-Theory/basistheory-android/issues/99)) ([bf61540](https://github.com/Basis-Theory/basistheory-android/commit/bf61540e0c7e81a5302a00bafd08421909bed806))
+
+
 ## [4.0.0](https://github.com/Basis-Theory/basistheory-android/compare/3.2.0...4.0.0) (2024-01-30)
 
 

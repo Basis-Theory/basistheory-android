@@ -32,8 +32,10 @@ class CardExpirationDateElement @JvmOverloads constructor(
         monthRef: ElementValueReference,
         yearRef: ElementValueReference
     ) {
-        val month = monthRef.getValue().toIntString()
+        var month = monthRef.getValue().toIntString()
         val year = yearRef.getValue().toIntString()
+
+        if (month == "1") month = "01"
 
         setText("${month}${year?.takeLast(2)}")
     }

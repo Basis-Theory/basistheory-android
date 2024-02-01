@@ -155,6 +155,15 @@ class CardExpirationDateElementTests {
     }
 
     @Test
+    fun `can set value references for january as a single digit`() {
+        val monthRef = ElementValueReference { "1" }
+        val yearRef = ElementValueReference { "2030" }
+        cardExpirationDateElement.setValueRef(monthRef, yearRef)
+
+        expectThat(cardExpirationDateElement.getText()).isEqualTo("01/30")
+    }
+
+    @Test
     fun `can set value references for both month and year as doubles`() {
         val monthRef = ElementValueReference { "8.0" }
         val yearRef = ElementValueReference { "2030.0" }

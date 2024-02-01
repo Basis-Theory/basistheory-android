@@ -35,6 +35,7 @@ class CardExpirationDateElement @JvmOverloads constructor(
         var month = monthRef.getValue().toIntString()
         val year = yearRef.getValue().toIntString()
 
+        // unique edge case not handled by beforeTextChanged since users can enter 10, 11 or 12
         if (month == "1") month = "01"
 
         setText("${month}${year?.takeLast(2)}")

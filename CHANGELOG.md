@@ -1,3 +1,11 @@
+## [4.1.0](https://github.com/Basis-Theory/basistheory-android/compare/4.0.1...4.1.0) (2024-02-02)
+
+
+### Features
+
+* expose autofillHints from the edit text within the text element ([#100](https://github.com/Basis-Theory/basistheory-android/issues/100)) ([0c68b93](https://github.com/Basis-Theory/basistheory-android/commit/0c68b93f851899a4bd49269059e569f5c9340864))
+
+
 ### [4.0.1](https://github.com/Basis-Theory/basistheory-android/compare/4.0.0...4.0.1) (2024-02-01)
 
 

@@ -263,7 +263,7 @@ open class TextElement @JvmOverloads constructor(
             checkIcon?.setTint(value)
         }
 
-    var autofillHints: Array<String>?
+    var autoFillHints: Array<String>?
         @RequiresApi(Build.VERSION_CODES.O)
         get() = _editText.autofillHints
         @RequiresApi(Build.VERSION_CODES.O)

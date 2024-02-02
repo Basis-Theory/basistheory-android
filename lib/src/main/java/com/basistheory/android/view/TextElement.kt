@@ -7,6 +7,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -23,6 +24,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import android.widget.FrameLayout
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
@@ -259,6 +261,14 @@ open class TextElement @JvmOverloads constructor(
 
             copyIcon?.setTint(value)
             checkIcon?.setTint(value)
+        }
+
+    var autofillHints: Array<String>?
+        @RequiresApi(Build.VERSION_CODES.O)
+        get() = _editText.autofillHints
+        @RequiresApi(Build.VERSION_CODES.O)
+        set(value) {
+            value?.let { _editText.setAutofillHints(*value) }
         }
 
     fun addChangeEventListener(listener: (ChangeEvent) -> Unit) {

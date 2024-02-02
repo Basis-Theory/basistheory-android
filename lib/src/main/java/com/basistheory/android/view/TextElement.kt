@@ -42,7 +42,6 @@ import com.basistheory.android.view.method.FullyHiddenTransformationMethod
 import com.basistheory.android.view.transform.ElementTransform
 import com.basistheory.android.view.validation.ElementValidator
 
-@RequiresApi(Build.VERSION_CODES.O)
 open class TextElement @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -95,7 +94,9 @@ open class TextElement @JvmOverloads constructor(
 
                     hintTextColor = getColor(R.styleable.TextElement_android_textColorHint, Color.LTGRAY)
 
-                    textAutofillHints = getString(R.styleable.TextElement_android_autofillHints)?.split(",")?.toTypedArray()
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        textAutofillHints = getString(R.styleable.TextElement_android_autofillHints)?.split(",")?.toTypedArray()
+                    }
 
                     typeface = resolveTypeface(
                         getInt(R.styleable.TextElement_android_typeface, 0),

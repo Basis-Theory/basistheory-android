@@ -94,6 +94,10 @@ open class TextElement @JvmOverloads constructor(
 
                     hintTextColor = getColor(R.styleable.TextElement_android_textColorHint, Color.LTGRAY)
 
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        textAutofillHints = getString(R.styleable.TextElement_android_autofillHints)?.split(",")?.toTypedArray()
+                    }
+
                     typeface = resolveTypeface(
                         getInt(R.styleable.TextElement_android_typeface, 0),
                         defStyleAttr
@@ -263,7 +267,7 @@ open class TextElement @JvmOverloads constructor(
             checkIcon?.setTint(value)
         }
 
-    var autoFillHints: Array<String>?
+    var textAutofillHints: Array<String>?
         @RequiresApi(Build.VERSION_CODES.O)
         get() = _editText.autofillHints
         @RequiresApi(Build.VERSION_CODES.O)

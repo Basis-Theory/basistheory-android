@@ -1,3 +1,11 @@
+### [4.1.1](https://github.com/Basis-Theory/basistheory-android/compare/4.1.0...4.1.1) (2024-02-02)
+
+
+### Bug Fixes
+
+* update autofillHints name ([#101](https://github.com/Basis-Theory/basistheory-android/issues/101)) ([c1d0c7e](https://github.com/Basis-Theory/basistheory-android/commit/c1d0c7e629a3c4b0c44942ed089ac2f1a6c7f1f9))
+
+
 ## [4.1.0](https://github.com/Basis-Theory/basistheory-android/compare/4.0.1...4.1.0) (2024-02-02)
 
 

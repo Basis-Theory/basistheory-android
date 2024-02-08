@@ -13,5 +13,12 @@
     *;
 }
 
--dontwarn javax.validation.valueextraction.UnwrapByDefault
--dontwarn javax.validation.valueextraction.ValueExtractor
+# Needed for Android Instrumentation Tests
+-dontwarn com.google.errorprone.annotations.InlineMe
+-dontwarn java.beans.BeanInfo
+-dontwarn java.beans.FeatureDescriptor
+-dontwarn java.beans.IntrospectionException
+-dontwarn java.beans.Introspector
+-dontwarn java.beans.PropertyDescriptor
+-dontwarn java.lang.ClassValue
+-dontwarn javax.lang.model.element.Modifier

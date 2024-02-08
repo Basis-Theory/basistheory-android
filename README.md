@@ -32,6 +32,9 @@ Add this dependency to your project's build file:
   }
 ```
 
+Add the ProGuard rules found in example/proguard-rules.pro to your project's rules if you build 
+enables code shrinking or obfuscation
+
 ## Features
 
 - [TextElement](https://developers.basistheory.com/docs/sdks/mobile/android/types#textelement) to securely collect text input

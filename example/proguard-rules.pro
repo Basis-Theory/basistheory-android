@@ -1,5 +1,8 @@
 -dontwarn javax.validation.valueextraction.UnwrapByDefault
 -dontwarn javax.validation.valueextraction.ValueExtractor
+-dontwarn aQute.bnd.annotation.spi.ServiceProvider
+-dontwarn jakarta.validation.valueextraction.UnwrapByDefault
+-dontwarn jakarta.validation.valueextraction.ValueExtractor
 
 # Needed to keep generic signatures
 -keepattributes Signature

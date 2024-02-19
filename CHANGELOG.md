@@ -1,3 +1,11 @@
+### [4.1.2](https://github.com/Basis-Theory/basistheory-android/compare/4.1.1...4.1.2) (2024-02-19)
+
+
+### Bug Fixes
+
+* eng-6199 fix jackson databind vulnerability ([#103](https://github.com/Basis-Theory/basistheory-android/issues/103)) ([d8bc4b0](https://github.com/Basis-Theory/basistheory-android/commit/d8bc4b03ef95e10d7eb77caddabc1e339ec611fe))
+
+
 ### [4.1.1](https://github.com/Basis-Theory/basistheory-android/compare/4.1.0...4.1.1) (2024-02-02)
 
 

@@ -95,5 +95,11 @@ configurations.configureEach {
             }
             details.useVersion("2.2")
         }
+        if (details.requested.module.toString() == 'org.bouncycastle:bcprov-jdk18on') {
+            details.artifactSelection {
+                it.selectArtifact(DependencyArtifact.DEFAULT_TYPE, null, null)
+            }
+            details.useVersion("1.78")
+        }
     }
 }

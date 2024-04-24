@@ -23,9 +23,11 @@ import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
+import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.content.getSystemService
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import com.basistheory.android.R
@@ -154,6 +156,11 @@ open class TextElement @JvmOverloads constructor(
             endDrawable,
             bottomDrawable
         )
+    }
+
+    fun showKeyboard(flags: Int) {
+        val imm = context.getSystemService<InputMethodManager>()
+        imm!!.showSoftInput(_editText, flags)
     }
 
     fun getDrawables(): Array<Drawable?> {

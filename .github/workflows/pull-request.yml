@@ -33,7 +33,7 @@ jobs:
         run: ./gradlew testDebugUnitTest
 
   acceptance:
-    runs-on: ubuntu-latest
+    runs-on: macos-14
 
     strategy:
       matrix:

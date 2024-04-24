@@ -79,7 +79,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10.1'
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'pl.pragmatists:JUnitParams:1.1.1'
-    testImplementation 'org.robolectric:robolectric:4.10.3'
+    testImplementation 'org.robolectric:robolectric:4.12.1'
     testImplementation 'io.strikt:strikt-core:0.34.1'
     testImplementation 'io.mockk:mockk:1.13.8'
     testImplementation("com.squareup.okhttp3:mockwebserver:4.11.0")
@@ -94,6 +94,12 @@ configurations.configureEach {
                 it.selectArtifact(DependencyArtifact.DEFAULT_TYPE, null, null)
             }
             details.useVersion("2.2")
+        }
+        if (details.requested.module.toString() == 'org.bouncycastle:bcprov-jdk18on') {
+            details.artifactSelection {
+                it.selectArtifact(DependencyArtifact.DEFAULT_TYPE, null, null)
+            }
+            details.useVersion("1.78")
         }
     }
 }

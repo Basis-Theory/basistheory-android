@@ -31,8 +31,8 @@ class SocialSecurityNumberFragment : Fragment() {
         return binding.root
     }
 
-   private fun autofill() {
-       binding.socialSecurityNumber.setText("234567890")
+    private fun autofill() {
+        binding.socialSecurityNumber.setText("234567890")
     }
 
     private fun tokenize() =

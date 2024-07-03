@@ -5,6 +5,7 @@ import android.text.Editable
 import android.text.SpannableStringBuilder
 import android.text.TextWatcher
 import androidx.appcompat.widget.AppCompatEditText
+import com.basistheory.android.BuildConfig
 
 internal class SensitiveEditText(
     context: Context
@@ -15,13 +16,13 @@ internal class SensitiveEditText(
 
 
     override fun addTextChangedListener(watcher: TextWatcher?) {
-        if (allowTextAccess) {
+        if (allowTextAccess || BuildConfig.DEBUG) {
             super.addTextChangedListener(watcher)
         }
     }
 
     override fun getText(): Editable? {
-        return if (allowTextAccess)
+        return if (allowTextAccess || BuildConfig.DEBUG)
             super.getText()
         else SpannableStringBuilder()
     }

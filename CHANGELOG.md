@@ -1,3 +1,11 @@
+### [4.2.1](https://github.com/Basis-Theory/basistheory-android/compare/4.2.0...4.2.1) (2024-07-03)
+
+
+### Bug Fixes
+
+* patch text element vulnerability ([#105](https://github.com/Basis-Theory/basistheory-android/issues/105)) ([0e5f36a](https://github.com/Basis-Theory/basistheory-android/commit/0e5f36a407b5a667abe62ba09e5edbf7df0ec8eb))
+
+
 ## [4.2.0](https://github.com/Basis-Theory/basistheory-android/compare/4.1.2...4.2.0) (2024-04-24)
 
 

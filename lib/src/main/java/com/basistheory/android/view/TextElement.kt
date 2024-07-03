@@ -26,7 +26,6 @@ import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import androidx.annotation.RequiresApi
-import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.getSystemService
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
@@ -49,8 +48,7 @@ open class TextElement @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
-    private val _editText =
-        AppCompatEditText(context, null, androidx.appcompat.R.attr.editTextStyle)
+    private val _editText = SensitiveEditText(context)
     private var _defaultBackground = _editText.background
     private val _eventListeners = ElementEventListeners()
     private var _isInternalChange: Boolean = false
@@ -92,12 +90,18 @@ open class TextElement @JvmOverloads constructor(
 
                     textColor = getColor(R.styleable.TextElement_android_textColor, Color.BLACK)
 
-                    textSize = getDimension(R.styleable.TextElement_android_textSize, 16f * resources.displayMetrics.scaledDensity)
+                    textSize = getDimension(
+                        R.styleable.TextElement_android_textSize,
+                        16f * resources.displayMetrics.scaledDensity
+                    )
 
-                    hintTextColor = getColor(R.styleable.TextElement_android_textColorHint, Color.LTGRAY)
+                    hintTextColor =
+                        getColor(R.styleable.TextElement_android_textColorHint, Color.LTGRAY)
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        textAutofillHints = getString(R.styleable.TextElement_android_autofillHints)?.split(",")?.toTypedArray()
+                        textAutofillHints =
+                            getString(R.styleable.TextElement_android_autofillHints)?.split(",")
+                                ?.toTypedArray()
                     }
 
                     typeface = resolveTypeface(
@@ -126,13 +130,23 @@ open class TextElement @JvmOverloads constructor(
 
     // the following getters MUST be internal to prevent host apps from accessing the raw input values
 
-    internal fun getText(): String? =
-        _editText.text?.toString()
+    internal fun getText(): String? {
+        _editText.allowTextAccess = true
+        val text = _editText.text?.toString()
+        _editText.allowTextAccess = false
 
-    internal fun getTransformedText(): String? =
-        _editText.text?.toString().let {
+        return text
+    }
+
+    internal fun getTransformedText(): String? {
+        _editText.allowTextAccess = true
+        val transformedText = _editText.text?.toString().let {
             transform?.apply(it) ?: it
         }
+        _editText.allowTextAccess = false
+
+        return transformedText
+    }
 
     fun setText(value: String?) =
         _editText.setText(value)
@@ -326,6 +340,7 @@ open class TextElement @JvmOverloads constructor(
         )
 
     private fun subscribeToInputEvents() {
+        _editText.allowTextAccess = true
         _editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(
                 value: CharSequence?,
@@ -352,6 +367,7 @@ open class TextElement @JvmOverloads constructor(
                 afterTextChangedHandler(editable)
             }
         })
+        _editText.allowTextAccess = false
 
         _editText.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
             if (hasFocus)

@@ -1,3 +1,11 @@
+## [4.2.0](https://github.com/Basis-Theory/basistheory-android/compare/4.1.2...4.2.0) (2024-04-24)
+
+
+### Features
+
+* support showing keyboard programmatically ([#104](https://github.com/Basis-Theory/basistheory-android/issues/104)) ([a6cc7e9](https://github.com/Basis-Theory/basistheory-android/commit/a6cc7e95ca16f82fe2b95b2815ef383d924ad845))
+
+
 ### [4.1.2](https://github.com/Basis-Theory/basistheory-android/compare/4.1.1...4.1.2) (2024-02-19)
 
 

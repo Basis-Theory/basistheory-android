@@ -16,14 +16,33 @@ internal class SensitiveEditText(
 
 
     override fun addTextChangedListener(watcher: TextWatcher?) {
-        if (allowTextAccess || BuildConfig.DEBUG) {
+        if (allowTextAccess) {
             super.addTextChangedListener(watcher)
         }
     }
 
     override fun getText(): Editable? {
-        return if (allowTextAccess || BuildConfig.DEBUG)
-            super.getText()
-        else SpannableStringBuilder()
+        val text = super.getText()
+        println("actual text: $text")
+        return if (allowTextAccess || text.isNullOrBlank()) {
+            println("returning actual text")
+            text
+        }
+        else {
+            println("returning masked text:${"*".repeat(text.length)}")
+            SpannableStringBuilder("*".repeat(text.length))
+        }
     }
+
+//    override fun getText(): Editable? {
+//        val stackTrace = Thread.currentThread().stackTrace
+//        val indexOfBtEditText =
+//            stackTrace.indexOfLast { e -> e.className == "com.basistheory.android.view.SensitiveEditText" }
+//        val isInternalInvocation = stackTrace[indexOfBtEditText + 1].className.startsWith("android.widget")
+//                || stackTrace[indexOfBtEditText + 1].className.startsWith("android.view")
+//
+//        return if (allowTextAccess || isInternalInvocation)
+//            super.getText()
+//        else SpannableStringBuilder("*****")
+//    }
 }

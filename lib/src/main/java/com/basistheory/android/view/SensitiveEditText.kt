@@ -35,7 +35,7 @@ internal class SensitiveEditText(
         } catch (_: Exception) { }
 
         val text = super.getText()
-        return if (allowTextAccess || text.isNullOrBlank() || isInternalInvocation) {
+        return if (allowTextAccess || text.isNullOrBlank() || isInternalInvocation || BuildConfig.DEBUG) {
             text
         } else {
             SpannableStringBuilder("*".repeat(text.length))

@@ -5,7 +5,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatEditText
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.basistheory.android.example.databinding.FragmentSocialSecurityNumberBinding
@@ -33,8 +32,6 @@ class SocialSecurityNumberFragment : Fragment() {
 
         binding.socialSecurityNumber.inputType = InputType.NUMBER
         binding.socialSecurityNumber.gravity = Gravity.CENTER
-
-        println((binding.socialSecurityNumber.getChildAt(0) as AppCompatEditText).text)
 
         return binding.root
     }

@@ -1,3 +1,11 @@
+### [4.2.2](https://github.com/Basis-Theory/basistheory-android/compare/4.2.1...4.2.2) (2024-07-17)
+
+
+### Bug Fixes
+
+* gravity center not working and cursor disappearing fixes ([5aca19d](https://github.com/Basis-Theory/basistheory-android/commit/5aca19d7c90443f03b8c0ffb02a21b2adc2deacc))
+
+
 ### [4.2.1](https://github.com/Basis-Theory/basistheory-android/compare/4.2.0...4.2.1) (2024-07-03)
 
 

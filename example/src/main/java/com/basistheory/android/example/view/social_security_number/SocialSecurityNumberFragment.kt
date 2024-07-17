@@ -1,6 +1,7 @@
 package com.basistheory.android.example.view.social_security_number
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import androidx.fragment.app.viewModels
 import com.basistheory.android.example.databinding.FragmentSocialSecurityNumberBinding
 import com.basistheory.android.example.util.tokenExpirationTimestamp
 import com.basistheory.android.example.viewmodel.ApiViewModel
+import com.basistheory.android.model.InputType
 
 class SocialSecurityNumberFragment : Fragment() {
     private val binding: FragmentSocialSecurityNumberBinding by lazy {
@@ -27,6 +29,9 @@ class SocialSecurityNumberFragment : Fragment() {
 
         binding.tokenizeButton.setOnClickListener { tokenize() }
         binding.autofillButton.setOnClickListener { autofill() }
+
+        binding.socialSecurityNumber.inputType = InputType.NUMBER
+        binding.socialSecurityNumber.gravity = Gravity.CENTER
 
         return binding.root
     }

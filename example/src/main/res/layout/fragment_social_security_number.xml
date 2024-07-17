@@ -31,7 +31,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/rounded_edit_text"
-                    android:inputType="number"
                     android:padding="5dp"
                     android:hint="@string/social_security_number"
                     android:textColor="@color/gray_800"

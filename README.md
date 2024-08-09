@@ -103,8 +103,8 @@ A full example Android app is included within the [example](example) module with
 ## Security Notice
 
 This SDK includes various measures to protect sensitive data entered into secure elements and to
-prevent unauthorized access. However, it is important to note that due to the inherent flexibility
-of the Android platform, it is not possible to fully prevent all forms of data access by a developer
-with malicious intent. We strongly recommend that our customers ensure they only integrate our SDK
-with applications and other SDKs from vetted and trusted developers. Unauthorized access to
-sensitive data can occur if the developer of the wrapping SDK or application is motivated to do so.
+prevent unauthorized access. However, it is important to note that it is not possible to fully
+prevent all forms of data access by a developer with malicious intent. We strongly recommend that
+our customers ensure they only integrate our SDK with applications and other SDKs from vetted and
+trusted developers. Unauthorized access to sensitive data can occur if the developer of the wrapping
+SDK or application is motivated to do so.

@@ -64,6 +64,13 @@ afterEvaluate {
     }
 }
 
+configurations.all {
+    resolutionStrategy {
+        force 'com.fasterxml.jackson.core:jackson-core:2.15.0-rc1'
+    }
+}
+
+
 dependencies {
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.5.1'

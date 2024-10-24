@@ -1,3 +1,11 @@
+### [4.2.3](https://github.com/Basis-Theory/basistheory-android/compare/4.2.2...4.2.3) (2024-10-24)
+
+
+### Bug Fixes
+
+* patch jackson-core ([#108](https://github.com/Basis-Theory/basistheory-android/issues/108)) ([d04b0cf](https://github.com/Basis-Theory/basistheory-android/commit/d04b0cfc61e7ae48f4c837bf0e291f8fed6bbe13))
+
+
 ### [4.2.2](https://github.com/Basis-Theory/basistheory-android/compare/4.2.1...4.2.2) (2024-07-17)
 
 

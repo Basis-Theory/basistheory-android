@@ -14,11 +14,12 @@ jobs:
         with:
           slack-api-token: ${{ secrets.SLACK_DUCKBOT_API_KEY }}
           channel: ${{ vars.SLACK_DUCKBOT_PRODUCT_DEPLOY_CHANNEL }}
+
       - name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          token: ${{ secrets.SEMANTIC_RELEASE_PAT }}
+          token: ${{ secrets.GH_SEMANTIC_RELEASE_PAT }}
 
       - name: Bump version and push tag
         id: tag-version
@@ -46,8 +47,9 @@ jobs:
         uses: ad-m/github-push-action@master
         if: ${{ steps.tag-version.outputs.release_type != '' }}
         with:
-          github_token: ${{ secrets.SEMANTIC_RELEASE_PAT }}
+          github_token: ${{ secrets.GH_SEMANTIC_RELEASE_PAT }}
           branch: ${{ github.ref }}
+
       - name: Stop Deploy Message
         if: always()
         uses: Basis-Theory/github-actions/deploy-slack-action@master

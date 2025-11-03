@@ -1,5 +1,9 @@
 # Basis Theory Android SDK
 
+> [!WARNING]  
+> DEPRECATED: This repository and the `basistheory-android` package have been deprecated. 
+> Please migrate to [android-elements](https://github.com/Basis-Theory/android-elements).
+
 The [Basis Theory](https://basistheory.com) Android SDK makes it easy to securely collect sensitive 
 data within your Android applications while keeping your mobile application out of compliance scope. 
 [Elements](https://developers.basistheory.com/docs/sdks/mobile/android/) are secure inputs that enable you to collect
